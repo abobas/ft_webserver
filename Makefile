@@ -6,18 +6,18 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/07/04 14:28:28 by abobas        ########   odam.nl          #
+#    Updated: 2020/07/04 21:24:04 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = 			main.cpp \
-				Socket.cpp
+				Server.cpp
 
 SRC_DIR	=		./src/
 
 SRC :=			$(SRC:%=$(SRC_DIR)%)
 
-INCLUDE =		Socket.hpp
+INCLUDE =		Server.hpp
 
 INCLUDE_DIR =	./src/includes/
 			

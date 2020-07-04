@@ -1,33 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Socket.hpp                                         :+:    :+:            */
+/*   Server.hpp                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/07/04 14:11:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/04 18:11:35 by abobas        ########   odam.nl         */
+/*   Created: 2020/07/04 21:23:08 by abobas        #+#    #+#                 */
+/*   Updated: 2020/07/04 21:34:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKET_HPP
-#define SOCKET_HPP
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
 #include <vector>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/select.h>
 
-class Socket
+class Server
 {
-    private:
-        int main_socket;
-        std::vector<int> connection;
-        void setup_main_socket();
-    public:
-        Socket();
-        void accept_connections();
-        void receive_data();
-        ~Socket();
+	private:
+		int listen_socket;
+		int fd_max;
+		fd_set read_set;
+		fd_set write_set;
+		std::vector<int> read_sockets;
+		std::vector<int> write_sockets;
+		void create_listen_socket();
+		void accept_connections();
+		void check_sets();
+		void accept_client();
+		void receive_data(int socket);
+		void set_max_fd();
+	public:
+		Server();
+		~Server();
 };
 
 #endif
