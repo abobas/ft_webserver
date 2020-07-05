@@ -31,11 +31,6 @@ Server::Server()
 	this->CreateServerSocket();
 }
 
-/*  
-	listen_socket() creates the main socket which will listen on specified port(s)
-	for incoming requests and handles connections by opening new sockets
-*/
-
 void Server::CreateServerSocket()
 {
 	int new_socket;
