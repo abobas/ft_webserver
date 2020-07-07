@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/05 18:16:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 18:08:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int main()
 	try
 	{
 		Server server;
-		server.AcceptConnections();
+		server.acceptConnections();
 	}
 	catch(const char *e)
 	{

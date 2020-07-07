@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 17:16:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 17:57:31 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@
 
 Server::Server()
 {
-	this->CreateServerSocket();
+	this->createServerSocket();
 }
 
-void Server::CreateServerSocket()
+void Server::createServerSocket()
 {
 	int new_socket;
 	sockaddr_in new_address;
@@ -56,22 +56,22 @@ void Server::CreateServerSocket()
 	}
 }
 
-void Server::AcceptConnections()
+void Server::acceptConnections()
 {
 	std::cout << "Server is now accepting connections" << std::endl;
 	while (1)
 	{
-		this->InitializeSets();
-		this->select_value = select(this->GetSocketRange(), &this->read_set, &this->write_set, NULL, NULL);
+		this->initializeSets();
+		this->select_value = select(this->getSocketRange(), &this->read_set, &this->write_set, NULL, NULL);
 		std::cout << this->select_value << " sockets are ready for operations" << std::endl;
 		if (this->select_value == -1)
 			throw strerror(errno);
 		else if (this->select_value > 0)
-			this->HandleConnections();
+			this->handleConnections();
 	}
 }
 
-void Server::InitializeSets()
+void Server::initializeSets()
 {
 	FD_ZERO(&this->read_set);
 	FD_ZERO(&this->write_set);
@@ -83,7 +83,7 @@ void Server::InitializeSets()
 		FD_SET(this->client_sockets_w[i], &this->write_set);
 }
 
-int Server::GetSocketRange()
+int Server::getSocketRange()
 {
 	int max = 0;
 	for (u_int32_t i = 0; i < this->server_sockets.size(); i++)
@@ -104,7 +104,7 @@ int Server::GetSocketRange()
 	return (max);
 }
 
-void Server::HandleConnections()
+void Server::handleConnections()
 {
 	for (u_int32_t i = 0; i < this->client_sockets_w.size(); i++)
 	{
@@ -112,7 +112,7 @@ void Server::HandleConnections()
 		if (FD_ISSET(this->client_sockets_w[i], &this->write_set))
 		{
 			std::cout << "Flag is set for writing to client FD " <<  this->client_sockets_w[i] << std::endl;
-			this->SendResponse(this->client_sockets_w[i]);
+			this->sendResponse(this->client_sockets_w[i]);
 			FD_CLR(this->client_sockets_w[i], &this->write_set);
 			this->select_value--;
 			if (this->select_value == 0)
@@ -125,7 +125,7 @@ void Server::HandleConnections()
 		if (FD_ISSET(this->client_sockets_r[i], &this->read_set))
 		{
 			std::cout << "Flag is set for reading from client FD " <<  this->client_sockets_r[i] << std::endl;
-			this->ReceiveRequest(this->client_sockets_r[i]);
+			this->receiveRequest(this->client_sockets_r[i]);
 			FD_CLR(this->client_sockets_r[i], &this->read_set);
 			this->select_value--;
 			if (this->select_value == 0)
@@ -138,7 +138,7 @@ void Server::HandleConnections()
 		if (FD_ISSET(this->server_sockets[i], &this->read_set))
 		{
 			std::cout << "Flag is set for server FD " <<  this->server_sockets[i] << std::endl;
-			this->AcceptClient(this->server_sockets[i]);
+			this->acceptClient(this->server_sockets[i]);
 			FD_CLR(this->server_sockets[i], &this->read_set);
 			this->select_value--;
 			if (this->select_value == 0)
@@ -147,7 +147,7 @@ void Server::HandleConnections()
 	}
 }
 
-void Server::AcceptClient(int server_socket)
+void Server::acceptClient(int server_socket)
 {
 	int client;
 	struct sockaddr client_address;
@@ -158,7 +158,7 @@ void Server::AcceptClient(int server_socket)
 	std::cout << "Connection established with client. Client socket is FD " << client << std::endl;
 }
 
-void Server::ReceiveRequest(int client_socket)
+void Server::receiveRequest(int client_socket)
 {
 	char buf[513];
 	std::string buffer;
@@ -174,17 +174,13 @@ void Server::ReceiveRequest(int client_socket)
 			break ;
 	}
 	this->requests.insert(std::pair<int, std::string>(client_socket, buffer));
-	this->TransformClient(client_socket);
+	this->transformClient(client_socket);
 	std::cout << "Received request from client socket FD " << client_socket << std::endl;
 	std::cout << "\nRECEIVED REQUEST >>>>>>\n" << buffer << std::endl;
 }
 
-void Server::SendResponse(int client_socket)
+void Server::sendResponse(int client_socket)
 {
-	/*
-	Bullshit response sent just to check out socket connectivity
-	Connection is always closed after response, but have to implement longevity of connection based on HTTP request (keep-alive / close)
-	 */
 	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 12\nContent-Type: text/html\n\nHello World\n");
 	write(client_socket, StandardReply.c_str(), StandardReply.size());
 	std::cout << "Sent response to client socket FD " << client_socket << std::endl;
@@ -192,19 +188,13 @@ void Server::SendResponse(int client_socket)
 	this->client_sockets_w.erase(std::find(this->client_sockets_w.begin(), this->client_sockets_w.end(), client_socket));
 }
 
-void Server::PrintRequests()
-{
-	for (std::map<int, std::string>::iterator it = this->requests.begin(); it != this->requests.end(); it++)
-		std::cout << "Client FD " << it->first << " sent the following request:\n\n" << it->second << std::endl;
-}
-
-void Server::TransformClient(int client_socket)
+void Server::transformClient(int client_socket)
 {
 	this->client_sockets_r.erase(std::find(this->client_sockets_r.begin(), this->client_sockets_r.end(), client_socket));
 	this->client_sockets_w.push_back(client_socket);
 }
 
-void Server::CloseSockets()
+void Server::closeSockets()
 {
 	for (u_int32_t i = 0; i < this->server_sockets.size(); i++)
 		close(this->server_sockets[i]);
@@ -219,5 +209,5 @@ void Server::CloseSockets()
 
 Server::~Server()
 {
-	this->CloseSockets();
+	this->closeSockets();
 }

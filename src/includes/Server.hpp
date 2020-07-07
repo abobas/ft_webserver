@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 21:23:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/05 19:10:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 17:57:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,18 @@ class Server
 		std::vector<int> client_sockets_r;
 		std::vector<int> client_sockets_w;
 		std::map<int, std::string> requests;
-		void CreateServerSocket();
-		void InitializeSets();
-		int GetSocketRange();
-		void HandleConnections();
-		void AcceptClient(int server_socket);
-		void TransformClient(int client_socket);
-		void ReceiveRequest(int client_socket);
-		void SendResponse(int client_socket);
-		void PrintRequests();
-		void CloseSockets();
+		void createServerSocket();
+		void initializeSets();
+		int getSocketRange();
+		void handleConnections();
+		void acceptClient(int server_socket);
+		void transformClient(int client_socket);
+		void receiveRequest(int client_socket);
+		void sendResponse(int client_socket);
+		void closeSockets();
 	public:
 		Server();
-		void AcceptConnections();
+		void acceptConnections();
 		~Server();
 };
 
