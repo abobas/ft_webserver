@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 20:26:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 20:48:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,7 @@ void Server::receiveRequest(int client_socket)
 {
 	char buf[513];
 	std::string buffer;
-	int ret = 1;
+	int ret;
 	while (1)
 	{
 		ret = read(client_socket, buf, 512);

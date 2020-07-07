@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 21:23:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 17:57:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 20:52:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <sys/select.h>
 
 class Server
