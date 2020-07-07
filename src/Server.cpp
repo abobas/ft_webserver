@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/05 19:20:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 17:16:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/select.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
@@ -69,7 +68,6 @@ void Server::AcceptConnections()
 			throw strerror(errno);
 		else if (this->select_value > 0)
 			this->HandleConnections();
-		usleep(1000000);
 	}
 }
 
@@ -178,11 +176,16 @@ void Server::ReceiveRequest(int client_socket)
 	this->requests.insert(std::pair<int, std::string>(client_socket, buffer));
 	this->TransformClient(client_socket);
 	std::cout << "Received request from client socket FD " << client_socket << std::endl;
+	std::cout << "\nRECEIVED REQUEST >>>>>>\n" << buffer << std::endl;
 }
 
 void Server::SendResponse(int client_socket)
 {
-	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 88\nContent-Type: text/html\nConnection: Closed\n<html>\n<body>\n<h1>\nHello, World!\n</h1>\n</body>\n</html>\n");
+	/*
+	Bullshit response sent just to check out socket connectivity
+	Connection is always closed after response, but have to implement longevity of connection based on HTTP request (keep-alive / close)
+	 */
+	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 12\nContent-Type: text/html\n\nHello World\n");
 	write(client_socket, StandardReply.c_str(), StandardReply.size());
 	std::cout << "Sent response to client socket FD " << client_socket << std::endl;
 	close(client_socket);
