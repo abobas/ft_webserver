@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 22:31:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 22:39:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ void Server::receiveRequest(int client_socket)
 }
 
 /*
-	When the client write socket is ready for write operations we send our response to its request
+	When the client write socket is ready for write operations we send our response
 	StandardReply with 'Hello World' is just a placeholder right now
 */
 
