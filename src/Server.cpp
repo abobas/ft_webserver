@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 20:48:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 21:10:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,21 +44,21 @@ void Server::createServerSocket()
 	int new_socket;
 	sockaddr_in new_address;
 	
-	for (int i = 0; i < SERVER_SOCKET_COUNT; i++)
+	for (int i = 0; i < SERVER_SOCKET_COUNT; i++)																// SERVER_SOCKET_COUNT is specified by server configuration
 	{
 		if ((new_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			throw strerror(errno);
 		int enable = 1;
-		if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+		if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)							// SO_REUSEADDR makes used ports (address) of server socket still available when program is killed by signal
 			throw strerror(errno);
-		new_address.sin_family = AF_INET; 
-		new_address.sin_addr.s_addr = INADDR_ANY;                              							 		// no need to convert to big-endian because all 0 bytes // need to convert to big-endian otherwise
-		new_address.sin_port = ((PORT & 0xFF) << 8);                            								// converted to big-endian
+		new_address.sin_family = AF_INET; 																		// AF_INET is a IPv4 protocol specifier
+		new_address.sin_addr.s_addr = INADDR_ANY;                              							 		// no need to convert to big-endian because INADDR_ANY macro expands to 0.0.0.0 // need to convert to big-endian otherwise
+		new_address.sin_port = ((PORT & 0xFF) << 8);                            								// converted to big-endian network notation ((PORT_VALUE & 0xFF) << 8) // PORT is specified by server configuration
 		for (uint32_t i = 0; i < sizeof(new_address.sin_zero); i++)
 				new_address.sin_zero[i] = 0;
 		if (bind(new_socket, reinterpret_cast<sockaddr*>(&new_address), sizeof(new_address)) < 0) 
 			throw strerror(errno);
-		if (listen(new_socket, SOMAXCONN) < 0) 
+		if (listen(new_socket, SOMAXCONN) < 0)																	
 				throw strerror(errno);
 		this->server_sockets.push_back(new_socket);
 		std::cout << "Opened a server socket on FD " << new_socket << " which is listening on Port " << PORT << std::endl;
@@ -113,6 +113,7 @@ void Server::initializeSets()
 int Server::getSocketRange()
 {
 	int max = 0;
+	
 	for (u_int32_t i = 0; i < this->server_sockets.size(); i++)
 	{
 		if (this->server_sockets[i] + 1 > max)
@@ -197,6 +198,7 @@ void Server::acceptClient(int server_socket)
 	int client;
 	struct sockaddr client_address;
 	unsigned int client_address_length;
+	
 	if ((client = accept(server_socket, &client_address, &client_address_length)) < 0)
 		throw strerror(errno);
 	this->client_sockets_r.push_back(client);
@@ -215,6 +217,7 @@ void Server::receiveRequest(int client_socket)
 	char buf[513];
 	std::string buffer;
 	int ret;
+	
 	while (1)
 	{
 		ret = read(client_socket, buf, 512);
@@ -234,11 +237,13 @@ void Server::receiveRequest(int client_socket)
 /*
 	When the client write socket is ready for write operations we send our response to its request
 	We either close the socket or keep it alive if specified by transforming it back to a client read socket
+	StandardReply with 'Hello World' is just a placeholder right now
 */
 
 void Server::sendResponse(int client_socket)
 {
 	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 12\nContent-Type: text/html\n\nHello World\n");
+	
 	write(client_socket, StandardReply.c_str(), StandardReply.size());
 	std::cout << "Sent response to client socket FD " << client_socket << std::endl;
 	close(client_socket);
