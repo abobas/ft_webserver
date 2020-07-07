@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 22:17:14 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 22:31:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void Server::createServerSocket()
 	Every iteration it adds all open sockets (server sockets, client read sockets and client write sockets) to their respective fd_sets (read_set and write_set)
 	The select() function checks these fd_sets for which sockets are ready for read/write operations
 	The return value of select is the amount of sockets that are ready, without specifying which ones are ready
+	It sets masks on the sockets ready in fd_set to retrieve with FD_ISSET manually
 */
 
 void Server::acceptConnections()
@@ -215,18 +216,18 @@ void Server::acceptClient(int server_socket)
 
 void Server::receiveRequest(int client_socket)
 {
-	char buf[513];
+	char buf[257];
 	std::string buffer;
 	int ret;
 	
 	while (1)
 	{
-		ret = read(client_socket, buf, 512);
+		ret = read(client_socket, buf, 256);
 		if (ret == -1)
 			throw strerror(errno);
 		buf[ret] = '\0';
 		buffer += buf;
-		if (ret < 512)
+		if (ret < 256)
 			break ;
 	}
 	this->requests.insert(std::pair<int, std::string>(client_socket, buffer));
@@ -237,17 +238,16 @@ void Server::receiveRequest(int client_socket)
 
 /*
 	When the client write socket is ready for write operations we send our response to its request
-	We either close the socket or keep it alive if specified by transforming it back to a client read socket
 	StandardReply with 'Hello World' is just a placeholder right now
 */
 
 void Server::sendResponse(int client_socket)
 {
-	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 12\nContent-Type: text/html\n\nHello World\n");
+	std::string StandardReply("HTTP/1.1 200 OK\nContent-Length: 13\nContent-Type: text/html\n\nHello Client\n");
 	
 	write(client_socket, StandardReply.c_str(), StandardReply.size());
 	std::cout << "Sent response to client socket FD " << client_socket << std::endl;
-	this->transformClientToRead(client_socket);
+	this->disconnectClient(client_socket);
 }
 
 /*
@@ -270,6 +270,16 @@ void Server::transformClientToRead(int client_socket)
 {
 	this->client_sockets_w.erase(std::find(this->client_sockets_w.begin(), this->client_sockets_w.end(), client_socket));
 	this->client_sockets_r.push_back(client_socket);
+}
+
+/*
+	Disconnects client socket after sending response
+*/
+
+void Server::disconnectClient(int client_socket)
+{
+	close(client_socket);
+	this->client_sockets_w.erase(std::find(this->client_sockets_w.begin(), this->client_sockets_w.end(), client_socket));
 }
 
 /*
