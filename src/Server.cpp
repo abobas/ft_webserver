@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 21:45:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 21:50:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Server::acceptConnections()
 {
 	struct timeval tv;
 	tv.tv_sec = 1;														// select() call times out after 1 second
-    tv.tv_usec = 0;
+	tv.tv_usec = 0;
 
 	std::cout << "Server is now accepting connections" << std::endl;
 	while (1)
