@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 21:50:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 22:17:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,8 @@ void Server::sendResponse(int client_socket)
 }
 
 /*
-	Helper function to transform a client socket from read client write client socket by erasing it from the read client vector and adding it to the write client vector
+	Helper function to transform a client socket from read client to a write client socket
+	Erasing it from the read client vector and adding it to the write client vector
 */
 
 void Server::transformClientToWrite(int client_socket)
@@ -261,7 +262,8 @@ void Server::transformClientToWrite(int client_socket)
 }
 
 /*
-	Helper function to transform a client socket from read client write client socket by erasing it from the read client vector and adding it to the write client vector
+	Helper function to transform a client socket from write client to a read client socket
+	Erasing it from the write client vector and adding it to the read client vector
 */
 
 void Server::transformClientToRead(int client_socket)
@@ -278,13 +280,10 @@ void Server::closeSockets()
 {
 	for (u_int32_t i = 0; i < this->server_sockets.size(); i++)
 		close(this->server_sockets[i]);
-	this->server_sockets.clear();
 	for (u_int32_t i = 0; i < this->client_sockets_r.size(); i++)
 		close(this->client_sockets_r[i]);
-	this->client_sockets_r.clear();
 	for (u_int32_t i = 0; i < this->client_sockets_w.size(); i++)
 		close(this->client_sockets_w[i]);
-	this->client_sockets_w.clear();
 }
 
 Server::~Server()
