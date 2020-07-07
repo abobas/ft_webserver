@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:18:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 21:10:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 21:45:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void Server::createServerSocket()
 }
 
 /*
-	This public methods starts the runtime of the server
+	This public method starts the runtime of the server
 	Every iteration it adds all open sockets (server sockets, client read sockets and client write sockets) to their respective fd_sets (read_set and write_set)
 	The select() function checks these fd_sets for which sockets are ready for read/write operations
 	The return value of select is the amount of sockets that are ready, without specifying which ones are ready
@@ -74,15 +74,19 @@ void Server::createServerSocket()
 
 void Server::acceptConnections()
 {
+	struct timeval tv;
+	tv.tv_sec = 1;														// select() call times out after 1 second
+    tv.tv_usec = 0;
+
 	std::cout << "Server is now accepting connections" << std::endl;
 	while (1)
 	{
 		this->initializeSets();
-		this->select_value = select(this->getSocketRange(), &this->read_set, &this->write_set, NULL, NULL);
-		std::cout << this->select_value << " sockets are ready for operations" << std::endl;
+		this->select_value = select(this->getSocketRange(), &this->read_set, &this->write_set, NULL, &tv);
 		if (this->select_value == -1)
 			throw strerror(errno);
-		else if (this->select_value > 0)
+		std::cout << this->select_value << " sockets are ready for operations" << std::endl;
+		if (this->select_value > 0)
 			this->handleConnections();
 	}
 }
@@ -148,7 +152,6 @@ void Server::handleConnections()
 {
 	for (u_int32_t i = 0; i < this->client_sockets_w.size(); i++)
 	{
-		std::cout << "Checking if flag is set for writing to client FD " <<  this->client_sockets_w[i] << std::endl;
 		if (FD_ISSET(this->client_sockets_w[i], &this->write_set))
 		{
 			std::cout << "Flag is set for writing to client FD " <<  this->client_sockets_w[i] << std::endl;
@@ -161,7 +164,6 @@ void Server::handleConnections()
 	}
 	for (u_int32_t i = 0; i < this->client_sockets_r.size(); i++)
 	{
-		std::cout << "Checking if flag is set for reading from client FD " <<  this->client_sockets_r[i] << std::endl;
 		if (FD_ISSET(this->client_sockets_r[i], &this->read_set))
 		{
 			std::cout << "Flag is set for reading from client FD " <<  this->client_sockets_r[i] << std::endl;
@@ -174,7 +176,6 @@ void Server::handleConnections()
 	}
 	for (u_int32_t i = 0; i < this->server_sockets.size(); i++)
 	{
-		std::cout << "Checking if flag is set for server socket FD " <<  this->server_sockets[i] << std::endl;
 		if (FD_ISSET(this->server_sockets[i], &this->read_set))
 		{
 			std::cout << "Flag is set for server FD " <<  this->server_sockets[i] << std::endl;
@@ -229,7 +230,7 @@ void Server::receiveRequest(int client_socket)
 			break ;
 	}
 	this->requests.insert(std::pair<int, std::string>(client_socket, buffer));
-	this->transformClient(client_socket);
+	this->transformClientToWrite(client_socket);
 	std::cout << "Received request from client socket FD " << client_socket << std::endl;
 	std::cout << "\nRECEIVED REQUEST >>>>>>\n" << buffer << std::endl;
 }
@@ -246,18 +247,27 @@ void Server::sendResponse(int client_socket)
 	
 	write(client_socket, StandardReply.c_str(), StandardReply.size());
 	std::cout << "Sent response to client socket FD " << client_socket << std::endl;
-	close(client_socket);
-	this->client_sockets_w.erase(std::find(this->client_sockets_w.begin(), this->client_sockets_w.end(), client_socket));
+	this->transformClientToRead(client_socket);
 }
 
 /*
 	Helper function to transform a client socket from read client write client socket by erasing it from the read client vector and adding it to the write client vector
 */
 
-void Server::transformClient(int client_socket)
+void Server::transformClientToWrite(int client_socket)
 {
 	this->client_sockets_r.erase(std::find(this->client_sockets_r.begin(), this->client_sockets_r.end(), client_socket));
 	this->client_sockets_w.push_back(client_socket);
+}
+
+/*
+	Helper function to transform a client socket from read client write client socket by erasing it from the read client vector and adding it to the write client vector
+*/
+
+void Server::transformClientToRead(int client_socket)
+{
+	this->client_sockets_w.erase(std::find(this->client_sockets_w.begin(), this->client_sockets_w.end(), client_socket));
+	this->client_sockets_r.push_back(client_socket);
 }
 
 /*

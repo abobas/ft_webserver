@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 21:23:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/07 20:52:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/07 21:18:32 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ class Server
 		int getSocketRange();
 		void handleConnections();
 		void acceptClient(int server_socket);
-		void transformClient(int client_socket);
+		void transformClientToWrite(int client_socket);
+		void transformClientToRead(int client_socket);
 		void receiveRequest(int client_socket);
 		void sendResponse(int client_socket);
 		void closeSockets();
