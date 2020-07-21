@@ -1,21 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.cpp                                           :+:    :+:            */
+/*   Server.hpp                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/21 20:49:14 by abobas        ########   odam.nl         */
+/*   Created: 2020/07/21 17:22:55 by abobas        #+#    #+#                 */
+/*   Updated: 2020/07/21 19:52:42 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#pragma once
 
-#include <iostream>
+#include "SocketHandler.hpp"
+#include "Socket.hpp"
 
-int main()
+class Server
 {
-	Server server;
-	server.runtime();
-}
+private:
+	SocketHandler socket;
+
+public:
+	Server()
+	{
+		this->socket.init();
+	}
+	~Server() {}
+	void runtime()
+	{
+		while (1)
+			this->socket.handleSockets();
+	}
+};
