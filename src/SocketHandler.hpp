@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 17:17:49 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/21 21:24:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/07/21 22:11:10 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ private:
 	void addRequest(Socket client, std::string request)
 	{
 		this->requests.insert({client, request});
+	}
+	void deleteRequest(Socket client)
+	{
+		this->requests.erase(client);
 	}
 	void fillSets()
 	{
@@ -137,10 +141,10 @@ private:
 	{
 		std::string reply("HTTP/1.1 200 OK\nContent-Length: ");
 		reply += std::to_string(this->requests[client].size());
-		reply += "\nContent-Type: text/html\n\n";
+		reply += "\nContent-Type: text/plain\n\n";
 		reply += this->requests[client];
 		write(client.getSocket(), reply.c_str(), reply.size());
-		this->requests.erase(client);
+		this->deleteRequest(client);
 		this->disconnectClient(client);
 	}
 	void transformClient(Socket client)
