@@ -1,5 +1,6 @@
 #include "Json.hpp"
 #include <cmath>
+#include <cassert>
 
 namespace Json {
     static const int max_depth = 20;

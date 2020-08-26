@@ -1,0 +1,14 @@
+{
+	"http": {
+		"servers": [
+			{
+				"name": "example.com",
+				"listen": 80
+			},
+			{
+				"name": "example2.com",
+				"listen": 443
+			}
+		]
+	}
+}

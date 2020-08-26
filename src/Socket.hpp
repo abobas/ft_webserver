@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/07/21 20:46:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/26 21:50:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,23 @@
 
 class Socket
 {
-private:
-	std::string type;
-	int socket;
 
 public:
 	Socket(const std::string type, int socket) : type(type), socket(socket) {}
-	std::string getType() const
-	{
-		return this->type;
-	}
-	void setType(const std::string new_type)
-	{
-		this->type = new_type;
-	}
-	int getSocket() const
-	{
-		return this->socket;
-	}
+
 	~Socket() {}
+
+	std::string getType() const;
+	void setType(const std::string new_type);
+	int getSocket() const;
+	void send(std::string value) const;
+
+private:
+	std::string type;
+	int socket;
 };
 
-bool operator==(const Socket &lhs, const Socket &rhs)
+inline bool operator==(const Socket &lhs, const Socket &rhs)
 {
 	if (lhs.getSocket() != rhs.getSocket())
 		return (false);
@@ -46,10 +41,9 @@ bool operator==(const Socket &lhs, const Socket &rhs)
 	return (true);
 }
 
-bool operator<(const Socket &lhs, const Socket &rhs)
+inline bool operator<(const Socket &lhs, const Socket &rhs)
 {
 	if (lhs.getSocket() < rhs.getSocket())
 		return (true);
 	return (false);
 }
-

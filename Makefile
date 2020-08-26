@@ -6,11 +6,16 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/07/21 22:27:47 by abobas        ########   odam.nl          #
+#    Updated: 2020/08/26 19:26:16 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = 			main.cpp
+SRC = 			main.cpp \
+				Socket.cpp \
+				Json.cpp \
+				HttpParser.cpp \
+				HttpRequest.cpp \
+				HttpResponse.cpp
 
 SRC_DIR	=		./src/
 
@@ -22,12 +27,12 @@ NAME = 			webserv
 
 FLAGS =			-Wall -Werror -Wextra -std=c++17
 
-CC =			clang++
+C =				gcc
 
 all: 			$(NAME)
 
 $(NAME):		$(SRC)
-				$(CC) $(FLAGS) $(SRC) -o $(NAME)
+				$(CXX) $(FLAGS) $(SRC) -o $(NAME)
 
 clean:
 				rm -rf *.o
