@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 21:50:21 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 17:28:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ class Socket
 {
 
 public:
-	Socket(const std::string type, int socket) : type(type), socket(socket) {}
-
-	~Socket() {}
-
+	Socket(const std::string type, int socket);
+	~Socket();
 	std::string getType() const;
 	void setType(const std::string new_type);
 	int getSocket() const;
