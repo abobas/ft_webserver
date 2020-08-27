@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/08/27 21:50:56 by abobas        ########   odam.nl          #
+#    Updated: 2020/08/27 22:10:28 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ SRC = 			main.cpp \
 				Socket.cpp \
 				SocketHandler.cpp \
 				ResponseHandler.cpp \
+				ResourceHandler.cpp \
 				Json.cpp \
 				HttpParser.cpp \
 				HttpRequest.cpp \

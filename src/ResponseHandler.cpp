@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 22:02:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 22:20:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ ResponseHandler::~ResponseHandler()
 
 void ResponseHandler::resolve()
 {
-    this->debug();
+    //this->debug();
     ResourceHandler resource(this->client, this->config, this->request);
     resource.resolve();
 }
