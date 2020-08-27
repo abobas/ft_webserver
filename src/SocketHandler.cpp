@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 17:27:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 22:02:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void SocketHandler::handleOperations(int select)
         {
             if (FD_ISSET(socket.getSocket(), &this->read_set))
             {
-                std::cout << "Client is ready to read" << std::endl;
                 this->readClient(socket);
                 select--;
             }
@@ -140,18 +139,7 @@ void SocketHandler::acceptClient(Socket server)
 
 void SocketHandler::readClient(Socket client)
 {
-    char buf[257];
-    std::string buffer;
-
-    while (1)
-    {
-        auto ret = read(client.getSocket(), buf, 256);
-        buf[ret] = '\0';
-        buffer += buf;
-        if (ret < 256)
-            break;
-    }
-    this->addRequest(client, buffer);
+    this->addRequest(client, client.receive());
     this->transformClient(client);
     std::cout << "Received request from client" << std::endl;
 }
@@ -159,7 +147,7 @@ void SocketHandler::readClient(Socket client)
 void SocketHandler::writeClient(Socket client)
 {
     ResponseHandler response(client, this->config, this->requests[client]);
-    response.sendResponse();
+    response.resolve();
     std::cout << "Sent response to client" << std::endl;
     this->deleteRequest(client);
     this->disconnectClient(client);

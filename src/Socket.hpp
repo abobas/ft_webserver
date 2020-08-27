@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 17:28:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 17:40:25 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ public:
 	void setType(const std::string new_type);
 	int getSocket() const;
 	void send(std::string value) const;
+	std::string receive();
 
 private:
 	std::string type;
@@ -33,15 +34,15 @@ private:
 inline bool operator==(const Socket &lhs, const Socket &rhs)
 {
 	if (lhs.getSocket() != rhs.getSocket())
-		return (false);
+		return false;
 	if (lhs.getType() != rhs.getType())
-		return (false);
-	return (true);
+		return false;
+	return true;
 }
 
 inline bool operator<(const Socket &lhs, const Socket &rhs)
 {
 	if (lhs.getSocket() < rhs.getSocket())
-		return (true);
-	return (false);
+		return true;
+	return false;
 }

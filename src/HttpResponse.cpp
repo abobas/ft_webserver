@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 22:20:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 20:03:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,7 @@ void HttpResponse::sendFile(const std::string &file_name, size_t buffer_size)
 
 	if (!if_stream.is_open())
 	{
-		this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
-		this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
-		this->sendData("Not Found");
-		this->close();
+		this->sendNotFound();
 		return;
 	}
 
@@ -109,6 +106,14 @@ void HttpResponse::sendFile(const std::string &file_name, size_t buffer_size)
 	delete[] packet_data;
 	if_stream.close();
 	close();
+}
+
+void HttpResponse::sendNotFound()
+{
+	this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
+	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
+	this->sendData("Not Found");
+	this->close();
 }
 
 void HttpResponse::sendHeader()

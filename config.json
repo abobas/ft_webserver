@@ -2,12 +2,25 @@
 	"http": {
 		"servers": [
 			{
-				"name": "example.com",
-				"listen": 80
+				"name": "localhost",
+				"listen": 80,
+				"root": "/Users/abobas/ft_webserver/html",
+				"index": ["index.html", "index.php"],
+				"auto-index": "off"
 			},
 			{
-				"name": "example2.com",
-				"listen": 443
+				"name": "localhost",
+				"listen": 443,
+				"root": "/Users/abobas/ft_webserver/html",
+				"index": ["index.php"],
+				"auto-index": "off"
+			},
+			{
+				"name": "localhost",
+				"listen": 100,
+				"root": "/Users/abobas/ft_webserver/html",
+				"index": [],
+				"autoindex": "on"
 			}
 		]
 	}

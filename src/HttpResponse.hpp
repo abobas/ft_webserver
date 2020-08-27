@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 19:12:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/27 20:02:13 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ public:
 	void sendData(char *packet_data);
 	void setStatus(int status, const std::string &message);
 	void sendFile(const std::string &file_name, size_t buffer_size = 4 * 1024);
+	void sendNotFound();
 
 private:
 	bool header_set;
