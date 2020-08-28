@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 22:17:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 17:42:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 class ResourceHandler
 {
 public:
-    ResourceHandler(Socket client, Json::Json config, HttpRequest request);
+    ResourceHandler(Socket &client, Json::Json &config, HttpRequest &request, HttpResponse &response);
     ~ResourceHandler();
     void resolve();
 
@@ -37,6 +37,7 @@ private:
     Socket client;
     Json::Json config;
     HttpRequest request;
+    HttpResponse response;
     std::string path;
     struct stat file;
     int server_index;
@@ -48,11 +49,14 @@ private:
     void handleResource();
     void handleDir();
     void handleDirListing();
-    void writeTitle(std::string &data);
-    void writeFile(std::string &data, std::string file_name);
-    void handleIndex();
-    void sendFile(std::string path);
-    void setContentTypeHeader(HttpResponse &response, std::string path);
-    void sendData(std::string data);
+    void writeDirTitle(std::string &data);
+    void writeDirFile(std::string &data, std::string &&file_name);
+    void handleDirIndex();
+    void sendFile(std::string &path);
+    void setContentTypeHeader(std::string &path);
+    void sendDataHtml(std::string &data);
     void sendNotFound();
+
+    // debugging
+    void debug();
 };

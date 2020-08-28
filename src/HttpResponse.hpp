@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 20:02:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 18:08:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,18 @@ public:
 	static const int HTTP_STATUS_NOT_IMPLEMENTED;
 	static const int HTTP_STATUS_SERVICE_UNAVAILABLE;
 
-	HttpResponse(HttpRequest *httpRequest);
+	HttpResponse(HttpRequest &httpRequest);
 	virtual ~HttpResponse();
 
 	void addHeader(const std::string &name, const std::string &value);
-	void close();
-	std::string getHeader(const std::string &name);
-	std::map<std::string, std::string> getHeaders();
-	void sendData(std::string data);
-	void sendData(char *packet_data);
 	void setStatus(int status, const std::string &message);
-	void sendFile(const std::string &file_name, size_t buffer_size = 4 * 1024);
+	void sendData(std::string &data);
+	void sendData(const char *packet_data);
+	void sendFile(const std::string &path);
 	void sendNotFound();
 
 private:
-	bool header_set;
-	HttpRequest *request;
+	HttpRequest request;
 	std::map<std::string, std::string> response_headers;
 	int status;
 	std::string status_message;

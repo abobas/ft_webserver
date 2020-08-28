@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 22:01:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 17:09:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 class ResponseHandler
 {
 public:
-    ResponseHandler(Socket client, Json::Json config, std::string request);
+    ResponseHandler(Socket &client, Json::Json &config, std::string &request);
     ~ResponseHandler();
     void resolve();
 
@@ -33,6 +33,7 @@ private:
     Socket client;
     Json::Json config;
     HttpRequest request;
+    HttpResponse response;
 
     void debug();
 };

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 17:17:49 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 17:26:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 17:01:39 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ private:
 	int getRange();
 	int selectCall();
 	void handleOperations(int select);
-	void acceptClient(Socket server);
-	void readClient(Socket client);
-	void writeClient(Socket client);
-	void transformClient(Socket client);
-	void disconnectClient(Socket client);
-	void addSocket(Socket insert);
-	void deleteSocket(Socket erase);
-	void addRequest(Socket client, std::string request);
-	void deleteRequest(Socket client);
+	void acceptClient(Socket &server);
+	void readClient(Socket &client);
+	void writeClient(Socket &client);
+	void transformClient(Socket &client);
+	void disconnectClient(Socket &client);
+	void addSocket(Socket &&insert);
+	void deleteSocket(Socket &erase);
+	void addRequest(Socket &client, std::string &&request);
+	void deleteRequest(Socket &client);
 };

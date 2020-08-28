@@ -6,15 +6,18 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 20:03:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 18:09:25 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 #include <sstream>
 #include <fstream>
 #include <utility>
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
+#include <unistd.h>
+#include <fcntl.h>
 
 const int HttpResponse::HTTP_STATUS_CONTINUE = 100;
 const int HttpResponse::HTTP_STATUS_SWITCHING_PROTOCOL = 101;
@@ -31,81 +34,49 @@ const int HttpResponse::HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
 
 static std::string lineTerminator = "\r\n";
 
-HttpResponse::HttpResponse(HttpRequest *request)
+HttpResponse::HttpResponse(HttpRequest &request): request(request)
 {
-	this->request = request;
 	this->status = 200;
-	this->header_set = false;
+	this->response_headers.clear();
 }
 
-HttpResponse::~HttpResponse() = default;
+HttpResponse::~HttpResponse()
+{
+}
 
 void HttpResponse::addHeader(const std::string &name, const std::string &value)
 {
-	if (!this->header_set)
-		this->response_headers.insert(std::pair<std::string, std::string>(name, value));
+	this->response_headers.insert(std::pair<std::string, std::string>(name, value));
 }
 
-void HttpResponse::close()
+void HttpResponse::sendData(std::string &data)
 {
-	if (!this->header_set)
-		this->sendHeader();
+	this->request.getSocket().send(data);
 }
 
-std::string HttpResponse::getHeader(const std::string &name)
+void HttpResponse::sendData(const char *packet_data)
 {
-	if (this->response_headers.find(name) == this->response_headers.end())
-		return "";
-	return this->response_headers.at(name);
+	request.getSocket().send(packet_data);
 }
 
-std::map<std::string, std::string> HttpResponse::getHeaders()
+void HttpResponse::sendFile(const std::string &path)
 {
-	return this->response_headers;
-}
+	char buf[257];
+    std::string buffer;
 
-void HttpResponse::sendData(std::string data)
-{
-
-	if (!this->header_set)
-		this->sendHeader();
-
-	this->request->getSocket().send(std::move(data));
-}
-
-void HttpResponse::sendData(char *packet_data)
-{
-
-	if (!header_set)
-		sendHeader();
-
-	request->getSocket().send(packet_data);
-}
-
-void HttpResponse::sendFile(const std::string &file_name, size_t buffer_size)
-{
-	std::ifstream if_stream;
-	if_stream.open(file_name, std::ifstream::in | std::ifstream::binary);
-
-	if (!if_stream.is_open())
-	{
-		this->sendNotFound();
-		return;
-	}
-
+	int fd = open(path.c_str(), O_RDONLY);
+    while (1)
+    {
+        int ret = read(fd, buf, 256);
+        buf[ret] = '\0';
+        buffer += buf;
+        if (ret < 256)
+            break;
+    }
+	close(fd);
 	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
 	this->sendHeader();
-
-	char *packet_data = new char[buffer_size];
-	while (!if_stream.eof())
-	{
-		if_stream.read((char *)packet_data, buffer_size);
-		this->sendData(packet_data);
-	}
-
-	delete[] packet_data;
-	if_stream.close();
-	close();
+	this->sendData(buffer);
 }
 
 void HttpResponse::sendNotFound()
@@ -113,16 +84,12 @@ void HttpResponse::sendNotFound()
 	this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
 	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
 	this->sendData("Not Found");
-	this->close();
 }
 
 void HttpResponse::sendHeader()
 {
-	if (this->header_set)
-		return;
-
 	std::ostringstream oss;
-	oss << this->request->getVersion() << " " << this->status << " " << this->status_message << lineTerminator;
+	oss << this->request.getVersion() << " " << this->status << " " << this->status_message << lineTerminator;
 
 	for (auto &header : this->response_headers)
 	{
@@ -130,15 +97,11 @@ void HttpResponse::sendHeader()
 	}
 
 	oss << lineTerminator;
-	this->header_set = true;
-	this->request->getSocket().send(oss.str());
+	this->request.getSocket().send(oss.str());
 }
 
 void HttpResponse::setStatus(const int http_status, const std::string &message)
 {
-	if (this->header_set)
-		return;
-
 	this->status = http_status;
 	this->status_message = message;
 }

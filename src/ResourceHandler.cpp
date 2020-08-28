@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 22:18:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 17:42:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 #include <dirent.h>
 #include <unistd.h>
 
-ResourceHandler::ResourceHandler(Socket client, Json::Json config, HttpRequest request)
-    : client(client), config(config), request(request)
+ResourceHandler::ResourceHandler(Socket &client, Json::Json &config, HttpRequest &request, HttpResponse &response)
+    : client(client), config(config), request(request), response(response)
 {
 }
 
@@ -42,9 +42,16 @@ void ResourceHandler::resolve()
 
 void ResourceHandler::setValues()
 {
+    this->setServerIndex();
     this->setPath();
     this->setStat();
-    this->setServerIndex();
+    this->debug();
+}
+
+void ResourceHandler::debug()
+{
+    std::cout << "PATH: " << this->path << std::endl;
+    std::cout << "SERVER_INDEX: " << this->server_index << std::endl;
 }
 
 void ResourceHandler::setServerIndex()
@@ -70,7 +77,6 @@ void ResourceHandler::setPath()
 {
     this->path = this->config["http"]["servers"][this->server_index]["root"].string_value();
     this->path.append(this->request.getPath());
-    std::cout << "TESTING PATH: " << this->path << std::endl;
 }
 
 void ResourceHandler::setStat()
@@ -82,12 +88,11 @@ void ResourceHandler::setStat()
 void ResourceHandler::handleResource()
 {
     if (S_ISDIR(this->file.st_mode))
-    {
-        std::cout << "Requested file is a directory" << std::endl;
         this->handleDir();
-    }
     else if (S_ISREG(this->file.st_mode))
         this->sendFile(this->path);
+    else
+        this->sendNotFound();
 }
 
 void ResourceHandler::handleDir()
@@ -95,7 +100,7 @@ void ResourceHandler::handleDir()
     if (this->config["http"]["servers"][this->server_index]["autoindex"].string_value() == "on")
         this->handleDirListing();
     else
-        this->handleIndex();
+        this->handleDirIndex();
 }
 
 void ResourceHandler::handleDirListing()
@@ -103,25 +108,24 @@ void ResourceHandler::handleDirListing()
     std::string data;
     DIR *dir;
 
-    std::cout << "TESTING: " << this->path << std::endl;
-    this->writeTitle(data);
+    this->writeDirTitle(data);
     dir = opendir(this->path.c_str());
     if (!dir)
-        this->sendNotFound();
+        throw "error: opendir failed in ResourceHandler::handleDirListing()";
     for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
-        this->writeFile(data, dirent->d_name);
+        this->writeDirFile(data, dirent->d_name);
     closedir(dir);
-    this->sendData(data);
+    this->sendDataHtml(data);
 }
 
-void ResourceHandler::writeTitle(std::string &data)
+void ResourceHandler::writeDirTitle(std::string &data)
 {
     data.append("<p><h1>Index of ");
     data.append(this->request.getPath());
     data.append("</h1></p>");
 }
 
-void ResourceHandler::writeFile(std::string &data, std::string file_name)
+void ResourceHandler::writeDirFile(std::string &data, std::string &&file_name)
 {
     data.append("<a href=\"");
     data.append(file_name);
@@ -130,12 +134,12 @@ void ResourceHandler::writeFile(std::string &data, std::string file_name)
     data.append("</a><br>");
 }
 
-void ResourceHandler::handleIndex()
+void ResourceHandler::handleDirIndex()
 {
     DIR *dir;
     dir = opendir(this->path.c_str());
     if (!dir)
-        throw "error: opendir failed in ResourceHandler->handleIndex()";
+        throw "error: opendir failed in ResourceHandler::handleDirIndex()";
     for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
     {
         for (size_t i = 0; i < this->config["http"]["servers"][this->server_index]["index"].array_items().size(); i++)
@@ -153,35 +157,32 @@ void ResourceHandler::handleIndex()
     this->sendNotFound();
 }
 
-void ResourceHandler::sendFile(std::string path)
+void ResourceHandler::sendFile(std::string &path)
 {
-    HttpResponse response(&this->request);
-    this->setContentTypeHeader(response, path);
-    response.sendFile(path);
+    this->setContentTypeHeader(path);
+    this->response.sendFile(path);
 }
 
-void ResourceHandler::setContentTypeHeader(HttpResponse &response, std::string path)
+void ResourceHandler::setContentTypeHeader(std::string &path)
 {
     size_t pos = path.find('.');
     if (pos == std::string::npos)
     {
-        response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
+        this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
         return;
     }
     std::string type("text/");
     type.append(path.substr(pos + 1));
-    response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, type);
+    this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, type);
 }
 
-void ResourceHandler::sendData(std::string data)
+void ResourceHandler::sendDataHtml(std::string &data)
 {
-    HttpResponse response(&this->request);
-    response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
-    response.sendData(data);
+    this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
+    this->response.sendData(data);
 }
 
 void ResourceHandler::sendNotFound()
 {
-    HttpResponse response(&this->request);
-    response.sendNotFound();
+    this->response.sendNotFound();
 }

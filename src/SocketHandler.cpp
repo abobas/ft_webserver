@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/27 22:02:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 17:01:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void SocketHandler::handleOperations(int select)
     }
 }
 
-void SocketHandler::acceptClient(Socket server)
+void SocketHandler::acceptClient(Socket &server)
 {
     int client;
     struct sockaddr client_address;
@@ -137,14 +137,14 @@ void SocketHandler::acceptClient(Socket server)
     std::cout << "Accepted client" << std::endl;
 }
 
-void SocketHandler::readClient(Socket client)
+void SocketHandler::readClient(Socket &client)
 {
     this->addRequest(client, client.receive());
     this->transformClient(client);
     std::cout << "Received request from client" << std::endl;
 }
 
-void SocketHandler::writeClient(Socket client)
+void SocketHandler::writeClient(Socket &client)
 {
     ResponseHandler response(client, this->config, this->requests[client]);
     response.resolve();
@@ -153,7 +153,7 @@ void SocketHandler::writeClient(Socket client)
     this->disconnectClient(client);
 }
 
-void SocketHandler::transformClient(Socket client)
+void SocketHandler::transformClient(Socket &client)
 {
     if (client.getType() == "read")
     {
@@ -167,29 +167,29 @@ void SocketHandler::transformClient(Socket client)
     }
 }
 
-void SocketHandler::disconnectClient(Socket client)
+void SocketHandler::disconnectClient(Socket &client)
 {
     close(client.getSocket());
     this->deleteSocket(client);
     std::cout << "Disconnected client" << std::endl;
 }
 
-void SocketHandler::addSocket(Socket insert)
+void SocketHandler::addSocket(Socket &&insert)
 {
     this->sockets.push_back(insert);
 }
 
-void SocketHandler::deleteSocket(Socket erase)
+void SocketHandler::deleteSocket(Socket &erase)
 {
     this->sockets.erase(std::find(this->sockets.begin(), this->sockets.end(), erase));
 }
 
-void SocketHandler::addRequest(Socket client, std::string request)
+void SocketHandler::addRequest(Socket &client, std::string &&request)
 {
     this->requests.insert({client, request});
 }
 
-void SocketHandler::deleteRequest(Socket client)
+void SocketHandler::deleteRequest(Socket &client)
 {
     this->requests.erase(client);
 }
