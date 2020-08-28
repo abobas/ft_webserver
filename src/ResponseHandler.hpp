@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 17:09:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 18:13:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ private:
     HttpRequest request;
     HttpResponse response;
 
+    // debugging
     void debug();
 };

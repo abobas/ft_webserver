@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 17:01:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 18:13:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,21 +134,18 @@ void SocketHandler::acceptClient(Socket &server)
 
     client = accept(server.getSocket(), &client_address, &client_address_length);
     this->addSocket(Socket("read", client));
-    std::cout << "Accepted client" << std::endl;
 }
 
 void SocketHandler::readClient(Socket &client)
 {
     this->addRequest(client, client.receive());
     this->transformClient(client);
-    std::cout << "Received request from client" << std::endl;
 }
 
 void SocketHandler::writeClient(Socket &client)
 {
     ResponseHandler response(client, this->config, this->requests[client]);
     response.resolve();
-    std::cout << "Sent response to client" << std::endl;
     this->deleteRequest(client);
     this->disconnectClient(client);
 }
@@ -171,7 +168,6 @@ void SocketHandler::disconnectClient(Socket &client)
 {
     close(client.getSocket());
     this->deleteSocket(client);
-    std::cout << "Disconnected client" << std::endl;
 }
 
 void SocketHandler::addSocket(Socket &&insert)

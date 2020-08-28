@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 18:08:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 20:23:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,20 @@ public:
 	HttpResponse(HttpRequest &httpRequest);
 	virtual ~HttpResponse();
 
-	void addHeader(const std::string &name, const std::string &value);
-	void setStatus(int status, const std::string &message);
 	void sendData(std::string &data);
-	void sendData(const char *packet_data);
-	void sendFile(const std::string &path);
+	void sendData(char const *packet_data);
+	void sendFile(std::string &path);
 	void sendNotFound();
+	void addHeader(std::string name, std::string value);
 
 private:
 	HttpRequest request;
 	std::map<std::string, std::string> response_headers;
 	int status;
 	std::string status_message;
+
+	void addContentTypeHeader(std::string &path);
 	void sendHeader();
+	void setStatus(const int http_status = HttpResponse::HTTP_STATUS_OK, const std::string message = "OK");
 };
 

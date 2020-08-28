@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 17:42:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 20:34:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#include <unistd.h>
 
-ResourceHandler::ResourceHandler(Socket &client, Json::Json &config, HttpRequest &request, HttpResponse &response)
-    : client(client), config(config), request(request), response(response)
+ResourceHandler::ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response)
+    : config(config), request(request), response(response)
 {
 }
 
@@ -45,7 +44,7 @@ void ResourceHandler::setValues()
     this->setServerIndex();
     this->setPath();
     this->setStat();
-    this->debug();
+    //this->debug();
 }
 
 void ResourceHandler::debug()
@@ -82,7 +81,7 @@ void ResourceHandler::setPath()
 void ResourceHandler::setStat()
 {
     if (stat(this->path.c_str(), &this->file) < 0)
-        this->sendNotFound();
+        this->response.sendNotFound();
 }
 
 void ResourceHandler::handleResource()
@@ -90,9 +89,15 @@ void ResourceHandler::handleResource()
     if (S_ISDIR(this->file.st_mode))
         this->handleDir();
     else if (S_ISREG(this->file.st_mode))
-        this->sendFile(this->path);
+        this->response.sendFile(this->path);
     else
-        this->sendNotFound();
+        this->response.sendNotFound();
+}
+
+void ResourceHandler::sendDataHtml(std::string &data)
+{
+    this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
+    this->response.sendData(data);
 }
 
 void ResourceHandler::handleDir()
@@ -148,41 +153,11 @@ void ResourceHandler::handleDirIndex()
             {
                 closedir(dir);
                 this->path.append(this->config["http"]["servers"][this->server_index]["index"][i].string_value());
-                this->sendFile(this->path);
+                this->response.sendFile(this->path);
                 return;
             }
         }
     }
     closedir(dir);
-    this->sendNotFound();
-}
-
-void ResourceHandler::sendFile(std::string &path)
-{
-    this->setContentTypeHeader(path);
-    this->response.sendFile(path);
-}
-
-void ResourceHandler::setContentTypeHeader(std::string &path)
-{
-    size_t pos = path.find('.');
-    if (pos == std::string::npos)
-    {
-        this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
-        return;
-    }
-    std::string type("text/");
-    type.append(path.substr(pos + 1));
-    this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, type);
-}
-
-void ResourceHandler::sendDataHtml(std::string &data)
-{
-    this->response.addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/html");
-    this->response.sendData(data);
-}
-
-void ResourceHandler::sendNotFound()
-{
     this->response.sendNotFound();
 }

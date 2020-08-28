@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 18:09:25 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 20:27:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <fstream>
 #include <utility>
 #include <unistd.h>
-#include <fcntl.h>
 
 const int HttpResponse::HTTP_STATUS_CONTINUE = 100;
 const int HttpResponse::HTTP_STATUS_SWITCHING_PROTOCOL = 101;
@@ -37,53 +36,45 @@ static std::string lineTerminator = "\r\n";
 HttpResponse::HttpResponse(HttpRequest &request): request(request)
 {
 	this->status = 200;
-	this->response_headers.clear();
 }
 
 HttpResponse::~HttpResponse()
 {
 }
 
-void HttpResponse::addHeader(const std::string &name, const std::string &value)
+void HttpResponse::addHeader(std::string name, std::string value)
 {
 	this->response_headers.insert(std::pair<std::string, std::string>(name, value));
 }
 
 void HttpResponse::sendData(std::string &data)
 {
-	this->request.getSocket().send(data);
-}
-
-void HttpResponse::sendData(const char *packet_data)
-{
-	request.getSocket().send(packet_data);
-}
-
-void HttpResponse::sendFile(const std::string &path)
-{
-	char buf[257];
-    std::string buffer;
-
-	int fd = open(path.c_str(), O_RDONLY);
-    while (1)
-    {
-        int ret = read(fd, buf, 256);
-        buf[ret] = '\0';
-        buffer += buf;
-        if (ret < 256)
-            break;
-    }
-	close(fd);
 	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
 	this->sendHeader();
-	this->sendData(buffer);
+	this->request.getSocket().sendData(data);
+}
+
+void HttpResponse::sendData(char const *packet_data)
+{
+	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
+	this->sendHeader();
+	this->request.getSocket().sendData(packet_data);
+}
+
+void HttpResponse::sendFile(std::string &path)
+{
+	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
+	this->addContentTypeHeader(path);
+	this->sendHeader();
+	this->request.getSocket().sendFile(path);
 }
 
 void HttpResponse::sendNotFound()
 {
 	this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
 	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
-	this->sendData("Not Found");
+	this->sendHeader();
+	this->request.getSocket().sendData("Not Found");
 }
 
 void HttpResponse::sendHeader()
@@ -97,11 +88,23 @@ void HttpResponse::sendHeader()
 	}
 
 	oss << lineTerminator;
-	this->request.getSocket().send(oss.str());
+	this->request.getSocket().sendData(oss.str());
 }
 
-void HttpResponse::setStatus(const int http_status, const std::string &message)
+void HttpResponse::setStatus(const int http_status, const std::string message)
 {
 	this->status = http_status;
 	this->status_message = message;
 }
+
+void HttpResponse::addContentTypeHeader(std::string &path)
+{
+    size_t pos = path.find('.');
+    if (pos == std::string::npos)
+		return ;
+    std::string type("text/");
+    type.append(path.substr(pos + 1));
+    this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, type);
+}
+
+
