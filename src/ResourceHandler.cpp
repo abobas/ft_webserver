@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:05:25 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:06:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,9 @@
 #include <iostream>
 
 ResourceHandler::ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response)
-    : config(config), request(request), response(response)
-{
-}
+    : config(config), request(request), response(response) {}
 
-ResourceHandler::~ResourceHandler()
-{
-}
+ResourceHandler::~ResourceHandler() {}
 
 void ResourceHandler::resolve()
 {

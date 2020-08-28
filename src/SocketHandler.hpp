@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 17:17:49 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 17:01:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:08:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ private:
 	fd_set read_set;
 	fd_set write_set;
 
-	void init();
+	void createServerSockets();
 	void fillSets();
 	int getRange();
 	int selectCall();

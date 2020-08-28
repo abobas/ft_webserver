@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:05:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:07:13 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,9 @@
 #include <iostream>
 
 ResponseHandler::ResponseHandler(Socket &client, Json::Json &config, std::string &request)
-    : client(client), config(config), request(client, request), response(this->request)
-{ 
-}
+    : client(client), config(config), request(client, request), response(this->request) {}
 
-ResponseHandler::~ResponseHandler()
-{
-}
+ResponseHandler::~ResponseHandler() {}
 
 void ResponseHandler::resolve()
 {
@@ -39,7 +35,7 @@ void ResponseHandler::resolve()
     {
         ResourceHandler resource(this->config, this->request, this->response);
         resource.resolve();
-        return ;
+        return;
     }
 }
 

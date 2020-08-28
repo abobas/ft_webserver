@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 18:13:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:09:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,15 @@
 #include <sys/select.h>
 #include <arpa/inet.h>
 
-SocketHandler::SocketHandler(const Json::Json &config) : config(config)
+SocketHandler::SocketHandler(const Json::Json &config)
+    : config(config)
 {
-    this->init();
+    this->createServerSockets();
 }
 
 SocketHandler::~SocketHandler() {}
 
-void SocketHandler::init()
+void SocketHandler::createServerSockets()
 {
     int new_socket;
     int enable = 1;

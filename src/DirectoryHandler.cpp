@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 20:49:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:07:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <dirent.h>
 
 DirectoryHandler::DirectoryHandler(HttpRequest &request, HttpResponse &response, Json::Json &config, int &index, std::string &path)
-    :  config(config), request(request), response(response), path(path), index(index) {}
+    : config(config), request(request), response(response), path(path), index(index) {}
 
 DirectoryHandler::~DirectoryHandler() {}
 
