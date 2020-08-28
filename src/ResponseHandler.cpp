@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 20:11:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 21:05:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@
 #include "HttpResponse.hpp"
 #include "ResourceHandler.hpp"
 #include <string>
-#include <iostream>
 #include <unistd.h>
+
+// debugging
+#include <iostream>
 
 ResponseHandler::ResponseHandler(Socket &client, Json::Json &config, std::string &request)
     : client(client), config(config), request(client, request), response(this->request)
@@ -33,10 +35,15 @@ ResponseHandler::~ResponseHandler()
 void ResponseHandler::resolve()
 {
     //this->debug();
-    ResourceHandler resource(this->config, this->request, this->response);
-    resource.resolve();
+    if (this->request.getMethod() == "GET")
+    {
+        ResourceHandler resource(this->config, this->request, this->response);
+        resource.resolve();
+        return ;
+    }
 }
 
+// debugging
 void ResponseHandler::debug()
 {
     std::map<std::string, std::string> headers = this->request.getHeaders();

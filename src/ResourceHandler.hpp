@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 20:44:51 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/28 20:54:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ private:
     void setServerIndex();
     void setPath();
     void setStat();
-    void handleResource();
 
     // debugging
     void debug();
