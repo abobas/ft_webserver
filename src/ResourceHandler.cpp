@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:06:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 19:40:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 // debugging
 #include <iostream>
 
-ResourceHandler::ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response)
-    : config(config), request(request), response(response) {}
+ResourceHandler::ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response, int index)
+    : config(config), request(request), response(response), index(index) {}
 
 ResourceHandler::~ResourceHandler() {}
 
@@ -47,7 +47,6 @@ void ResourceHandler::resolve()
 
 void ResourceHandler::setValues()
 {
-    this->setServerIndex();
     this->setPath();
     this->setStat();
     //this->debug();
@@ -58,25 +57,6 @@ void ResourceHandler::debug()
 {
     std::cout << "PATH: " << this->path << std::endl;
     std::cout << "SERVER_INDEX: " << this->index << std::endl;
-}
-
-void ResourceHandler::setServerIndex()
-{
-    size_t pos = this->request.getHeader("host").find(':');
-    if (pos == std::string::npos)
-    {
-        this->index = 0;
-        return;
-    }
-    int port = std::stoi(this->request.getHeader("host").substr(pos + 1));
-    for (size_t i = 0; i < this->config["http"]["servers"].array_items().size(); i++)
-    {
-        if (port == this->config["http"]["servers"][i]["listen"].number_value())
-        {
-            this->index = i;
-            return;
-        }
-    }
 }
 
 void ResourceHandler::setPath()

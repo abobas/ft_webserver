@@ -6,6 +6,7 @@
 				"listen": 80,
 				"root": "/Users/abobas/ft_webserver/html",
 				"index": ["index.html", "index.php"],
+				"accepted-methods": ["GET"],
 				"autoindex": "off"
 			},
 			{
@@ -13,6 +14,7 @@
 				"listen": 443,
 				"root": "/Users/abobas/ft_webserver/html",
 				"index": ["index.php"],
+				"accepted-methods": ["GET"],
 				"autoindex": "off"
 			},
 			{
@@ -20,6 +22,7 @@
 				"listen": 100,
 				"root": "/Users/abobas/ft_webserver/html",
 				"index": [],
+				"accepted-methods": ["GET"],
 				"autoindex": "on"
 			}
 		]

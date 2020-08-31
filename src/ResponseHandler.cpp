@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 18:32:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 20:03:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,40 +31,68 @@ ResponseHandler::~ResponseHandler() {}
 void ResponseHandler::resolve()
 {
     //this->debug();
-    if (this->checkHeaderHost())
+    if (this->checkHeaders())
         return;
-    if (this->request.getMethod() == "GET")
+    // SWITCH / CASE implementation needed for methods
+    if (this->method == "GET")
     {
-        ResourceHandler resource(this->config, this->request, this->response);
+        ResourceHandler resource(this->config, this->request, this->response, this->index);
         resource.resolve();
         return;
     }
 }
 
-int ResponseHandler::checkHeaderHost()
+void ResponseHandler::setServerIndex()
 {
     size_t pos = this->request.getHeader("host").find(':');
     if (pos == std::string::npos)
     {
-        if (this->config["http"]["servers"][0]["name"].string_value() != this->request.getHeader("host"))
-        {
-            this->response.sendBadRequest();
-            return 1;
-        }
-        return 0;
+        this->index = 0;
+        return;
     }
     int port = std::stoi(this->request.getHeader("host").substr(pos + 1));
-    std::string host = this->request.getHeader("host").substr(0, pos);
     for (size_t i = 0; i < this->config["http"]["servers"].array_items().size(); i++)
     {
-        if (port == this->config["http"]["servers"][i]["listen"].number_value() &&
-            host == this->config["http"]["servers"][i]["name"].string_value())
+        if (port == this->config["http"]["servers"][i]["listen"].number_value())
         {
-            return 0;
+            this->index = i;
+            return;
         }
+    }
+}
+
+int ResponseHandler::checkHeaders()
+{
+    this->setServerIndex();
+    if (this->checkHeaderHost())
+        return 1;
+    if (this->checkHeaderMethod())
+        return 1;
+    return 0;
+}
+
+int ResponseHandler::checkHeaderMethod()
+{
+    this->method = this->request.getMethod();
+    for (size_t i = 0; i < this->config["http"]["servers"][this->index]["accepted-methods"].array_items().size(); i++)
+    {
+        if (this->config["http"]["servers"][this->index]["accepted-methods"][i].string_value() == this->method)
+            return 0;
     }
     this->response.sendBadRequest();
     return 1;
+}
+
+int ResponseHandler::checkHeaderHost()
+{
+    size_t pos = this->request.getHeader("host").find(':');
+    if (this->config["http"]["servers"][this->index]["name"].string_value() !=
+        this->request.getHeader("host").substr(0, pos))
+    {
+        this->response.sendBadRequest();
+        return 1;
+    }
+    return 0;
 }
 
 // debugging

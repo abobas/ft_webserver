@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 18:32:00 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 19:22:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,12 @@ private:
     Json::Json config;
     HttpRequest request;
     HttpResponse response;
+    int index;
+    std::string method;
 
+    void setServerIndex();
+    int checkHeaders();
+    int checkHeaderMethod();
     int checkHeaderHost();
     
     // debugging

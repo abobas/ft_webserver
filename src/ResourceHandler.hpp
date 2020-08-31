@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 20:54:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 19:40:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 class ResourceHandler
 {
 public:
-    ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response);
+    ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response, int index);
     ~ResourceHandler();
     void resolve();
 
@@ -39,7 +39,6 @@ private:
     int index;
 
     void setValues();
-    void setServerIndex();
     void setPath();
     void setStat();
 
