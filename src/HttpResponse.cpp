@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 20:27:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 17:57:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ void HttpResponse::sendData(std::string &data)
 	this->request.getSocket().sendData(data);
 }
 
-void HttpResponse::sendData(char const *packet_data)
+void HttpResponse::sendData(char const *data)
 {
 	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
 	this->sendHeader();
-	this->request.getSocket().sendData(packet_data);
+	this->request.getSocket().sendData(data);
 }
 
 void HttpResponse::sendFile(std::string &path)
@@ -74,7 +74,15 @@ void HttpResponse::sendNotFound()
 	this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
 	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
 	this->sendHeader();
-	this->request.getSocket().sendData("Not Found");
+	this->request.getSocket().sendData("404: Not found");
+}
+
+void HttpResponse::sendBadRequest()
+{
+	this->setStatus(HttpResponse::HTTP_STATUS_BAD_REQUEST, "Bad Request");
+	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
+	this->sendHeader();
+	this->request.getSocket().sendData("400: Bad request");
 }
 
 void HttpResponse::sendHeader()

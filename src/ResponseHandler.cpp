@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:07:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 18:32:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,40 @@ ResponseHandler::~ResponseHandler() {}
 void ResponseHandler::resolve()
 {
     //this->debug();
+    if (this->checkHeaderHost())
+        return;
     if (this->request.getMethod() == "GET")
     {
         ResourceHandler resource(this->config, this->request, this->response);
         resource.resolve();
         return;
     }
+}
+
+int ResponseHandler::checkHeaderHost()
+{
+    size_t pos = this->request.getHeader("host").find(':');
+    if (pos == std::string::npos)
+    {
+        if (this->config["http"]["servers"][0]["name"].string_value() != this->request.getHeader("host"))
+        {
+            this->response.sendBadRequest();
+            return 1;
+        }
+        return 0;
+    }
+    int port = std::stoi(this->request.getHeader("host").substr(pos + 1));
+    std::string host = this->request.getHeader("host").substr(0, pos);
+    for (size_t i = 0; i < this->config["http"]["servers"].array_items().size(); i++)
+    {
+        if (port == this->config["http"]["servers"][i]["listen"].number_value() &&
+            host == this->config["http"]["servers"][i]["name"].string_value())
+        {
+            return 0;
+        }
+    }
+    this->response.sendBadRequest();
+    return 1;
 }
 
 // debugging

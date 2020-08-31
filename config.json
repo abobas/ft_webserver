@@ -6,14 +6,14 @@
 				"listen": 80,
 				"root": "/Users/abobas/ft_webserver/html",
 				"index": ["index.html", "index.php"],
-				"auto-index": "off"
+				"autoindex": "off"
 			},
 			{
 				"name": "localhost",
 				"listen": 443,
 				"root": "/Users/abobas/ft_webserver/html",
 				"index": ["index.php"],
-				"auto-index": "off"
+				"autoindex": "off"
 			},
 			{
 				"name": "localhost",
