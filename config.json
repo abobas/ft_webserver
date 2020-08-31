@@ -1,29 +1,48 @@
 {
 	"http": {
-		"servers": [
+		"servers": 
+		[
 			{
 				"name": "localhost",
 				"listen": 80,
-				"root": "/Users/abobas/ft_webserver/html",
-				"index": ["index.html", "index.php"],
-				"accepted-methods": ["GET"],
-				"autoindex": "off"
+				"locations": 
+				[
+					{       
+						"location": "/",
+						"root": "/Users/abobas/ft_webserver/html",
+						"index": ["index.html", "index.php"],
+						"accepted-methods": ["GET"],
+						"autoindex": "off"
+					},
+					{
+						"location": "/assets",
+						"root": "/Users/abobas/ft_webserver/html/assets",
+						"index": ["index.html", "index.php"],
+						"accepted-methods": ["GET"],
+						"autoindex": "off"
+					}
+				]
 			},
 			{
 				"name": "localhost",
 				"listen": 443,
-				"root": "/Users/abobas/ft_webserver/html",
-				"index": ["index.php"],
-				"accepted-methods": ["GET"],
-				"autoindex": "off"
-			},
-			{
-				"name": "localhost",
-				"listen": 100,
-				"root": "/Users/abobas/ft_webserver/html",
-				"index": [],
-				"accepted-methods": ["GET"],
-				"autoindex": "on"
+				"locations": 
+				[
+					{       
+						"location": "/",
+						"root": "/Users/abobas/ft_webserver/html",
+						"index": ["index.html", "index.php"],
+						"accepted-methods": ["GET"],
+						"autoindex": "on"
+					},
+					{
+						"location": "/assets",
+						"root": "/Users/abobas/ft_webserver/html/assets",
+						"index": ["index.html", "index.php"],
+						"accepted-methods": ["GET"],
+						"autoindex": "on"
+					}
+				]
 			}
 		]
 	}

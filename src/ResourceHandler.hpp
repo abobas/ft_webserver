@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 19:40:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 22:15:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,22 @@
 class ResourceHandler
 {
 public:
-    ResourceHandler(Json::Json &config, HttpRequest &request, HttpResponse &response, int index);
+    ResourceHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &server, Json::Json::object &location, std::string &url);
     ~ResourceHandler();
     void resolve();
 
 private:
-    Json::Json config;
     HttpRequest request;
     HttpResponse response;
+    std::string url;
     std::string path;
     struct stat file;
-    int index;
+    Json::Json::object server;
+    Json::Json::object location;
 
-    void setValues();
+    int setValues();
     void setPath();
-    void setStat();
+    int setStat();
 
     // debugging
     void debug();

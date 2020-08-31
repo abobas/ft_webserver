@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:07:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 22:38:08 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-DirectoryHandler::DirectoryHandler(HttpRequest &request, HttpResponse &response, Json::Json &config, int &index, std::string &path)
-    : config(config), request(request), response(response), path(path), index(index) {}
+DirectoryHandler::DirectoryHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &location, std::string &path)
+    : request(request), response(response), location(location), path(path) {}
 
 DirectoryHandler::~DirectoryHandler() {}
 
 void DirectoryHandler::resolve()
 {
-    if (this->config["http"]["servers"][this->index]["autoindex"].string_value() == "on")
+    if (this->location["autoindex"].string_value() == "on")
         this->handleDirListing();
     else
         this->handleDirIndex();
@@ -58,6 +58,7 @@ void DirectoryHandler::writeDirTitle(std::string &data)
     data.append("</h1></p>");
 }
 
+// SHITTY REDIRECTION WITHIN DIRECTORIES // WORK IN PROGRESS
 void DirectoryHandler::writeDirFile(std::string &data, std::string &&file)
 {
     data.append("<a href=\"");
@@ -75,12 +76,12 @@ void DirectoryHandler::handleDirIndex()
         throw "error: opendir failed in DirectoryHandler::handleDirIndex()";
     for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
     {
-        for (size_t i = 0; i < this->config["http"]["servers"][this->index]["index"].array_items().size(); i++)
+        for (size_t i = 0; i < this->location["index"].array_items().size(); i++)
         {
-            if (this->config["http"]["servers"][this->index]["index"][i].string_value() == dirent->d_name)
+            if (this->location["index"][i].string_value() == dirent->d_name)
             {
                 closedir(dir);
-                this->path.append(this->config["http"]["servers"][this->index]["index"][i].string_value());
+                this->path.append(this->location["index"][i].string_value());
                 this->response.sendFile(this->path);
                 return;
             }

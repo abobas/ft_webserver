@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 19:22:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/08/31 21:52:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,13 @@ private:
     Json::Json config;
     HttpRequest request;
     HttpResponse response;
-    int index;
+    Json::Json::object server;
+    Json::Json::object location;
     std::string method;
+    std::string path;
 
-    void setServerIndex();
+    void setServer();
+    int setServerLocation();
     int checkHeaders();
     int checkHeaderMethod();
     int checkHeaderHost();
