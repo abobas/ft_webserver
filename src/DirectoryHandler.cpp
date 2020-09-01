@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 17:34:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 18:00:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,10 @@ void DirectoryHandler::handleDirListing()
     if (!dir)
         throw "error: opendir failed in DirectoryHandler::handleDirListing()";
     for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
-        this->writeDirFile(data, dirent->d_name);
+    {
+        if (std::string(dirent->d_name) != "." && std::string(dirent->d_name) != "..")
+            this->writeDirFile(data, dirent->d_name);
+    }
     closedir(dir);
     this->response.sendData(data);
 }
