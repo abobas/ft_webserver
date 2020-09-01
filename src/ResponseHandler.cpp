@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 19:13:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 21:52:16 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int ResponseHandler::checkHeaderMethod()
         if (accepted == this->method)
             return 0;
     }
-    this->response.sendBadRequest();
+    this->response.sendBadMethod();
     return 1;
 }
 
