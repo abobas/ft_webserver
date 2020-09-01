@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 21:12:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 18:14:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,13 @@ void SocketHandler::createServerSockets()
     int new_socket;
     int enable = 1;
     sockaddr_in new_address;
-
-    for (size_t i = 0; i < config["http"]["servers"].array_items().size(); i++)
+    for (auto server : this->config["http"]["servers"].array_items())
     {
         new_socket = socket(AF_INET, SOCK_STREAM, 0);
         setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int));
         new_address.sin_family = AF_INET;
         new_address.sin_addr.s_addr = INADDR_ANY;
-        new_address.sin_port = htons(config["http"]["servers"][i]["listen"].number_value());
+        new_address.sin_port = htons(server["listen"].number_value());
         for (size_t i = 0; i < sizeof(new_address.sin_zero); i++)
             new_address.sin_zero[i] = 0;
         bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address));

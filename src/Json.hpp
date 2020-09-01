@@ -1,5 +1,16 @@
-#ifndef _JSON
-#define _JSON 1
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   Json.hpp                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: abobas <abobas@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2020/09/01 18:04:48 by abobas        #+#    #+#                 */
+/*   Updated: 2020/09/01 18:14:52 by abobas        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#pragma once
 
 #include <string>
 #include <vector>
@@ -125,5 +136,3 @@ namespace Json {
         virtual ~JsonValue() = default;
     };
 }
-
-#endif
