@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 22:37:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 17:53:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void ResponseHandler::resolve()
     //this->debug();
     if (this->checkHeaders())
         return;
-    // SWITCH / CASE implementation needed for methods
     if (this->method == "GET")
     {
         ResourceHandler resource(this->request, this->response, this->server, this->location, this->path);
@@ -63,28 +62,26 @@ void ResponseHandler::setServer()
         return;
     }
     int port = std::stoi(this->request.getHeader("host").substr(pos + 1));
-    for (size_t i = 0; i < this->config["http"]["servers"].array_items().size(); i++)
+    for (auto server :this->config["http"]["servers"].array_items())
     {
-        if (port == this->config["http"]["servers"][i]["listen"].number_value())
+        if (server["listen"].number_value() == port)
         {
-            this->server = this->config["http"]["servers"][i].object_items();
+            this->server = server.object_items();
             return;
         }
     }
 }
 
-// SUPER SHIT CODE // WORK TO DO
 int ResponseHandler::setServerLocation()
 {
     this->path = this->request.getPath();
     size_t max = 0;
-    for (size_t i = 0; i < this->server["locations"].array_items().size(); i++)
+    for (auto location : this->server["locations"].object_items())
     {
-        std::string location = this->server["locations"][i]["location"].string_value();
-        if (this->path.substr(0, location.size()) == location && location.size() > max)
+        if (this->path.substr(0, location.first.size()) == location.first && location.first.size() > max)
         {
-            this->location = this->server["locations"][i].object_items();
-            max = location.size();
+            this->location = location.second.object_items();
+            max = location.first.size();
         }
     }
     if (max == 0)
@@ -93,20 +90,17 @@ int ResponseHandler::setServerLocation()
         return 1;
     }
     if (max == 1)
-        max -= 1;
-    std::cout << "MAX: " << max << std::endl;
-    std::cout << "PATH: " << this->path << std::endl;
+        return 0;
     this->path = this->path.substr(max, std::string::npos);
-    std::cout << "PATH: " << this->path << std::endl;
     return 0;
 }
 
 int ResponseHandler::checkHeaderMethod()
 {
     this->method = this->request.getMethod();
-    for (size_t i = 0; i < this->location["accepted-methods"].array_items().size(); i++)
+    for (auto accepted : this->location["accepted-methods"].array_items())
     {
-        if (this->location["accepted-methods"][i].string_value() == this->method)
+        if (accepted == this->method)
             return 0;
     }
     this->response.sendBadRequest();
@@ -130,15 +124,12 @@ void ResponseHandler::debug()
     std::cout << "HOST: " << this->request.getHeader("host") << std::endl;
     std::cout << "METHOD: " << this->request.getMethod() << std::endl;
     std::cout << "PATH: " << this->request.getPath() << std::endl;
-    /*
+    std::cout << "BODY: " << this->request.getBody() << std::endl;
+    
     std::map<std::string, std::string> headers = this->request.getHeaders();
     std::map<std::string, std::string> queries = this->request.getQuery();
     for (auto header : headers)
         std::cout << "HEADER: " << header.first << ": " << header.second << std::endl;
     for (auto query : queries)
         std::cout << "QUERY: " << query.first << ": " << query.second << std::endl;
-    std::cout << "METHOD: " << this->request.getMethod() << std::endl;
-    std::cout << "BODY: " << this->request.getBody() << std::endl;
-    std::cout << "PATH: " << this->request.getPath() << std::endl;
-    */
 }

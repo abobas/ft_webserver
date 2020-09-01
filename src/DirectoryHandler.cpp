@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 22:38:08 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 17:34:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+//debugging
+#include <iostream>
+
 DirectoryHandler::DirectoryHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &location, std::string &path)
     : request(request), response(response), location(location), path(path) {}
 
@@ -30,6 +33,8 @@ DirectoryHandler::~DirectoryHandler() {}
 
 void DirectoryHandler::resolve()
 {
+    if (this->path[this->path.size() - 1] != '/')
+        this->path.append("/");
     if (this->location["autoindex"].string_value() == "on")
         this->handleDirListing();
     else
@@ -58,10 +63,12 @@ void DirectoryHandler::writeDirTitle(std::string &data)
     data.append("</h1></p>");
 }
 
-// SHITTY REDIRECTION WITHIN DIRECTORIES // WORK IN PROGRESS
 void DirectoryHandler::writeDirFile(std::string &data, std::string &&file)
 {
     data.append("<a href=\"");
+    data.append(this->request.getPath());
+    if (data[data.size() - 1] != '/')
+        data.append("/");
     data.append(file);
     data.append("\">");
     data.append(file);
@@ -76,12 +83,12 @@ void DirectoryHandler::handleDirIndex()
         throw "error: opendir failed in DirectoryHandler::handleDirIndex()";
     for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
     {
-        for (size_t i = 0; i < this->location["index"].array_items().size(); i++)
+        for (auto index_file : this->location["index"].array_items())
         {
-            if (this->location["index"][i].string_value() == dirent->d_name)
+            if (index_file.string_value() == dirent->d_name)
             {
                 closedir(dir);
-                this->path.append(this->location["index"][i].string_value());
+                this->path.append(index_file.string_value());
                 this->response.sendFile(this->path);
                 return;
             }
@@ -89,4 +96,10 @@ void DirectoryHandler::handleDirIndex()
     }
     closedir(dir);
     this->response.sendNotFound();
+}
+
+//debugging
+void DirectoryHandler::debug()
+{
+    std::cout << "PATH: " << this->path << std::endl;
 }

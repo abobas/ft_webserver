@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 22:17:10 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 17:17:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void ResourceHandler::resolve()
 int ResourceHandler::setValues()
 {
     this->setPath();
-    this->debug();
     if (this->setStat())
         return 1;
     return 0;
@@ -75,4 +74,5 @@ int ResourceHandler::setStat()
 void ResourceHandler::debug()
 {
     std::cout << "PATH: " << this->path << std::endl;
+    std::cout << "URL:" << this->url << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 21:44:09 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 17:26:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,7 @@ private:
     void writeDirTitle(std::string &data);
     void writeDirFile(std::string &data, std::string &&file);
     void handleDirIndex();
+
+    //debugging
+    void debug();
 };
