@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 18:04:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 19:13:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void ResponseHandler::resolve()
     //this->debug();
     if (this->checkHeaders())
         return;
-    if (this->method == "GET")
+    if (this->method == "GET" || this->method == "HEAD")
     {
         ResourceHandler resource(this->request, this->response, this->server, this->location, this->path);
         resource.resolve();

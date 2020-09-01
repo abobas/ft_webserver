@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 18:00:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 21:27:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void DirectoryHandler::handleDirListing()
     dir = opendir(this->path.c_str());
     if (!dir)
         throw "error: opendir failed in DirectoryHandler::handleDirListing()";
-    for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
+    for (struct dirent *dirent = readdir(dir); dirent != NULL; dirent = readdir(dir))
     {
         if (std::string(dirent->d_name) != "." && std::string(dirent->d_name) != "..")
             this->writeDirFile(data, dirent->d_name);
@@ -84,7 +84,7 @@ void DirectoryHandler::handleDirIndex()
     dir = opendir(this->path.c_str());
     if (!dir)
         throw "error: opendir failed in DirectoryHandler::handleDirIndex()";
-    for (struct dirent *dirent = readdir(dir); dirent != 0; dirent = readdir(dir))
+    for (struct dirent *dirent = readdir(dir); dirent != NULL; dirent = readdir(dir))
     {
         for (auto index_file : this->location["index"].array_items())
         {

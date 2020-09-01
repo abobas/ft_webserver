@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 18:31:56 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 21:19:09 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,14 @@ private:
 	int status;
 	std::string status_message;
 
+	void sendHeaders();
+	
+	void addStatusHeader(const int http_status = HttpResponse::HTTP_STATUS_OK, const std::string message = "OK");
+	void addFileHeaders(std::string &path);
 	void addContentTypeHeader(std::string &path);
-	void sendHeader();
-	void setStatus(const int http_status = HttpResponse::HTTP_STATUS_OK, const std::string message = "OK");
+	void addContentLengthHeader(std::string &path);
+	void addLastModifiedHeader(std::string &path);
+	void addDateHeader();
+	void addServerHeader();
 };
 

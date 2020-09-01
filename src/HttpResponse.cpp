@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 17:57:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/01 21:39:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #include <fstream>
 #include <utility>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <time.h>
 
 const int HttpResponse::HTTP_STATUS_CONTINUE = 100;
 const int HttpResponse::HTTP_STATUS_SWITCHING_PROTOCOL = 101;
@@ -35,7 +38,6 @@ static std::string lineTerminator = "\r\n";
 
 HttpResponse::HttpResponse(HttpRequest &request): request(request)
 {
-	this->status = 200;
 }
 
 HttpResponse::~HttpResponse()
@@ -49,43 +51,43 @@ void HttpResponse::addHeader(std::string name, std::string value)
 
 void HttpResponse::sendData(std::string &data)
 {
-	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
-	this->sendHeader();
+	this->addStatusHeader(200, "OK");
+	this->sendHeaders();
 	this->request.getSocket().sendData(data);
 }
 
 void HttpResponse::sendData(char const *data)
 {
-	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
-	this->sendHeader();
+	this->addStatusHeader(200, "OK");
+	this->sendHeaders();
 	this->request.getSocket().sendData(data);
 }
 
 void HttpResponse::sendFile(std::string &path)
 {
-	this->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
-	this->addContentTypeHeader(path);
-	this->sendHeader();
+	this->addStatusHeader(200, "OK");
+	this->addFileHeaders(path);
+	this->sendHeaders();
 	this->request.getSocket().sendFile(path);
 }
 
 void HttpResponse::sendNotFound()
 {
-	this->setStatus(HttpResponse::HTTP_STATUS_NOT_FOUND, "Not Found");
-	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
-	this->sendHeader();
+	this->addStatusHeader(404, "Not Found");
+	this->addHeader("content-type", "text/plain");
+	this->sendHeaders();
 	this->request.getSocket().sendData("404: Not found");
 }
 
 void HttpResponse::sendBadRequest()
 {
-	this->setStatus(HttpResponse::HTTP_STATUS_BAD_REQUEST, "Bad Request");
-	this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
-	this->sendHeader();
+	this->addStatusHeader(400, "Bad Request");
+	this->addHeader("content-type", "text/plain");
+	this->sendHeaders();
 	this->request.getSocket().sendData("400: Bad request");
 }
 
-void HttpResponse::sendHeader()
+void HttpResponse::sendHeaders()
 {
 	std::ostringstream oss;
 	oss << this->request.getVersion() << " " << this->status << " " << this->status_message << lineTerminator;
@@ -99,12 +101,30 @@ void HttpResponse::sendHeader()
 	this->request.getSocket().sendData(oss.str());
 }
 
-void HttpResponse::setStatus(const int http_status, const std::string message)
+void HttpResponse::addStatusHeader(const int http_status, const std::string message)
 {
 	this->status = http_status;
 	this->status_message = message;
 }
 
+void HttpResponse::addFileHeaders(std::string &path)
+{
+	this->addContentLengthHeader(path);
+	this->addContentTypeHeader(path);
+	this->addDateHeader();
+	this->addLastModifiedHeader(path);
+	this->addServerHeader();
+}
+
+void HttpResponse::addContentLengthHeader(std::string &path)
+{
+	struct stat file;
+	if (stat(path.c_str(), &file) < 0)
+		return ;
+	this->addHeader("content-length", std::to_string(file.st_size));
+}
+
+// add support for more types than HTML (application/octet-stream etc)
 void HttpResponse::addContentTypeHeader(std::string &path)
 {
     size_t pos = path.find('.');
@@ -112,7 +132,38 @@ void HttpResponse::addContentTypeHeader(std::string &path)
 		return ;
     std::string type("text/");
     type.append(path.substr(pos + 1));
-    this->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, type);
+    this->addHeader("content-type", type);
+}
+
+void HttpResponse::addDateHeader()
+{
+	struct timeval time;
+	struct tm *tmp;
+	char string[128];
+	
+	if (gettimeofday(&time, NULL))
+		throw "error: gettimeofday failed in HttpResponse::addDateHeader()";
+	tmp = localtime(&time.tv_sec);
+	strftime(string, 128, "%a, %d %b %C%y %T %Z", tmp);
+	this->addHeader("date", string);
+}
+
+void HttpResponse::addLastModifiedHeader(std::string &path)
+{
+	struct stat file;
+	struct tm *tmp;
+	char string[128];
+	
+	if (stat(path.c_str(), &file) < 0)
+		throw "error: stat failed in HttpResponse::addLastModifiedHeader()";
+	tmp = localtime(&file.st_mtime);
+	strftime(string, 128, "%a, %d %b %C%y %T %Z", tmp);
+	this->addHeader("last-modified", string);
+}
+
+void HttpResponse::addServerHeader()
+{
+	this->addHeader("server", "BroServer/8.1.4");
 }
 
 
