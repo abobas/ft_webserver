@@ -17,6 +17,10 @@
                     "index": ["index.html", "index.php"],
                     "accepted-methods": ["GET"],
                     "autoindex": "off"
+                },
+
+                "/proxy": {
+                    "proxy_pass": "85.159.98.33"
                 }
             }
         },

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 21:52:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/06 20:19:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ HttpResponse::~HttpResponse()
 void HttpResponse::addHeader(std::string name, std::string value)
 {
 	this->response_headers.insert(std::pair<std::string, std::string>(name, value));
+}
+
+void HttpResponse::sendDataRaw(std::string &data)
+{
+	this->request.getSocket().sendData(data);
 }
 
 void HttpResponse::sendData(std::string &data)
@@ -94,6 +99,23 @@ void HttpResponse::sendBadMethod()
 	this->sendHeaders();
 	this->request.getSocket().sendData("405: Method not allowed");
 }
+
+void HttpResponse::sendInternalError()
+{
+	this->addStatusHeader(500, "Internal Server Error");
+	this->addHeader("content-type", "text/plain");
+	this->sendHeaders();
+	this->request.getSocket().sendData("500: Internal server error");
+}
+
+void HttpResponse::sendServiceUnavailable()
+{
+	this->addStatusHeader(503, "Service Unavailable");
+	this->addHeader("content-type", "text/plain");
+	this->sendHeaders();
+	this->request.getSocket().sendData("503: Service unavailable");
+}
+
 
 void HttpResponse::sendHeaders()
 {

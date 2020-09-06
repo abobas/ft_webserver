@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 21:51:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/06 20:19:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,15 @@ public:
 	HttpResponse(HttpRequest &httpRequest);
 	virtual ~HttpResponse();
 
+	void sendDataRaw(std::string &data);
 	void sendData(std::string &data);
 	void sendData(char const *data);
 	void sendFile(std::string &path);
 	void sendNotFound();
 	void sendBadRequest();
 	void sendBadMethod();
+	void sendInternalError();
+	void sendServiceUnavailable();
 	void addHeader(std::string name, std::string value);
 
 private:

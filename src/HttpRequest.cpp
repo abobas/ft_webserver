@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 19:27:25 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/06 22:10:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ HttpRequest::HttpRequest(Socket client, std::string request)
 }
 
 HttpRequest::~HttpRequest() = default;
-
 
 /**
  * @brief Get the body of the HttpRequest.

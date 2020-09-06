@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 21:52:16 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/06 21:29:19 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "ResourceHandler.hpp"
+#include "ProxyHandler.hpp"
 #include <string>
 #include <unistd.h>
 
@@ -92,6 +93,12 @@ int ResponseHandler::setServerLocation()
     if (max == 1)
         return 0;
     this->path = this->path.substr(max, std::string::npos);
+    if (this->location["proxy_pass"].string_value().size() != 0)
+    {
+        ProxyHandler proxy(this->request, this->response, this->location, this->path);
+        proxy.resolve();
+        return 1;
+    }
     return 0;
 }
 
