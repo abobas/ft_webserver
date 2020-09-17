@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/09/06 18:39:34 by abobas        ########   odam.nl          #
+#    Updated: 2020/09/17 19:31:28 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRC = 			main.cpp \
 				ResourceHandler.cpp \
 				DirectoryHandler.cpp \
 				ProxyHandler.cpp \
+				CgiHandler.cpp \
 				Json.cpp \
 				HttpParser.cpp \
 				HttpRequest.cpp \

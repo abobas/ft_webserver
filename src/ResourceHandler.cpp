@@ -6,15 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 17:17:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 20:52:35 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ResourceHandler.hpp"
 #include "DirectoryHandler.hpp"
+#include "CgiHandler.hpp"
 #include "Socket.hpp"
 #include "Json.hpp"
-#include "ResponseHandler.hpp"
 #include "HttpParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
@@ -25,14 +25,14 @@
 // debugging
 #include <iostream>
 
-ResourceHandler::ResourceHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &server, Json::Json::object &location, std::string &url)
-    : request(request), response(response), url(url), server(server), location(location)  {}
+ResourceHandler::ResourceHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &server, Json::Json::object &location, std::string &path)
+    : request(request), response(response), path(path), server(server), location(location) {}
 
 ResourceHandler::~ResourceHandler() {}
 
 void ResourceHandler::resolve()
 {
-    if (this->setValues())
+    if (this->setStat())
         return ;
     if (S_ISDIR(this->file.st_mode))
     {
@@ -44,20 +44,6 @@ void ResourceHandler::resolve()
         this->response.sendFile(this->path);
     else
         this->response.sendNotFound();
-}
-
-int ResourceHandler::setValues()
-{
-    this->setPath();
-    if (this->setStat())
-        return 1;
-    return 0;
-}
-
-void ResourceHandler::setPath()
-{
-    this->path = this->location["root"].string_value();
-    this->path.append(this->url);
 }
 
 int ResourceHandler::setStat()
@@ -74,5 +60,4 @@ int ResourceHandler::setStat()
 void ResourceHandler::debug()
 {
     std::cout << "PATH: " << this->path << std::endl;
-    std::cout << "URL:" << this->url << std::endl;
 }

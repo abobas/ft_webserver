@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 20:19:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 21:36:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,13 @@ void HttpResponse::addHeader(std::string name, std::string value)
 
 void HttpResponse::sendDataRaw(std::string &data)
 {
+	this->request.getSocket().sendData(data);
+}
+
+void HttpResponse::sendData(std::string &&data)
+{
+	this->addStatusHeader(200, "OK");
+	this->sendHeaders();
 	this->request.getSocket().sendData(data);
 }
 

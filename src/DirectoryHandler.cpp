@@ -6,15 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/01 21:27:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 19:30:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "DirectoryHandler.hpp"
-#include "ResourceHandler.hpp"
-#include "Socket.hpp"
 #include "Json.hpp"
-#include "ResponseHandler.hpp"
 #include "HttpParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"

@@ -1,5 +1,26 @@
 {
 	"http": {
+        "cgi": {
+            "cgi_params": {
+                "AUTH_TYPE": "no-auth",
+                "CONTENT_LENGTH": "$content_length",
+                "CONTENT_TYPE": "$content_type",
+                "GATEWAY_INTERFACE": "CGI/1.1",
+                "PATH_INFO": "$path_info",
+                "PATH_TRANSLATED": "$path_translated",
+                "QUERY_STRING": "$query_string",
+                "REMOTE_ADDR": "$remote_addr",
+                "REMOTE_IDENT": "$remote_ident",
+                "REMOTE_USER": "$remote_user",
+                "REQUEST_METHOD": "$request_method",
+                "REQUEST_URI": "$request_uri",
+                "SCRIPT_NAME": "$fastcgi_script_name",
+                "SERVER_NAME": "$server_name",
+                "SERVER_PORT": "$server_port",
+                "SERVER_PROTOCOL": "HTTP/1.1",
+                "SERVER_SOFTWARE": "BroServer/10.10.1"
+            }
+        },
 		"servers": [
         {
             "name": "localhost",

@@ -6,11 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 21:29:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 20:50:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ResponseHandler.hpp"
+#include "CgiHandler.hpp"
 #include "Socket.hpp"
 #include "Json.hpp"
 #include "HttpParser.hpp"
@@ -47,11 +48,23 @@ int ResponseHandler::checkHeaders()
     this->setServer();
     if (this->setServerLocation())
         return 1;
+    this->setPath();
+    if (this->checkProxy())
+        return 1;
+    if (this->checkCgi())
+        return 1;
     if (this->checkHeaderHost())
         return 1;
     if (this->checkHeaderMethod())
         return 1;
     return 0;
+}
+
+void ResponseHandler::setPath()
+{
+    std::string tmp(this->path);
+    this->path = this->location["root"].string_value();
+    this->path.append(tmp);
 }
 
 void ResponseHandler::setServer()
@@ -63,7 +76,7 @@ void ResponseHandler::setServer()
         return;
     }
     int port = std::stoi(this->request.getHeader("host").substr(pos + 1));
-    for (auto server :this->config["http"]["servers"].array_items())
+    for (auto server : this->config["http"]["servers"].array_items())
     {
         if (server["listen"].number_value() == port)
         {
@@ -93,10 +106,27 @@ int ResponseHandler::setServerLocation()
     if (max == 1)
         return 0;
     this->path = this->path.substr(max, std::string::npos);
+    return 0;
+}
+
+int ResponseHandler::checkProxy()
+{
     if (this->location["proxy_pass"].string_value().size() != 0)
     {
         ProxyHandler proxy(this->request, this->response, this->location, this->path);
         proxy.resolve();
+        return 1;
+    }
+    return 0;
+}
+
+// testing, hebben Harms regex implementatie nodig hiervoor
+int ResponseHandler::checkCgi()
+{
+    if (this->path.substr(this->path.size() - 4) == std::string(".php"))
+    {
+        CgiHandler cgi(this->request, this->response, this->config, this->path);
+        cgi.resolve();
         return 1;
     }
     return 0;

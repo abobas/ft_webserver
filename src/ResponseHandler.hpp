@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/31 21:52:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 20:49:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ private:
     std::string path;
 
     void setServer();
+    void setPath();
     int setServerLocation();
+    int checkProxy();
+    int checkCgi();
     int checkHeaders();
     int checkHeaderMethod();
     int checkHeaderHost();

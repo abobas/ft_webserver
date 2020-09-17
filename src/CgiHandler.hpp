@@ -1,45 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ResourceHandler.hpp                                :+:    :+:            */
+/*   CgiHandler.hpp                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/17 20:51:54 by abobas        ########   odam.nl         */
+/*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
+/*   Updated: 2020/09/17 21:57:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Socket.hpp"
 #include "Json.hpp"
-#include "ResponseHandler.hpp"
 #include "HttpParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include <string>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <vector>
 
-class ResourceHandler
+class CgiHandler
 {
 public:
-    ResourceHandler(HttpRequest &request, HttpResponse &response, Json::Json::object &server, Json::Json::object &location, std::string &path);
-    ~ResourceHandler();
+    CgiHandler(HttpRequest &request, HttpResponse &response, Json::Json &config, std::string &path);
+    ~CgiHandler();
+
     void resolve();
 
 private:
     HttpRequest request;
     HttpResponse response;
+    Json::Json config;
     std::string path;
-    struct stat file;
-    Json::Json::object server;
-    Json::Json::object location;
+    std::vector<char *> env;
+    int restore_fd;
+    int pipe_fd[2];
 
-    int setStat();
-
-    // debugging
+    std::string convertOutput();
+    void redirectOutput();
+    void resetOutput();
+    void executeScript();
+    void child();
+    void waiting();
+    void setEnvironment();
+    void freeShit();
+    
+    //debugging
     void debug();
 };

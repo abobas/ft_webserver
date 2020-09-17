@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 20:19:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/09/17 21:36:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ public:
 
 	void sendDataRaw(std::string &data);
 	void sendData(std::string &data);
+	void sendData(std::string &&data);
 	void sendData(char const *data);
 	void sendFile(std::string &path);
 	void sendNotFound();
