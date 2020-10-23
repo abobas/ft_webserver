@@ -2,7 +2,7 @@
 	"http": {
         "cgi": {
             "cgi_params": {
-                "AUTH_TYPE": "no-auth",
+                "AUTH_TYPE": "$auth_type",
                 "CONTENT_LENGTH": "$content_length",
                 "CONTENT_TYPE": "$content_type",
                 "GATEWAY_INTERFACE": "CGI/1.1",
@@ -14,7 +14,7 @@
                 "REMOTE_USER": "$remote_user",
                 "REQUEST_METHOD": "$request_method",
                 "REQUEST_URI": "$request_uri",
-                "SCRIPT_NAME": "$fastcgi_script_name",
+                "SCRIPT_NAME": "$script_name",
                 "SERVER_NAME": "$server_name",
                 "SERVER_PORT": "$server_port",
                 "SERVER_PROTOCOL": "HTTP/1.1",

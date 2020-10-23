@@ -6,45 +6,41 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 22:09:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/19 21:55:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-#include <unistd.h>
-#include <string>
-#include <unistd.h>
-#include <fcntl.h>
 
-Socket::Socket() {}
+Socket::Socket() 
+{
+}
 
 Socket::Socket(const std::string type, int socket) : type(type), socket(socket) {}
 
-Socket::~Socket() {}
-
 std::string Socket::getType() const
 {
-    return this->type;
+    return type;
 }
 
 void Socket::setType(const std::string new_type)
 {
-    this->type = new_type;
+    type = new_type;
 }
 
 int Socket::getSocket() const
 {
-    return this->socket;
+    return socket;
 }
 
 void Socket::sendData(std::string &value)
 {
-    write(this->socket, value.c_str(), value.size());
+    write(socket, value.c_str(), value.size());
 }
 
 void Socket::sendData(std::string &&value)
 {
-    write(this->socket, value.c_str(), value.size());
+    write(socket, value.c_str(), value.size());
 }
 
 void Socket::sendFile(std::string &path)
@@ -62,7 +58,7 @@ void Socket::sendFile(std::string &path)
             break;
     }
 	close(fd);
-    this->sendData(buffer);
+    sendData(buffer);
 }
 
 std::string Socket::receive()
@@ -72,7 +68,7 @@ std::string Socket::receive()
 
     while (1)
     {
-        int ret = read(this->socket, buf, 256);
+        int ret = read(socket, buf, 256);
         buf[ret] = '\0';
         buffer += buf;
         if (ret < 256)

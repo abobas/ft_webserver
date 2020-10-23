@@ -6,17 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 22:10:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 17:31:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sstream>
-#include <vector>
-#include <algorithm>
-#include "HttpResponse.hpp"
 #include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
-#include "Utils.hpp"
 
 #define STATE_NAME 0
 #define STATE_VALUE 1
@@ -46,7 +40,7 @@ const char HttpRequest::HTTP_METHOD_PUT[] = "PUT";
 HttpRequest::HttpRequest(Socket client, std::string request)
 	: client(client)
 {
-	this->parser.parse(request);
+	parser.parse(request);
 	std::vector<std::string> parts = utils::split(getHeader(HTTP_HEADER_CONNECTION), ',');
 }
 
@@ -57,7 +51,7 @@ HttpRequest::~HttpRequest() = default;
  */
 std::string HttpRequest::getBody()
 {
-	return this->parser.getBody();
+	return parser.getBody();
 }
 
 /**
@@ -67,22 +61,22 @@ std::string HttpRequest::getBody()
  */
 std::string HttpRequest::getHeader(const std::string &name)
 {
-	return this->parser.getHeader(name);
+	return parser.getHeader(name);
 }
 
 std::map<std::string, std::string> HttpRequest::getHeaders()
 {
-	return this->parser.getHeaders();
+	return parser.getHeaders();
 }
 
 std::string HttpRequest::getMethod()
 {
-	return this->parser.getMethod();
+	return parser.getMethod();
 }
 
 std::string HttpRequest::getPath()
 {
-	return this->parser.getURL();
+	return parser.getURL();
 }
 
 /**
@@ -94,7 +88,7 @@ std::string HttpRequest::getPath()
 std::map<std::string, std::string> HttpRequest::getQuery()
 {
 	std::map<std::string, std::string> query_map;
-	std::string possible_query_string = this->getPath();
+	std::string possible_query_string = getPath();
 	int qindex = possible_query_string.find_first_of('?');
 
 	if (qindex < 0)
@@ -147,12 +141,12 @@ std::map<std::string, std::string> HttpRequest::getQuery()
  */
 Socket HttpRequest::getSocket()
 {
-	return this->client;
+	return client;
 }
 
 std::string HttpRequest::getVersion()
 {
-	return this->parser.getVersion();
+	return parser.getVersion();
 }
 
 /**
@@ -164,7 +158,7 @@ std::string HttpRequest::getVersion()
  */
 std::vector<std::string> HttpRequest::pathSplit()
 {
-	std::istringstream stream(this->getPath());
+	std::istringstream stream(getPath());
 	std::vector<std::string> ret;
 	std::string pathPart;
 

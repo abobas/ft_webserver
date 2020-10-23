@@ -6,15 +6,22 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/17 21:36:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 18:20:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "HttpRequest.hpp"
 #include <string>
 #include <map>
-#include "HttpRequest.hpp"
+#include <sstream>
+#include <fstream>
+#include <utility>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <time.h>
 
 class HttpResponse
 {
@@ -33,7 +40,6 @@ public:
 	static const int HTTP_STATUS_SERVICE_UNAVAILABLE;
 
 	HttpResponse(HttpRequest &httpRequest);
-	virtual ~HttpResponse();
 
 	void sendDataRaw(std::string &data);
 	void sendData(std::string &data);
@@ -44,6 +50,7 @@ public:
 	void sendBadRequest();
 	void sendBadMethod();
 	void sendInternalError();
+	void sendInternalError(std::string error);
 	void sendServiceUnavailable();
 	void addHeader(std::string name, std::string value);
 

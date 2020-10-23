@@ -6,15 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:37 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 19:26:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 17:54:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "../Socket.hpp"
+#include "Utils.hpp"
 #include <map>
 #include <string>
-#include "Socket.hpp"
+#include <cstdlib>
 
 class HttpParser {
 public:

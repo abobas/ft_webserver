@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/26 19:28:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 17:55:39 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <sstream>
+#include <vector>
 
 namespace utils {
 	/**

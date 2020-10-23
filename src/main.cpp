@@ -6,18 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/08/28 17:37:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 17:37:32 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "Json.hpp"
-
+#include "json/Json.hpp"
 #include <iostream>
 #include <fstream>
 #include <fcntl.h>
 
-void validate(int ac, char **av)
+void validateInput(int ac, char **av)
 {
 	if (ac != 3)
 		throw("Error: wrong argument\nUsage: ./webserv --config config.json");
@@ -29,24 +28,26 @@ void validate(int ac, char **av)
 	close(fd);
 }
 
+Json getConfig(char *config)
+{
+	std::ifstream file(config);
+	std::string raw((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	std::string error;
+	Json parsed = Json::parse(raw, error);
+	if (parsed == nullptr)
+		throw(error.c_str());
+	return (parsed);
+}
+
 int main(int ac, char **av)
 {
 	try
 	{
-		validate(ac, av);
-		std::string error;
-		std::ifstream file(av[2]);
-		std::string raw((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		Json::Json config = Json::Json::parse(raw, error);
-		Server server(config);
-		server.runtime();
+		validateInput(ac, av);
+		Server server(getConfig(av[2]));
 	}
 	catch (const char *e)
 	{
 		std::cerr << e << std::endl;
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
 	}
 }

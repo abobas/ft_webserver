@@ -6,17 +6,21 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:48:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/09/06 22:10:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 17:54:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "HttpParser.hpp"
+#include "Utils.hpp"
+#include "../Socket.hpp"
+#include <sstream>
+#include <vector>
+#include <algorithm>
 #include <string>
 #include <map>
-#include <vector>
-#include "HttpParser.hpp"
-#include "Socket.hpp"
+
 
 class HttpRequest
 {
