@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/19 22:47:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 20:00:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ private:
 	std::string host;
 
 	void setPath();
+	void clearAddress();
 	int createProxySocket();
 	int setProxyAddress();
 	int connectProxySocket();

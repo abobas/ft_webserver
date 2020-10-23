@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:47:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 20:03:09 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void Server::createServerSockets()
     int new_socket;
     int enable = 1;
     sockaddr_in new_address;
+    memset(&new_address, 0, sizeof(new_address));
     
     for (auto server : config["http"]["servers"].array_items())
     {
@@ -32,8 +33,6 @@ void Server::createServerSockets()
         new_address.sin_family = AF_INET;
         new_address.sin_addr.s_addr = INADDR_ANY;
         new_address.sin_port = htons(server["listen"].number_value());
-        for (size_t i = 0; i < sizeof(new_address.sin_zero); i++)
-            new_address.sin_zero[i] = 0;
         bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address));
         listen(new_socket, SOMAXCONN);
         addSocket(Socket("server", new_socket));

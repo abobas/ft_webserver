@@ -6,20 +6,18 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 19:20:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 20:03:40 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Proxy.hpp"
-
-// debugging
-#include <iostream>
 
 static std::string lineTerminator = "\r\n";
 
 Proxy::Proxy(Data &data) : data(data)
 {
 	setPath();
+	clearAddress();
 	if (createProxySocket())
 		return;
 	if (setProxyAddress())
@@ -35,6 +33,11 @@ void Proxy::setPath()
 {
 	if (data.path.size() == 0)
 		data.path = "/";
+}
+
+void Proxy::clearAddress()
+{
+	memset(&proxy_addr, 0, sizeof(proxy_addr));
 }
 
 int Proxy::createProxySocket()
@@ -59,12 +62,8 @@ int Proxy::setProxyAddress()
 	if (pos == std::string::npos)
 		proxy_addr.sin_port = htons(80);
 	else
-	{
 		proxy_addr.sin_port = htons(std::stoi(data.location["proxy_pass"].string_value().substr(pos + 1, std::string::npos)));
-		std::cout << "proxy_addr.sin_port = " << std::stoi(data.location["proxy_pass"].string_value().substr(pos + 1, std::string::npos)) << std::endl;
-	}
 	host = data.location["proxy_pass"].string_value().substr(0, pos);
-	std::cout << "HOST: " << host << std::endl;
 	if ((inet_pton(AF_INET, host.c_str(), &proxy_addr.sin_addr)) <= 0)
 	{
 		data.response.sendInternalError("inet_pton() failed");
@@ -75,8 +74,8 @@ int Proxy::setProxyAddress()
 
 int Proxy::connectProxySocket()
 {
-	if (connect(proxy_socket.getSocket(), reinterpret_cast<sockaddr *>(&this->proxy_addr), sizeof(proxy_addr)) < 0)
-	{
+    if (connect(this->proxy_socket.getSocket(), reinterpret_cast<sockaddr *>(&this->proxy_addr), sizeof(this->proxy_addr)) < 0) 
+    {
 		data.response.sendInternalError("connect() failed");
 		return 1;
 	}
@@ -89,8 +88,6 @@ void Proxy::sendProxyRequest()
 	std::map<std::string, std::string> headers = data.request.getHeaders();
 
 	oss << data.request.getMethod() << ' ' << data.path << ' ' << data.request.getVersion() << lineTerminator;
-	oss << "host: " << host << lineTerminator;
-	oss << "connection: close" << lineTerminator;
 	for (auto header : headers)
 	{
 		if (header.first != "host" && header.first != "connection")
