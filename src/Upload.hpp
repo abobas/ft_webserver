@@ -1,36 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Response.hpp                                       :+:    :+:            */
+/*   Upload.hpp                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 21:21:32 by abobas        ########   odam.nl         */
+/*   Created: 2020/10/23 20:28:07 by abobas        #+#    #+#                 */
+/*   Updated: 2020/10/23 20:58:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Data.hpp"
-#include "File.hpp"
-#include "Cgi.hpp"
-#include "Proxy.hpp"
-#include "Upload.hpp"
+#include <stdio.h>
+#include <fstream>
 
-class Response
+class Upload
 {
 public:
-	Response(Data &&data);
+    Upload(Data &data);
 
 private:
-	Data data;
-	
-	bool isValid();
-	bool isProxy();
-	bool isCgi();
-	bool isFile();
-	bool isUpload();
-	bool validMethod();
-	bool validHost();
+    Data data;
+    bool modified = false;
+
+    void addFile();
+    int deleteFile();
+    bool existingFile();
 };

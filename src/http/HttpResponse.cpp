@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 18:21:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 20:59:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,22 @@ void HttpResponse::sendFile(std::string &path)
 	addFileHeaders(path);
 	sendHeaders();
 	request.getSocket().sendFile(path);
+}
+
+void HttpResponse::sendCreated(std::string &&path)
+{
+	addStatusHeader(201, "Created");
+	addHeader("content-location", path);
+	sendHeaders();
+	request.getSocket().sendData("201: Created");
+}
+
+void HttpResponse::sendModified(std::string &&path)
+{
+	addStatusHeader(200, "OK");
+	addHeader("content-location", path);
+	sendHeaders();
+	request.getSocket().sendData("200: OK (Modified)");
 }
 
 void HttpResponse::sendNotFound()

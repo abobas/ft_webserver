@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 18:31:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 21:25:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Response::Response(Data &&data) : data(data)
 	else if (isFile())
 		File file(data);
 	else if (isUpload())
-		return ;
+		Upload upload(data);
 }
 
 bool Response::isValid()
@@ -88,7 +88,7 @@ bool Response::isFile()
 
 bool Response::isUpload()
 {
-	if (data.method == "POST")
+	if (data.method == "PUT")
 		return true;
 	return false;
 }

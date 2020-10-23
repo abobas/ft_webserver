@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:16:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/23 20:37:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Directory
 {
 public:
 	Directory(Data &data);
-	
+
 private:
 	Data data;
 
