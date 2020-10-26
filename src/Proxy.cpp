@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 20:33:10 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 21:23:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Proxy::Proxy(Data &data) : data(data)
 {
 	setPath();
 	if (createProxySocket())
-		return;
+		return ;
 	std::cout << "proxy created" << std::endl;
 	if (setProxyAddress())
 		return;
@@ -27,11 +27,17 @@ Proxy::Proxy(Data &data) : data(data)
 	if (connectProxySocket())
 		return;
 	std::cout << "proxy connected" << std::endl;
+	success = true;
 
 	// sendProxyRequest();
 	// std::cout << "proxy request sent" << std::endl;
 	// receiveProxyResponse();
 	// sendProxyResponse();
+}
+
+bool Proxy::proxySuccess()
+{
+	return success;
 }
 
 void Proxy::setPath()
@@ -49,6 +55,12 @@ int Proxy::createProxySocket()
 	if (new_socket == -1)
 	{
 		perror("socket()");
+		data.response.sendInternalError();
+		return 1;
+	}
+	if (fcntl(new_socket, F_SETFL, O_NONBLOCK) < 0)
+	{
+		perror("fcntl()");
 		data.response.sendInternalError();
 		return 1;
 	}

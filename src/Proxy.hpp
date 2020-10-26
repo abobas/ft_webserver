@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 19:18:50 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 21:22:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,14 @@ public:
 	Proxy(Data &data);
 	Socket getProxySocket();
 	std::string getProxyRequest();
+	bool proxySuccess();
 
 private:
 	Data data;
 	Socket proxy_socket;
 	struct sockaddr_in proxy_addr;
 	std::string host;
+	bool success = false;
 
 	void setPath();
 	void clearAddress();

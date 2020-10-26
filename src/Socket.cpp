@@ -6,11 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 20:49:17 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 22:15:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+#include <iostream>
 
 Socket::Socket()
 {
@@ -35,14 +36,18 @@ int Socket::getSocket() const
 
 void Socket::sendData(std::string &value)
 {
+	std::cout << "entered socket write()" << std::endl;
 	if (write(socket, value.c_str(), value.size()) < 0)
 		perror("write()");
+	std::cout << "finished socket write()" << std::endl;
 }
 
 void Socket::sendData(std::string &&value)
 {
+	std::cout << "entered socket write()" << std::endl;
 	if (write(socket, value.c_str(), value.size()) < 0)
 		perror("write()");
+	std::cout << "finished socket write()" << std::endl;
 }
 
 void Socket::sendFile(std::string &path)

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:47:11 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 19:18:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 21:53:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ Data::Data(Socket &client, Json &config, std::string &request)
 {
 	setServer();
 	setLocation();
+	if (not_found)
+		return ;
 	setPath();
 	setMethod();
 }

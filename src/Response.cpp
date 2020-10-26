@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 19:38:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 22:11:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,57 @@
 
 Response::Response(Data &&data) : data(data)
 {
-	std::cout << "data.method: " << data.method << std::endl;
+	std::cout << "request.method+path: " << data.method << " " << data.request.getPath() << std::endl;
 	std::cout << "data.path: " << data.path << std::endl;
-	std::cout << "request.path: " << data.request.getPath() << std::endl;
-	std::cout << "---entering response control flow---" << std::endl
-			  << std::endl;
+	
 	if (!isValid())
+	{
+		std::cout << "not valid" << std::endl;
 		return;
+	}
+	std::cout << "finished validation" << std::endl;
 	if (isProxy())
 	{
+		std::cout << "entering proxy" << std::endl;
 		Proxy proxy(this->data);
-		this->proxy = proxy.getProxySocket();
-		proxy_request = proxy.getProxyRequest();
+		if (proxy.proxySuccess())
+		{
+			this->proxy = proxy.getProxySocket();
+			proxy_request = proxy.getProxyRequest();
+			proxy_true = true;
+			std::cout << "finished proxy" << std::endl;
+		}
 	}
 	else if (isCgi())
+	{
+		std::cout << "entering cgi" << std::endl;
 		Cgi cgi(this->data);
+		std::cout << "finished cgi" << std::endl;
+	}
 	else if (isFile())
+	{
+		std::cout << "entering file" << std::endl;
 		File file(this->data);
+		std::cout << "finished file" << std::endl;
+	}
 	else if (isUpload())
+	{
+		std::cout << "entering upload" << std::endl;
 		Upload upload(this->data);
+		std::cout << "finished upload" << std::endl;
+	}
+	else
+	{
+		std::cout << "service unavailable" << std::endl;
+		data.response.sendServiceUnavailable();
+	}
 }
 
 bool Response::isValid()
 {
+	std::cout << "entering validation" << std::endl;
+	if (data.method.empty())
+		return false;
 	if (data.not_found)
 	{
 		data.response.sendNotFound();
@@ -48,11 +76,18 @@ bool Response::isValid()
 		data.response.sendBadMethod();
 		return false;
 	}
+	std::cout << "finished method validation" << std::endl;
 	return true;
 }
 
 bool Response::validMethod()
 {
+	std::cout << "entering method validation" << std::endl;
+	if (data.location["accepted-methods"].array_items().empty())
+	{
+		std::cout << "Config error: add accepted-methods in server location" << std::endl;
+		return false;
+	}
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
 		if (accepted.string_value() == data.method)
@@ -98,4 +133,9 @@ Socket Response::getProxySocket()
 std::string Response::getProxyRequest()
 {
 	return proxy_request;
+}
+
+bool Response::isProxySet()
+{
+	return proxy_true;
 }
