@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 20:59:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:19:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,19 @@
 class HttpResponse
 {
 public:
-	static const int HTTP_STATUS_CONTINUE;
-	static const int HTTP_STATUS_SWITCHING_PROTOCOL;
-	static const int HTTP_STATUS_OK;
-	static const int HTTP_STATUS_MOVED_PERMANENTLY;
-	static const int HTTP_STATUS_BAD_REQUEST;
-	static const int HTTP_STATUS_UNAUTHORIZED;
-	static const int HTTP_STATUS_FORBIDDEN;
-	static const int HTTP_STATUS_NOT_FOUND;
-	static const int HTTP_STATUS_METHOD_NOT_ALLOWED;
-	static const int HTTP_STATUS_INTERNAL_SERVER_ERROR;
-	static const int HTTP_STATUS_NOT_IMPLEMENTED;
-	static const int HTTP_STATUS_SERVICE_UNAVAILABLE;
+	static const int CONTINUE;
+	static const int SWITCHING_PROTOCOL;
+	static const int OK;
+	static const int CREATED;
+	static const int MOVED_PERMANENTLY;
+	static const int BAD_REQUEST;
+	static const int UNAUTHORIZED;
+	static const int FORBIDDEN;
+	static const int NOT_FOUND;
+	static const int METHOD_NOT_ALLOWED;
+	static const int INTERNAL_SERVER_ERROR;
+	static const int NOT_IMPLEMENTED;
+	static const int SERVICE_UNAVAILABLE;
 
 	HttpResponse(HttpRequest &httpRequest);
 
@@ -45,6 +46,7 @@ public:
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
 	void sendData(char const *data);
+	void sendFileHeaders(std::string &path);
 	void sendFile(std::string &path);
 	void sendCreated(std::string &&path);
 	void sendModified(std::string &&path);
@@ -52,7 +54,6 @@ public:
 	void sendBadRequest();
 	void sendBadMethod();
 	void sendInternalError();
-	void sendInternalError(std::string error);
 	void sendServiceUnavailable();
 	void addHeader(std::string name, std::string value);
 
@@ -63,8 +64,7 @@ private:
 	std::string status_message;
 
 	void sendHeaders();
-	
-	void addStatusHeader(const int http_status = HttpResponse::HTTP_STATUS_OK, const std::string message = "OK");
+	void addStatusHeader(const int http_status = HttpResponse::OK, const std::string message = "OK");
 	void addFileHeaders(std::string &path);
 	void addContentTypeHeader(std::string &path);
 	void addContentLengthHeader(std::string &path);
@@ -72,4 +72,3 @@ private:
 	void addDateHeader();
 	void addServerHeader();
 };
-

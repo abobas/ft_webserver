@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:55:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 01:18:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 namespace utils {
 	/**

@@ -1,0 +1,15 @@
+### SIGPIPE ERROR ###
+- als connection closed is en geschreven wordt in socket -> SIGPIPE
+- SIGPIPE signal killed process
+- signal catcher
+
+### PROXY ###
+- write operation failed (sigpipe)
+
+### CHUNKED TRANSFER ###
+- aan socket.receive() en socket.send() chunked logic toevoegen
+
+### CGI ###
+- environment meta variables toewijzen
+
+

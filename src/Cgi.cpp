@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/19 22:50:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 01:55:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,19 @@ void Cgi::redirectOutput()
 {
 	if (pipe(pipe_fd) < 0)
 	{
+		perror("pipe()");
 		data.response.sendInternalError();
 		return ;
 	}
 	if ((restore_fd = dup(1)) < 0)
 	{
+		perror("dup()");
 		data.response.sendInternalError();
 		return ;
 	}
 	if ((dup2(pipe_fd[1], 1)) < 0)
 	{
+		perror("dup2()");
 		data.response.sendInternalError();
 		return ;
 	}
@@ -56,9 +59,12 @@ void Cgi::resetOutput()
 {
 	if ((dup2(restore_fd, 1)) < 0)
 	{
+		perror("dup2()");
 		data.response.sendInternalError();
 		return ;
 	}
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
 }
 
 void Cgi::executeScript()
@@ -68,6 +74,7 @@ void Cgi::executeScript()
 	pid = fork();
 	if (pid < 0)
 	{
+		perror("fork()");
 		data.response.sendInternalError();
 		return ;
 	}
@@ -85,6 +92,7 @@ void Cgi::childProcess()
 
 	if (execve(data.path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
 	{
+		perror("execve()");
 		data.response.sendInternalError();
 		return ;
 	}

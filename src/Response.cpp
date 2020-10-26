@@ -6,89 +6,133 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 21:25:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 00:12:32 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
+#include <iostream>
 
 Response::Response(Data &&data) : data(data)
 {
+	std::cout << "request.method+path: " << data.method << " " << data.request.getPath() << std::endl;
+	std::cout << "data.path: " << data.path << std::endl;
+	std::cout << "entering validation" << std::endl;
 	if (!isValid())
-		return ;
+	{
+		std::cout << "response data not valid, aborting" << std::endl;
+		return;
+	}
+	std::cout << "finished validation" << std::endl;
 	if (isProxy())
-		Proxy proxy(data);
+	{
+		std::cout << "entering proxy" << std::endl;
+		Proxy proxy(this->data);
+		if (proxy.proxySuccess())
+		{
+			this->proxy = proxy.getProxySocket();
+			proxy_request = proxy.getProxyRequest();
+			proxy_true = true;
+			std::cout << "finished proxy" << std::endl;
+		}
+	}
 	else if (isCgi())
-		Cgi cgi(data);
+	{
+		std::cout << "entering cgi" << std::endl;
+		Cgi cgi(this->data);
+		std::cout << "finished cgi" << std::endl;
+	}
 	else if (isFile())
-		File file(data);
+	{
+		std::cout << "entering file" << std::endl;
+		File file(this->data);
+		std::cout << "finished file" << std::endl;
+	}
 	else if (isUpload())
-		Upload upload(data);
+	{
+		std::cout << "entering upload" << std::endl;
+		Upload upload(this->data);
+		std::cout << "finished upload" << std::endl;
+	}
+	else
+	{
+		std::cout << "service unavailable" << std::endl;
+		data.response.sendServiceUnavailable();
+	}
 }
 
 bool Response::isValid()
 {
-    if (data.not_found)
-    {
-        data.response.sendNotFound();
-        return false;
-    }
-    // if (!validMethod())
-    // {
-    // 	data.response.sendBadMethod();
-    //     return false;
-    // }
-    // if (!validHost())
-    // {
-    //     data.response.sendBadRequest();
-    //     return false;
-    // }
-    return true;
+	if (data.method.empty())
+		return false;
+	if (data.not_found)
+	{
+		data.response.sendNotFound();
+		return false;
+	}
+	if (!validMethod())
+	{
+		data.response.sendBadMethod();
+		return false;
+	}
+	return true;
 }
 
 bool Response::validMethod()
 {
+	if (data.location["accepted-methods"].array_items().empty())
+		return false;
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
-		if (accepted == data.method)
+		if (accepted.string_value() == data.method)
 			return true;
 	}
-    return false;
-}
-
-bool Response::validHost()
-{
-	size_t pos = data.request.getHeader("host").find(':');
-	if (data.server["name"].string_value() != data.request.getHeader("host").substr(0, pos))
-        return false;
-    return true;
+	return false;
 }
 
 bool Response::isProxy()
 {
 	if (data.location["proxy_pass"].string_value().size() != 0)
-        return true;
+		return true;
 	return false;
 }
 
 bool Response::isCgi()
 {
-	if (data.path.substr(data.path.size() - 4) == std::string(".php") ||
-	data.path.substr(data.path.size() - 3) == std::string(".pl"))
-        return true;
+	for (auto file : data.config["http"]["cgi"]["files"].array_items())
+	{
+		std::string format = file.string_value();
+		if (data.path.substr(data.path.size() - format.size()) == format)
+			return true;
+	}
 	return false;
 }
 
 bool Response::isFile()
 {
-	if (data.method == "GET")
+	if (data.method == "GET" || data.method == "HEAD")
 		return true;
 	return false;
 }
 
 bool Response::isUpload()
 {
-	if (data.method == "PUT")
+	if (data.method == "PUT" || data.method == "POST")
 		return true;
 	return false;
+}
+
+Socket Response::getProxySocket()
+{
+	return proxy;
+}
+
+std::string Response::getProxyRequest()
+{
+	return proxy_request;
+}
+
+bool Response::isProxySet()
+{
+	return proxy_true;
 }
