@@ -1,0 +1,54 @@
+{
+	"http": {
+		"servers": [
+        {
+            "name": "localhost",
+            "listen": 80,
+            "locations": {
+                "/": {
+                    "root": "/home/abobas/webserver/data",
+                    "index": "index.html",
+                    "accepted-methods": ["GET"],
+                    "autoindex": false
+                },
+
+                "/proxy": {
+                    "proxy_pass": "85.159.98.33"
+                }
+            }
+        },
+		{
+            "name": "localhost",
+            "listen": 443,
+            "locations": {
+                "/": {
+                    "root": "/home/abobas/webserver/data",
+                    "index": "index.html",
+                    "autoindex": true
+                }
+            }
+        }
+	],
+		"cgi": {
+			"cgi_params": {
+				"AUTH_TYPE": "$auth_type",
+				"CONTENT_LENGTH": "$content_length",
+				"CONTENT_TYPE": "$content_type",
+				"GATEWAY_INTERFACE": "CGI/1.1",
+				"PATH_INFO": "$path_info",
+				"PATH_TRANSLATED": "$path_translated",
+				"QUERY_STRING": "$query_string",
+				"REMOTE_ADDR": "$remote_addr",
+				"REMOTE_IDENT": "$remote_ident",
+				"REMOTE_USER": "$remote_user",
+				"REQUEST_METHOD": "$request_method",
+				"REQUEST_URI": "$request_uri",
+				"SCRIPT_NAME": "$script_name",
+				"SERVER_NAME": "$server_name",
+				"SERVER_PORT": "$server_port",
+				"SERVER_PROTOCOL": "HTTP/1.1",
+				"SERVER_SOFTWARE": "BroServer/10.10.1"
+			}
+		}
+	}
+}

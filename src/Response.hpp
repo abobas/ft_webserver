@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 21:21:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 01:41:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,4 @@ private:
 	bool isFile();
 	bool isUpload();
 	bool validMethod();
-	bool validHost();
 };

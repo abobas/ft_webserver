@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:37:07 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 01:19:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <map>
 #include <algorithm>
 #include <string>
+#include <cstring>
 #include <sys/time.h>
 #include <unistd.h>
 #include <sys/socket.h>

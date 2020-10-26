@@ -1,0 +1,15 @@
+### CHUNKED TRANSFER ###
+- aan socket.receive() en socket.send() chunked logic toevoegen
+
+### CGI ###
+- nettere manier om accepted cgi extensies toe te voegen
+
+### PROXY ###
+- terug naar server voor select()
+- requests, sockets meesturen naar data
+- in server proxy_read + proxy_write toevoegen (socket_type)
+- bool toevoegen aan response
+- client_write -> proxy_write -> proxy_read -> waiting_client_write
+- client en proxy socket aan elkaar chainen
+- proxy en response chainen
+- proxy en request chainen

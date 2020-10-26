@@ -6,16 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 21:25:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 01:46:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
+#include <iostream>
 
 Response::Response(Data &&data) : data(data)
 {
 	if (!isValid())
-		return ;
+		return;
 	if (isProxy())
 		Proxy proxy(data);
 	else if (isCgi())
@@ -28,67 +29,56 @@ Response::Response(Data &&data) : data(data)
 
 bool Response::isValid()
 {
-    if (data.not_found)
-    {
-        data.response.sendNotFound();
-        return false;
-    }
-    // if (!validMethod())
-    // {
-    // 	data.response.sendBadMethod();
-    //     return false;
-    // }
-    // if (!validHost())
-    // {
-    //     data.response.sendBadRequest();
-    //     return false;
-    // }
-    return true;
+	if (data.not_found)
+	{
+		data.response.sendNotFound();
+		return false;
+	}
+	if (!validMethod())
+	{
+		data.response.sendBadMethod();
+		return false;
+	}
+	return true;
 }
 
 bool Response::validMethod()
 {
+	if (data.location["accepted-methods"].array_items().empty())
+		return true;
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
 		if (accepted == data.method)
 			return true;
 	}
-    return false;
-}
-
-bool Response::validHost()
-{
-	size_t pos = data.request.getHeader("host").find(':');
-	if (data.server["name"].string_value() != data.request.getHeader("host").substr(0, pos))
-        return false;
-    return true;
+	return false;
 }
 
 bool Response::isProxy()
 {
 	if (data.location["proxy_pass"].string_value().size() != 0)
-        return true;
+		return true;
 	return false;
 }
 
 bool Response::isCgi()
 {
 	if (data.path.substr(data.path.size() - 4) == std::string(".php") ||
-	data.path.substr(data.path.size() - 3) == std::string(".pl"))
-        return true;
+		data.path.substr(data.path.size() - 3) == std::string(".pl"))
+		return true;
 	return false;
 }
 
 bool Response::isFile()
 {
-	if (data.method == "GET")
+	if (data.method == "GET" || data.method == "HEAD")
 		return true;
 	return false;
 }
 
 bool Response::isUpload()
 {
-	if (data.method == "PUT")
+	if (data.method == "PUT" || data.method == "POST")
 		return true;
 	return false;
 }
