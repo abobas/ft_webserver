@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 01:19:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 15:18:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 #include <sys/select.h>
 #include <arpa/inet.h>
 
+/**
+* @brief Handles incoming connections and serves responses to clients' requests.
+*/
 class Server
 {
 

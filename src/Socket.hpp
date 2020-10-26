@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/19 21:55:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 15:19:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 #include <string>
 #include <fcntl.h>
 
+/**
+* @brief Handles socket operations like reading / writing.
+*/
 class Socket
 {
 

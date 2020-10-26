@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:42:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 18:43:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 15:13:59 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include "http/HttpResponse.hpp"
 #include <string>
 
+/**
+* @brief Holds all required data for responding to client.
+*/
 class Data
 {
 public:

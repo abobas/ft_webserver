@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 01:41:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 15:15:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include "Proxy.hpp"
 #include "Upload.hpp"
 
+/**
+* @brief Response builder.
+*/
 class Response
 {
 public:
@@ -25,7 +28,7 @@ public:
 
 private:
 	Data data;
-	
+
 	bool isValid();
 	bool isProxy();
 	bool isCgi();

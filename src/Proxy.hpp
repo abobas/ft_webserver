@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 01:19:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 15:15:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 #include <sstream>
 #include <cstring>
 
+/**
+* @brief Sets up connection with proxy server.
+*/
 class Proxy
 {
 public:
