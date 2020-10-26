@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:15:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 19:18:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sstream>
+#include <string>
 #include <cstring>
 
 /**
@@ -26,12 +27,13 @@ class Proxy
 {
 public:
 	Proxy(Data &data);
+	Socket getProxySocket();
+	std::string getProxyRequest();
 
 private:
 	Data data;
 	Socket proxy_socket;
 	struct sockaddr_in proxy_addr;
-	std::string raw_response;
 	std::string host;
 
 	void setPath();
@@ -39,7 +41,9 @@ private:
 	int createProxySocket();
 	int setProxyAddress();
 	int connectProxySocket();
-	void sendProxyRequest();
-	void receiveProxyResponse();
-	void sendProxyResponse();
+
+	// std::string raw_response;
+
+	// void receiveProxyResponse();
+	// void sendProxyResponse();
 };

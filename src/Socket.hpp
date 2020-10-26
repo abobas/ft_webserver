@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:19:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 20:02:55 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ public:
 	Socket();
 	Socket(const std::string type, int socket);
 	std::string getType() const;
-	void setType(const std::string new_type);
+	void setType(std::string new_type);
 	int getSocket() const;
 	void sendData(std::string &value);
 	void sendData(std::string &&value);

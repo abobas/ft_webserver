@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:18:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 20:15:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ public:
 
 private:
 	std::vector<Socket> sockets;
-	std::map<Socket, std::string> requests;
+	std::map<Socket, std::string> messages;
+	std::map<Socket, Socket> pairs;
 	Json config;
 	struct timeval tv
 	{
@@ -50,18 +51,32 @@ private:
 	fd_set write_set;
 
 	void runtime();
-	void createServerSockets();
-	void fillSets();
-	int getRange();
+	void createListenSockets();
+	
+	void fillSelectSets();
+	int getSelectRange();
 	int selectCall();
+
 	void handleOperations(int select);
-	void acceptClient(Socket &server);
+	
+	void acceptClient(Socket &listen);
 	void readClient(Socket &client);
 	void writeClient(Socket &client);
-	void transformClient(Socket &client);
-	void disconnectClient(Socket &client);
+	void writeWaitingClient(Socket &client);
+	
+	void readProxy(Socket &proxy);
+	void writeProxy(Socket &proxy);
+	
+	void transformSocket(Socket &socket);
+	void disconnectSocket(Socket &socket);
+	
 	void addSocket(Socket &&insert);
 	void deleteSocket(Socket &erase);
-	void addRequest(Socket &client, std::string &&request);
-	void deleteRequest(Socket &client);
+	
+	void addPair(Socket &key, Socket &&value);
+	void deletePair(Socket &key);
+	
+	void addMessage(Socket &socket, std::string &&request);
+	void addMessage(Socket &&socket, std::string &&request);
+	void deleteMessage(Socket &socket);
 };

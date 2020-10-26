@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:15:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 19:36:25 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,16 @@ class Response
 {
 public:
 	Response(Data &&data);
+	bool isProxy();
+	Socket getProxySocket();
+	std::string getProxyRequest();
 
 private:
 	Data data;
+	Socket proxy;
+	std::string proxy_request;
 
 	bool isValid();
-	bool isProxy();
 	bool isCgi();
 	bool isFile();
 	bool isUpload();

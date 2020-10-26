@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:46:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 20:33:10 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ Proxy::Proxy(Data &data) : data(data)
 	if (connectProxySocket())
 		return;
 	std::cout << "proxy connected" << std::endl;
-	sendProxyRequest();
-	std::cout << "proxy request sent" << std::endl;
-	receiveProxyResponse();
-	sendProxyResponse();
+
+	// sendProxyRequest();
+	// std::cout << "proxy request sent" << std::endl;
+	// receiveProxyResponse();
+	// sendProxyResponse();
 }
 
 void Proxy::setPath()
@@ -57,7 +58,7 @@ int Proxy::createProxySocket()
 		data.response.sendInternalError();
 		return 1;
 	}
-	proxy_socket = Socket("proxy", new_socket);
+	proxy_socket = Socket("proxy_write", new_socket);
 	return 0;
 }
 
@@ -90,7 +91,7 @@ int Proxy::connectProxySocket()
 	return 0;
 }
 
-void Proxy::sendProxyRequest()
+std::string Proxy::getProxyRequest()
 {
 	std::ostringstream oss;
 	std::map<std::string, std::string> headers = data.request.getHeaders();
@@ -102,15 +103,20 @@ void Proxy::sendProxyRequest()
 			oss << header.first << ": " << header.second << lineTerminator;
 	}
 	oss << lineTerminator;
-	proxy_socket.sendData(oss.str());
+	return oss.str();
 }
 
-void Proxy::receiveProxyResponse()
+Socket Proxy::getProxySocket()
 {
-	raw_response = proxy_socket.receive();
+	return proxy_socket;
 }
 
-void Proxy::sendProxyResponse()
-{
-	data.response.sendDataRaw(raw_response);
-}
+// void Proxy::receiveProxyResponse()
+// {
+// 	raw_response = proxy_socket.receive();
+// }
+
+// void Proxy::sendProxyResponse()
+// {
+// 	data.response.sendDataRaw(raw_response);
+// }
