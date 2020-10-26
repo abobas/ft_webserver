@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 22:11:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 00:12:32 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ Response::Response(Data &&data) : data(data)
 {
 	std::cout << "request.method+path: " << data.method << " " << data.request.getPath() << std::endl;
 	std::cout << "data.path: " << data.path << std::endl;
-	
+	std::cout << "entering validation" << std::endl;
 	if (!isValid())
 	{
-		std::cout << "not valid" << std::endl;
+		std::cout << "response data not valid, aborting" << std::endl;
 		return;
 	}
 	std::cout << "finished validation" << std::endl;
@@ -63,7 +63,6 @@ Response::Response(Data &&data) : data(data)
 
 bool Response::isValid()
 {
-	std::cout << "entering validation" << std::endl;
 	if (data.method.empty())
 		return false;
 	if (data.not_found)
@@ -76,18 +75,13 @@ bool Response::isValid()
 		data.response.sendBadMethod();
 		return false;
 	}
-	std::cout << "finished method validation" << std::endl;
 	return true;
 }
 
 bool Response::validMethod()
 {
-	std::cout << "entering method validation" << std::endl;
 	if (data.location["accepted-methods"].array_items().empty())
-	{
-		std::cout << "Config error: add accepted-methods in server location" << std::endl;
 		return false;
-	}
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
 		if (accepted.string_value() == data.method)
@@ -105,9 +99,12 @@ bool Response::isProxy()
 
 bool Response::isCgi()
 {
-	if (data.path.substr(data.path.size() - 4) == std::string(".php") ||
-		data.path.substr(data.path.size() - 3) == std::string(".pl"))
-		return true;
+	for (auto file : data.config["http"]["cgi"]["files"].array_items())
+	{
+		std::string format = file.string_value();
+		if (data.path.substr(data.path.size() - format.size()) == format)
+			return true;
+	}
 	return false;
 }
 

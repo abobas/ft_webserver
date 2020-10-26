@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 20:02:55 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 22:46:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ public:
 private:
 	std::string type;
 	int socket;
+
+	void debug(std::string &value);
 };
 
 inline bool operator==(const Socket &lhs, const Socket &rhs)

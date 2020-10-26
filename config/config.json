@@ -46,11 +46,12 @@
 				"REQUEST_METHOD": "",
 				"REQUEST_URI": "",
 				"SCRIPT_NAME": "",
-				"SERVER_NAME": "$BigKahunaServer",
+				"SERVER_NAME": "BigKahunaServer",
 				"SERVER_PORT": "",
 				"SERVER_PROTOCOL": "HTTP/1.1",
 				"SERVER_SOFTWARE": "bigkahuna-latest"
-			}
+			},
+			"files": [".php", ".pl", ".sh"]
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:16:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 23:57:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void HttpResponse::sendCreated(std::string &&path)
 {
 	addStatusHeader(CREATED, "Created");
 	addHeader("content-location", path);
+	addFileHeaders(path);
 	sendHeaders();
 	request.getSocket().sendData("201: Created");
 }
@@ -90,6 +91,7 @@ void HttpResponse::sendModified(std::string &&path)
 {
 	addStatusHeader(OK, "OK");
 	addHeader("content-location", path);
+	addFileHeaders(path);
 	sendHeaders();
 	request.getSocket().sendData("200: OK (Modified)");
 }
@@ -171,10 +173,17 @@ void HttpResponse::addContentLengthHeader(std::string &path)
 
 void HttpResponse::addContentTypeHeader(std::string &path)
 {
+	std::string type;
 	size_t pos = path.find('.');
+	
 	if (pos == std::string::npos)
 		return;
-	std::string type("text/");
+	if (path.substr(pos + 1) == "html" || path.substr(pos + 1) == "txt")
+		type = "text/";
+	else if (path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "png")
+		type = "image/";
+	else
+		return ;
 	type.append(path.substr(pos + 1));
 	addHeader("content-type", type);
 }

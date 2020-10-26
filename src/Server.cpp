@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 22:08:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 23:39:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,12 +170,7 @@ void Server::acceptClient(Socket &listen)
 	if (client < 0)
 	{
 		perror("accept()");
-		throw "fatal error";
-	}
-	if (fcntl(client, F_SETFL, O_NONBLOCK) < 0)
-	{
-		perror("accept()");
-		throw "fatal error";
+		return;
 	}
 	addSocket(Socket("client_read", client));
 	std::cout << "accepted client " << client << std::endl;
@@ -183,19 +178,25 @@ void Server::acceptClient(Socket &listen)
 
 void Server::readClient(Socket &client)
 {
+	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
 	addMessage(client, client.receive());
+	std::cout << messages[client] << std::endl;
 	std::cout << "finished " << client.getType() << " " << client.getSocket() << std::endl;
+	std::cout << "-----------------------------------" << std::endl;
 	transformSocket(client);
 }
 
 void Server::writeClient(Socket &client)
 {
+	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
+
 	Response response(getData(client, config, messages[client]));
-	std::cout << "-----------------------------------" << std::endl;
+
 	std::cout << "finished " << client.getType() << " " << client.getSocket() << std::endl;
+	std::cout << "-----------------------------------" << std::endl;
+
 	deleteMessage(client);
 	if (response.isProxySet())
 	{
@@ -210,24 +211,24 @@ void Server::writeClient(Socket &client)
 
 void Server::writeProxy(Socket &proxy)
 {
+	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "entered " << proxy.getType() << " " << proxy.getSocket() << std::endl;
-	std::cout << "---------------MESSAGE TO PROXY--------" << std::endl;
-	std::cout << messages[proxy] << std::endl;
-	std::cout << "---------------END OF MESSAGE-----------" << std::endl;
-	
 	proxy.sendData(messages[proxy]);
 	std::cout << "finished " << proxy.getType() << " " << proxy.getSocket() << std::endl;
-	
+	std::cout << "-----------------------------------" << std::endl;
 	deleteMessage(proxy);
 	transformSocket(proxy);
 }
 
 void Server::readProxy(Socket &proxy)
 {
+	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "entered " << proxy.getType() << " " << proxy.getSocket() << std::endl;
 	addMessage(proxy, proxy.receive());
-	transformSocket(proxy);
+	std::cout << messages[proxy] << std::endl;
 	std::cout << "finished " << proxy.getType() << " " << proxy.getSocket() << std::endl;
+	std::cout << "-----------------------------------" << std::endl;
+	transformSocket(proxy);
 }
 
 void Server::writeWaitingClient(Socket &client)
@@ -261,6 +262,7 @@ void Server::disconnectSocket(Socket &socket)
 {
 	close(socket.getSocket());
 	deleteSocket(socket);
+	std::cout << "disconnected " << socket.getType() << " " << socket.getSocket() << std::endl;
 }
 
 void Server::addSocket(Socket &&insert)

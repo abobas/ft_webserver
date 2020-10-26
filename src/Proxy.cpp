@@ -6,12 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 21:23:14 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 23:16:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Proxy.hpp"
-#include <iostream>
 
 static std::string lineTerminator = "\r\n";
 
@@ -20,19 +19,11 @@ Proxy::Proxy(Data &data) : data(data)
 	setPath();
 	if (createProxySocket())
 		return ;
-	std::cout << "proxy created" << std::endl;
 	if (setProxyAddress())
 		return;
-	std::cout << "proxy address set" << std::endl;
 	if (connectProxySocket())
 		return;
-	std::cout << "proxy connected" << std::endl;
 	success = true;
-
-	// sendProxyRequest();
-	// std::cout << "proxy request sent" << std::endl;
-	// receiveProxyResponse();
-	// sendProxyResponse();
 }
 
 bool Proxy::proxySuccess()
@@ -55,12 +46,6 @@ int Proxy::createProxySocket()
 	if (new_socket == -1)
 	{
 		perror("socket()");
-		data.response.sendInternalError();
-		return 1;
-	}
-	if (fcntl(new_socket, F_SETFL, O_NONBLOCK) < 0)
-	{
-		perror("fcntl()");
 		data.response.sendInternalError();
 		return 1;
 	}
@@ -122,13 +107,3 @@ Socket Proxy::getProxySocket()
 {
 	return proxy_socket;
 }
-
-// void Proxy::receiveProxyResponse()
-// {
-// 	raw_response = proxy_socket.receive();
-// }
-
-// void Proxy::sendProxyResponse()
-// {
-// 	data.response.sendDataRaw(raw_response);
-// }
