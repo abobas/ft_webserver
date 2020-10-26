@@ -6,11 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 01:35:16 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:46:19 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Proxy.hpp"
+#include <iostream>
 
 static std::string lineTerminator = "\r\n";
 
@@ -19,11 +20,15 @@ Proxy::Proxy(Data &data) : data(data)
 	setPath();
 	if (createProxySocket())
 		return;
+	std::cout << "proxy created" << std::endl;
 	if (setProxyAddress())
 		return;
+	std::cout << "proxy address set" << std::endl;
 	if (connectProxySocket())
 		return;
+	std::cout << "proxy connected" << std::endl;
 	sendProxyRequest();
+	std::cout << "proxy request sent" << std::endl;
 	receiveProxyResponse();
 	sendProxyResponse();
 }

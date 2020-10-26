@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:07:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:45:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 Response::Response(Data &&data) : data(data)
 {
+	std::cout << "data.method: " << data.method << std::endl;
+	std::cout << "data.path: " << data.path << std::endl;
+	std::cout << "request.path: " << data.request.getPath() << std::endl;
+	std::cout << "---entering response control flow---" << std::endl << std::endl;
 	if (!isValid())
 		return;
 	if (isProxy())
@@ -46,7 +50,7 @@ bool Response::validMethod()
 {
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
-		if (accepted == data.method)
+		if (accepted.string_value() == data.method)
 			return true;
 	}
 	return false;

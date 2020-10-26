@@ -1,9 +1,3 @@
-### CHUNKED TRANSFER ###
-- aan socket.receive() en socket.send() chunked logic toevoegen
-
-### CGI ###
-- nettere manier om accepted cgi extensies toe te voegen
-
 ### PROXY ###
 - terug naar server voor select()
 - requests, sockets meesturen naar data
@@ -13,3 +7,12 @@
 - client en proxy socket aan elkaar chainen
 - proxy en response chainen
 - proxy en request chainen
+
+### CHUNKED TRANSFER ###
+- aan socket.receive() en socket.send() chunked logic toevoegen
+
+### CGI ###
+- environment meta variables toewijzen
+- nettere manier om accepted cgi extensies toe te voegen
+
+
