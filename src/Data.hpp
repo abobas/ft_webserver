@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:42:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:13:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 17:51:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ public:
 	std::string method;
 	size_t path_length;
 	bool not_found = false;
-	
+
 	Data(Socket &client, Json &config, std::string &request);
-		
+
 private:
 	void setServer();
 	void setLocation();

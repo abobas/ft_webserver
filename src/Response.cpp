@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:01:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:07:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ bool Response::isValid()
 
 bool Response::validMethod()
 {
-	if (data.location["accepted-methods"].array_items().empty())
-		return true;
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
 		if (accepted == data.method)

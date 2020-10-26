@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:48:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:54:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:18:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,8 @@
 #include <string>
 #include <map>
 
-
 class HttpRequest
 {
-
 public:
 	HttpRequest(Socket client, std::string request);
 	virtual ~HttpRequest();

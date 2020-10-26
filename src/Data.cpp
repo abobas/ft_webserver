@@ -6,24 +6,24 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:47:11 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 19:06:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 17:51:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Data.hpp"
 
-Data::Data(Socket &client, Json &config, std::string &request) :
-    client(client), config(config), request(client, request), response(this->request)
+Data::Data(Socket &client, Json &config, std::string &request)
+	: client(client), config(config), request(client, request), response(this->request)
 {
-    setServer();
-    setLocation();
-    setPath();
-    setMethod();
+	setServer();
+	setLocation();
+	setPath();
+	setMethod();
 }
 
 Data getData(Socket &client, Json &config, std::string &request)
 {
-    return Data(client, config, request);
+	return Data(client, config, request);
 }
 
 void Data::setServer()
@@ -72,6 +72,5 @@ void Data::setPath()
 
 void Data::setMethod()
 {
-    method = request.getMethod();
+	method = request.getMethod();
 }
-

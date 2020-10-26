@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/23 20:38:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 21:26:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 18:21:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void Upload::addFile()
     file.open(data.path.c_str(), std::ofstream::out);
     if (!file.is_open())
     {
-        data.response.sendInternalError("open() failed");
+        data.response.sendInternalError();
         return ;
     }
     file << data.request.getBody();
@@ -59,7 +59,8 @@ int Upload::deleteFile()
 {
     if (remove(data.path.c_str()) < 0)
     {
-        data.response.sendInternalError("remove() failed");
+		perror("remove()");
+        data.response.sendInternalError();
         return -1;
     }
     return 0;
