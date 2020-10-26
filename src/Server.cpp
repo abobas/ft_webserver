@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 20:03:09 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/26 14:52:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ int Server::selectCall()
     fillSets();
     return (select(getRange(), &read_set, &write_set, NULL, &tv));
 }
-
+/**
+ * @todo add support for proxy_read, proxy_write, client_wait
+ */
 void Server::handleOperations(int select)
 {
     for (auto socket : sockets)
