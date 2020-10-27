@@ -6,20 +6,21 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 01:55:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 02:29:09 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cgi.hpp"
+#include <iostream>
 
-Cgi::Cgi(Data &data) : data(data) 
+Cgi::Cgi(Data &data) : data(data)
 {
-	redirectOutput();
 	setEnvironment();
+	redirectOutput();
 	executeScript();
 }
 
-void Cgi::setEnvironment()
+void Cgi::setConfigEnv()
 {
 	for (auto object : data.config["http"]["cgi"]["cgi_params"].object_items())
 	{
@@ -30,7 +31,63 @@ void Cgi::setEnvironment()
 		memory.push_back(std::move(insert));
 		env.push_back(memory.back().c_str());
 	}
+}
+
+void Cgi::setRequestEnv()
+{
+	std::string method("REQUEST_METHOD=");
+	method += data.request.getMethod();
+	memory.push_back(std::move(method));
+	env.push_back(memory.back().c_str());
+
+	std::string uri("REQUEST_URI=");
+	uri += data.request.getPath();
+	memory.push_back(std::move(uri));
+	env.push_back(memory.back().c_str());
+
+	std::string query("QUERY_STRING=");
+	if (data.request.getQueryString().empty())
+		return;
+	query += data.request.getQueryString();
+	memory.push_back(std::move(query));
+	env.push_back(memory.back().c_str());
+}
+
+void Cgi::setServerEnv()
+{
+	std::string name("SERVER_NAME=");
+	name += data.server["name"].string_value();
+	memory.push_back(std::move(name));
+	env.push_back(memory.back().c_str());
+
+	std::string port("SERVER_PORT=");
+	port += std::to_string(static_cast<int>(data.server["listen"].number_value()));
+	memory.push_back(std::move(port));
+	env.push_back(memory.back().c_str());
+}
+
+void Cgi::setPathEnv()
+{
+	std::string script("SCRIPT_NAME=");
+	size_t pos = data.path.find_last_of("/");
+	if (pos == std::string::npos)
+		pos = -1;
+	script += data.path.substr(pos + 1);
+	memory.push_back(std::move(script));
+	env.push_back(memory.back().c_str());
+}
+
+void Cgi::setEnvironment()
+{
+	setConfigEnv();
+	setRequestEnv();
+	setServerEnv();
+	setPathEnv();
 	env.push_back(NULL);
+	std::cout << "--------ENV---------" << std::endl;
+	for (auto n : env)
+		std::cout << n << std::endl;
+	std::cout << "--------------------" << std::endl;
 }
 
 void Cgi::redirectOutput()
@@ -39,19 +96,19 @@ void Cgi::redirectOutput()
 	{
 		perror("pipe()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 	if ((restore_fd = dup(1)) < 0)
 	{
 		perror("dup()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 	if ((dup2(pipe_fd[1], 1)) < 0)
 	{
 		perror("dup2()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 }
 
@@ -61,7 +118,7 @@ void Cgi::resetOutput()
 	{
 		perror("dup2()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 	close(pipe_fd[0]);
 	close(pipe_fd[1]);
@@ -76,7 +133,7 @@ void Cgi::executeScript()
 	{
 		perror("fork()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 	else if (pid == 0)
 		childProcess();
@@ -94,7 +151,7 @@ void Cgi::childProcess()
 	{
 		perror("execve()");
 		data.response.sendInternalError();
-		return ;
+		return;
 	}
 }
 

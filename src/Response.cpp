@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 00:12:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 02:14:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 Response::Response(Data &&data) : data(data)
 {
 	std::cout << "request.method+path: " << data.method << " " << data.request.getPath() << std::endl;
+	std::cout << "request.query " << data.request.getQueryString() << std::endl;
 	std::cout << "data.path: " << data.path << std::endl;
 	std::cout << "entering validation" << std::endl;
 	if (!isValid())

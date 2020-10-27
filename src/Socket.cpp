@@ -46,7 +46,7 @@ void Socket::sendData(std::string &value)
 	std::cout << "entered socket " << socket << " write()" << std::endl;
 	if (write(socket, value.c_str(), value.size()) < 0)
 		perror("write()");
-	std::cout << "finishedsocket " << socket << " write()" << std::endl;
+	std::cout << "finished socket " << socket << " write()" << std::endl;
 }
 
 void Socket::sendData(std::string &&value)

@@ -1,15 +1,21 @@
-### SIGPIPE ERROR ###
-- als connection closed is en geschreven wordt in socket -> SIGPIPE
-- SIGPIPE signal killed process
-- signal catcher
-
-### PROXY ###
-- write operation failed (sigpipe)
-
-### CHUNKED TRANSFER ###
-- aan socket.receive() en socket.send() chunked logic toevoegen
+### QUERY ####
+- Query verneukt path, clean URI nodig (request.getPath() aanpassen)
 
 ### CGI ###
-- environment meta variables toewijzen
+- uitgebreidere .php scripts testen
+- ubuntu_cgi_tester testen
+- query fixen -> query CGI form testen
+
+### SIGPIPE ERROR ###
+- if connection closed && socket write() -> SIGPIPE
+- SIGPIPE signal - > kill process -> ERROR 141
+- FIX -> SIGPIPE signal catcher
+
+### PROXY ###
+- write operation failed (sigpipe) [FIX SIGPIPE FIRST]
+
+### CHUNKED TRANSFER ### 
+- READ INTO CHUNKED RFC
+- aan socket.receive() en socket.send() chunked logic toevoegen
 
 

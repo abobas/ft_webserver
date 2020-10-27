@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:31:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 01:35:56 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,15 @@ std::string HttpRequest::getMethod()
 std::string HttpRequest::getPath()
 {
 	return parser.getURL();
+}
+
+std::string HttpRequest::getQueryString()
+{
+	std::string possible_query_string = getPath();
+	int qindex = possible_query_string.find_first_of('?');
+	if (qindex < 0)
+		return std::string("");
+	return possible_query_string.substr(qindex + 1, -1);
 }
 
 /**

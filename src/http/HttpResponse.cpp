@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 23:57:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 02:05:40 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,5 +216,6 @@ void HttpResponse::addLastModifiedHeader(std::string &path)
 
 void HttpResponse::addServerHeader()
 {
-	addHeader("server", "BigKahunaServer");
+	if (!request.getHeader("host").empty())
+		addHeader("server", request.getHeader("host"));
 }

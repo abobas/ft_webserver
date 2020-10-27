@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:14:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 01:47:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,10 @@ private:
 	void executeScript();
 	void childProcess();
 	void mainProcess();
+	
 	void setEnvironment();
+	void setConfigEnv();
+	void setServerEnv();
+	void setRequestEnv();
+	void setPathEnv();
 };
