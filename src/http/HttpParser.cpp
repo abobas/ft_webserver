@@ -6,13 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:23 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:19:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:41:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpParser.hpp"
 
 static std::string lineTerminator = "\r\n";
+
+HttpParser::HttpParser() {}
 
 static std::string toStringToken(std::string::iterator &it, std::string &str, std::string &token)
 {
@@ -71,21 +73,6 @@ std::pair<std::string, std::string> parseHeader(std::string &line)
 	utils::toLower(name);
 	auto value = utils::trim(toStringToken(it, line, lineTerminator));
 	return std::pair<std::string, std::string>(name, value);
-}
-
-HttpParser::HttpParser() = default;
-HttpParser::~HttpParser() = default;
-
-std::string HttpParser::getBody() { return body; }
-std::string HttpParser::getMethod() { return method; }
-std::string HttpParser::getURL() { return url; }
-std::string HttpParser::getVersion() { return version; }
-std::string HttpParser::getStatus() { return status; }
-std::string HttpParser::getReason() { return reason; }
-
-std::map<std::string, std::string> HttpParser::getHeaders()
-{
-	return headers;
 }
 
 std::string HttpParser::getHeader(const std::string &name)
@@ -155,3 +142,39 @@ void HttpParser::parseStatusLine(std::string &line)
 	status = toCharToken(it, line, ' ');
 	reason = toStringToken(it, line, lineTerminator);
 }
+
+std::string HttpParser::getBody()
+{
+	return body;
+}
+
+std::string HttpParser::getMethod()
+{
+	return method;
+}
+
+std::string HttpParser::getURL()
+{
+	return url;
+}
+
+std::string HttpParser::getVersion()
+{
+	return version;
+}
+
+std::string HttpParser::getStatus()
+{
+	return status;
+}
+
+std::string HttpParser::getReason()
+{
+	return reason;
+}
+
+std::map<std::string, std::string> HttpParser::getHeaders()
+{
+	return headers;
+}
+

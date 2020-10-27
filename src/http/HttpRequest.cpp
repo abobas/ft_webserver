@@ -6,14 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 01:35:56 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:36:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpRequest.hpp"
-
-#define STATE_NAME 0
-#define STATE_VALUE 1
 
 const char HttpRequest::HTTP_HEADER_ACCEPT[] = "Accept";
 const char HttpRequest::HTTP_HEADER_ALLOW[] = "Allow";
@@ -44,21 +41,11 @@ HttpRequest::HttpRequest(Socket client, std::string request)
 	std::vector<std::string> parts = utils::split(getHeader(HTTP_HEADER_CONNECTION), ',');
 }
 
-HttpRequest::~HttpRequest() = default;
-
-/**
- * @brief Get the body of the HttpRequest.
- */
 std::string HttpRequest::getBody()
 {
 	return parser.getBody();
 }
 
-/**
- * @brief Get the named header.
- * @param [in] name The name of the header field to retrieve.
- * @return The value of the header field.
- */
 std::string HttpRequest::getHeader(const std::string &name)
 {
 	return parser.getHeader(name);
@@ -76,78 +63,22 @@ std::string HttpRequest::getMethod()
 
 std::string HttpRequest::getPath()
 {
-	return parser.getURL();
+	std::string full_string = parser.getURL();
+	int qindex = full_string.find_first_of('?');
+	if (qindex < 0)
+		return full_string;
+	return full_string.substr(0, qindex);
 }
 
 std::string HttpRequest::getQueryString()
 {
-	std::string possible_query_string = getPath();
+	std::string possible_query_string = parser.getURL();
 	int qindex = possible_query_string.find_first_of('?');
 	if (qindex < 0)
 		return std::string("");
 	return possible_query_string.substr(qindex + 1, -1);
 }
 
-/**
- * @brief Get the query part of the request.
- * The query is a set of name = value pairs.  The return is a map keyed by the name items.
- *
- * @return The query part of the request.
- */
-std::map<std::string, std::string> HttpRequest::getQuery()
-{
-	std::map<std::string, std::string> query_map;
-	std::string possible_query_string = getPath();
-	int qindex = possible_query_string.find_first_of('?');
-
-	if (qindex < 0)
-		return query_map;
-
-	std::string query_string = possible_query_string.substr(qindex + 1, -1);
-
-	int state = STATE_NAME;
-	std::string name;
-	std::string value;
-
-	for (char currentChar : query_string)
-	{
-		if (state == STATE_NAME)
-		{
-			if (currentChar != '=')
-			{
-				name += currentChar;
-			}
-			else
-			{
-				state = STATE_VALUE;
-				value = "";
-			}
-		}
-		else
-		{
-			if (currentChar != '&')
-			{
-				value += currentChar;
-			}
-			else
-			{
-				query_map[name] = value;
-				state = STATE_NAME;
-				name = "";
-			}
-		}
-	}
-
-	if (state == STATE_VALUE)
-		query_map[name] = value;
-
-	return query_map;
-}
-
-/**
- * @brief Get the underlying socket.
- * @return The underlying socket.
- */
 Socket HttpRequest::getSocket()
 {
 	return client;
@@ -156,72 +87,4 @@ Socket HttpRequest::getSocket()
 std::string HttpRequest::getVersion()
 {
 	return parser.getVersion();
-}
-
-/**
- * Return the constituent parts of the path.
- * If we imagine a path as composed of parts separated by slashes, then this function
- * returns a vector composed of the parts.  For example:
- *
- * @return A vector of the constituent parts of the path.
- */
-std::vector<std::string> HttpRequest::pathSplit()
-{
-	std::istringstream stream(getPath());
-	std::vector<std::string> ret;
-	std::string pathPart;
-
-	while (std::getline(stream, pathPart, '/'))
-	{
-		ret.push_back(pathPart);
-	}
-
-	return ret;
-}
-
-/**
- * A simple hex conversion function.
- * @param ch
- * @return
- */
-inline char from_hex(char ch)
-{
-	return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
-}
-
-/**
- * Decode a URL
- * @param text the text to decode
- * @return the decoded string.
- */
-std::string HttpRequest::urlDecode(std::string text)
-{
-	char h;
-	std::ostringstream escaped;
-	escaped.fill('0');
-
-	for (auto i = text.begin(), n = text.end(); i != n; ++i)
-	{
-		std::string::value_type c = (*i);
-
-		if (c == '%')
-		{
-			if (i[1] && i[2])
-			{
-				h = from_hex(i[1]) << 4 | from_hex(i[2]);
-				escaped << h;
-				i += 2;
-			}
-		}
-		else if (c == '+')
-		{
-			escaped << ' ';
-		}
-		else
-		{
-			escaped << c;
-		}
-	}
-
-	return escaped.str();
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:37 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:18:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:36:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ class HttpParser
 {
 public:
 	HttpParser();
-	virtual ~HttpParser();
-
 	std::string getBody();
 	std::string getHeader(const std::string &name);
 	std::map<std::string, std::string> getHeaders();

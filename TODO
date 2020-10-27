@@ -1,18 +1,16 @@
-### QUERY ####
-- Query verneukt path, clean URI nodig (request.getPath() aanpassen)
-
 ### CGI ###
+- standard output wordt niet restored <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - uitgebreidere .php scripts testen
 - ubuntu_cgi_tester testen
-- query fixen -> query CGI form testen
+- query form testen
 
 ### SIGPIPE ERROR ###
 - if connection closed && socket write() -> SIGPIPE
 - SIGPIPE signal - > kill process -> ERROR 141
-- FIX -> SIGPIPE signal catcher
+- FIX -> SIGPIPE signal catcher <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ### PROXY ###
-- write operation failed (sigpipe) [FIX SIGPIPE FIRST]
+- write operation failed (sigpipe) [FIX SIGPIPE FIRST] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ### CHUNKED TRANSFER ### 
 - READ INTO CHUNKED RFC

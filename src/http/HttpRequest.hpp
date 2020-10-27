@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:48:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 01:33:25 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:37:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@
 class HttpRequest
 {
 public:
-	HttpRequest(Socket client, std::string request);
-	virtual ~HttpRequest();
 	static const char HTTP_HEADER_ACCEPT[];
 	static const char HTTP_HEADER_ALLOW[];
 	static const char HTTP_HEADER_CONNECTION[];
@@ -41,7 +39,6 @@ public:
 	static const char HTTP_HEADER_SEC_WEBSOCKET_VERSION[];
 	static const char HTTP_HEADER_UPGRADE[];
 	static const char HTTP_HEADER_USER_AGENT[];
-
 	static const char HTTP_METHOD_CONNECT[];
 	static const char HTTP_METHOD_DELETE[];
 	static const char HTTP_METHOD_GET[];
@@ -51,18 +48,15 @@ public:
 	static const char HTTP_METHOD_POST[];
 	static const char HTTP_METHOD_PUT[];
 
+	HttpRequest(Socket client, std::string request);
 	std::string getBody();
 	std::string getHeader(const std::string &name);
 	std::map<std::string, std::string> getHeaders();
 	std::string getMethod();
 	std::string getPath();
-	std::map<std::string, std::string> getQuery();
 	std::string getQueryString();
 	Socket getSocket();
 	std::string getVersion();
-	bool isClosed() const;
-	std::vector<std::string> pathSplit();
-	std::string urlDecode(std::string str);
 
 private:
 	Socket client;

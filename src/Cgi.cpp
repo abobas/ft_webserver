@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 02:29:09 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:25:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Cgi::setServerEnv()
 void Cgi::setPathEnv()
 {
 	std::string script("SCRIPT_NAME=");
-	size_t pos = data.path.find_last_of("/");
+	size_t pos = data.path.find_last_of('/');
 	if (pos == std::string::npos)
 		pos = -1;
 	script += data.path.substr(pos + 1);
