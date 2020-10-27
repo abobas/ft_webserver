@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 13:36:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 21:52:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ public:
 	void sendBadRequest();
 	void sendBadMethod();
 	void sendInternalError();
+	void sendNotImplemented();
 	void sendServiceUnavailable();
 	void addHeader(std::string name, std::string value);
 

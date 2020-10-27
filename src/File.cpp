@@ -6,18 +6,29 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 00:43:56 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 22:45:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "File.hpp"
+#include <iostream>
 
 File::File(Data &data) : data(data)
 {
 	if (!setStat())
 		return;
 	if (S_ISDIR(file.st_mode))
+	{
+		std::cout << "entering directory" << std::endl;
 		Directory directory(data);
+		std::cout << "entering directory" << std::endl;
+	}
+	else if (isCgi())
+	{
+		std::cout << "entering cgi" << std::endl;
+		Cgi cgi(data);
+		std::cout << "entering cgi" << std::endl;
+	}
 	else if (S_ISREG(file.st_mode))
 	{
 		if (data.method == "HEAD")
@@ -26,7 +37,10 @@ File::File(Data &data) : data(data)
 			data.response.sendFile(data.path);
 	}
 	else
-		data.response.sendNotFound();
+	{
+		std::cout << "client request not implemented" << std::endl;
+		data.response.sendNotImplemented();
+	}
 }
 
 bool File::setStat()
@@ -38,4 +52,15 @@ bool File::setStat()
 		return false;
 	}
 	return true;
+}
+
+bool File::isCgi()
+{
+	for (auto file : data.config["http"]["cgi"]["files"].array_items())
+	{
+		std::string format = file.string_value();
+		if (data.path.substr(data.path.size() - format.size()) == format)
+			return true;
+	}
+	return false;
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 02:05:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 22:03:04 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,14 @@ void HttpResponse::sendInternalError()
 	addHeader("content-type", "text/plain");
 	sendHeaders();
 	request.getSocket().sendData("500: Internal server error");
+}
+
+void HttpResponse::sendNotImplemented()
+{
+	addStatusHeader(NOT_IMPLEMENTED, "Not Implemented");
+	addHeader("content-type", "text/plain");
+	sendHeaders();
+	request.getSocket().sendData("501: Not implemented");
 }
 
 void HttpResponse::sendServiceUnavailable()

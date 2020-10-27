@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 00:57:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 13:54:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void Server::runtime()
 		throw "fatal error";
 	}
 	if (select > 0)
-		handleOperations(select);
+		handleOperations();
 }
 
 void Server::createListenSockets()
@@ -102,60 +102,40 @@ int Server::selectCall()
 	return (select(getSelectRange(), &read_set, &write_set, NULL, &tv));
 }
 
-void Server::handleOperations(int select)
+void Server::handleOperations()
 {
 	for (auto &socket : sockets)
 	{
 		if (socket.getType() == "listen")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
 				acceptClient(socket);
-				select--;
-			}
 		}
 		else if (socket.getType() == "client_read")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
 				readClient(socket);
-				select--;
-			}
 		}
 		else if (socket.getType() == "client_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
 				writeClient(socket);
-				select--;
-			}
 		}
 		else if (socket.getType() == "proxy_read")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
 				readProxy(socket);
-				select--;
-			}
 		}
 		else if (socket.getType() == "proxy_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
 				writeProxy(socket);
-				select--;
-			}
 		}
 		else if (socket.getType() == "waiting_client_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
 				writeWaitingClient(socket);
-				select--;
-			}
 		}
-		if (select == 0)
-			return;
 	}
 }
 

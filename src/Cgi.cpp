@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 13:25:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 23:05:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,112 @@
 
 Cgi::Cgi(Data &data) : data(data)
 {
-	setEnvironment();
-	redirectOutput();
-	executeScript();
+	try
+	{
+		setEnvironment();
+		setTmp();
+		executeScript();
+		deleteTmp();
+	}
+	catch (const char *e)
+	{
+		perror(e);
+		data.response.sendInternalError();
+	}
+}
+
+void Cgi::executeScript()
+{
+	pid_t pid;
+
+	pid = fork();
+	if (pid < 0)
+		throw "fork()";
+	else if (pid == 0)
+		childProcess();
+	else
+		parentProcess();
+}
+
+void Cgi::childProcess()
+{
+	std::vector<char *> argv;
+	int fd;
+
+	argv.push_back(const_cast<char *>(data.path.c_str()));
+	argv.push_back(NULL);
+	fd = open(tmp_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
+	if (fd < 0)
+	{
+		perror("child: open()");
+		exit(1);
+	}
+	if (dup2(fd, STDOUT_FILENO) < 0)
+	{
+		perror("child: dup2()");
+		exit(1);
+	}
+	close(fd);
+	if (execve(data.path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
+	{
+		perror("child: execve()");
+		exit(1);
+	}
+}
+
+void Cgi::parentProcess()
+{
+	int status;
+	int exit;
+
+	while (1)
+	{
+		wait(&status);
+		if (WIFEXITED(status))
+		{
+			exit = WEXITSTATUS(status);
+			break;
+		}
+		if (WIFSIGNALED(status))
+		{
+			exit = WTERMSIG(status);
+			break;
+		}
+	}
+	if (exit == 0)
+	{
+		std::cout << "written to " << tmp_path << std::endl;
+		data.response.addHeader("content-type", "text/html");
+		data.response.sendFile(tmp_path);
+	}
+	else
+		data.response.sendInternalError();
+}
+
+void Cgi::setTmp()
+{
+	tmp_path = "/tmp/webserv-cgi-output-" + std::to_string(rand());
+}
+
+void Cgi::deleteTmp()
+{
+	if (remove(tmp_path.c_str()) < 0)
+		perror("remove()");
+	else
+		std::cout << "deleted " << tmp_path << std::endl;
+}
+
+void Cgi::setEnvironment()
+{
+	setConfigEnv();
+	setRequestEnv();
+	setServerEnv();
+	setPathEnv();
+	env.push_back(NULL);
+	// std::cout << "--------ENV---------" << std::endl;
+	// for (auto n : env)
+	// 	std::cout << n << std::endl;
+	// std::cout << "--------------------" << std::endl;
 }
 
 void Cgi::setConfigEnv()
@@ -75,115 +178,4 @@ void Cgi::setPathEnv()
 	script += data.path.substr(pos + 1);
 	memory.push_back(std::move(script));
 	env.push_back(memory.back().c_str());
-}
-
-void Cgi::setEnvironment()
-{
-	setConfigEnv();
-	setRequestEnv();
-	setServerEnv();
-	setPathEnv();
-	env.push_back(NULL);
-	std::cout << "--------ENV---------" << std::endl;
-	for (auto n : env)
-		std::cout << n << std::endl;
-	std::cout << "--------------------" << std::endl;
-}
-
-void Cgi::redirectOutput()
-{
-	if (pipe(pipe_fd) < 0)
-	{
-		perror("pipe()");
-		data.response.sendInternalError();
-		return;
-	}
-	if ((restore_fd = dup(1)) < 0)
-	{
-		perror("dup()");
-		data.response.sendInternalError();
-		return;
-	}
-	if ((dup2(pipe_fd[1], 1)) < 0)
-	{
-		perror("dup2()");
-		data.response.sendInternalError();
-		return;
-	}
-}
-
-void Cgi::resetOutput()
-{
-	if ((dup2(restore_fd, 1)) < 0)
-	{
-		perror("dup2()");
-		data.response.sendInternalError();
-		return;
-	}
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-}
-
-void Cgi::executeScript()
-{
-	pid_t pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("fork()");
-		data.response.sendInternalError();
-		return;
-	}
-	else if (pid == 0)
-		childProcess();
-	else
-		mainProcess();
-}
-
-void Cgi::childProcess()
-{
-	std::vector<char *> argv;
-	argv.push_back(const_cast<char *>(data.path.c_str()));
-	argv.push_back(NULL);
-
-	if (execve(data.path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
-	{
-		perror("execve()");
-		data.response.sendInternalError();
-		return;
-	}
-}
-
-std::string Cgi::convertOutput()
-{
-	char buf[257];
-	std::string buffer;
-
-	while (1)
-	{
-		int ret = read(pipe_fd[0], buf, 256);
-		buf[ret] = '\0';
-		buffer += buf;
-		if (ret < 256)
-			break;
-	}
-	return buffer;
-}
-
-void Cgi::mainProcess()
-{
-	int status;
-
-	while (1)
-	{
-		wait(&status);
-		if (WIFEXITED(status) || WIFSIGNALED(status))
-		{
-			data.response.addHeader("content-type", "text/html");
-			data.response.sendData(convertOutput());
-			resetOutput();
-			return;
-		}
-	}
 }

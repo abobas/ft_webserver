@@ -1,5 +1,4 @@
 ### CGI ###
-- standard output wordt niet restored <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 - uitgebreidere .php scripts testen
 - ubuntu_cgi_tester testen
 - query form testen
@@ -12,8 +11,13 @@
 ### PROXY ###
 - write operation failed (sigpipe) [FIX SIGPIPE FIRST] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-### CHUNKED TRANSFER ### 
+### CHUNKED CONTENT  ### 
+- chunked transfer voor dynamic content
 - READ INTO CHUNKED RFC
 - aan socket.receive() en socket.send() chunked logic toevoegen
 
+### LOGGER TOEVOEGEN ###
+- global
+- stream overload
 
+### TRY CATCH BLOKS TOEVOEGEN ###

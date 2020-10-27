@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 13:22:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 21:53:44 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,6 @@ Response::Response(Data &&data) : data(data)
 			std::cout << "finished proxy" << std::endl;
 		}
 	}
-	else if (isCgi())
-	{
-		std::cout << "entering cgi" << std::endl;
-		Cgi cgi(this->data);
-		std::cout << "finished cgi" << std::endl;
-	}
 	else if (isFile())
 	{
 		std::cout << "entering file" << std::endl;
@@ -57,8 +51,8 @@ Response::Response(Data &&data) : data(data)
 	}
 	else
 	{
-		std::cout << "service unavailable" << std::endl;
-		data.response.sendServiceUnavailable();
+		std::cout << "client request not implemented" << std::endl;
+		data.response.sendNotImplemented();
 	}
 }
 
@@ -95,17 +89,6 @@ bool Response::isProxy()
 {
 	if (data.location["proxy_pass"].string_value().size() != 0)
 		return true;
-	return false;
-}
-
-bool Response::isCgi()
-{
-	for (auto file : data.config["http"]["cgi"]["files"].array_items())
-	{
-		std::string format = file.string_value();
-		if (data.path.substr(data.path.size() - format.size()) == format)
-			return true;
-	}
 	return false;
 }
 

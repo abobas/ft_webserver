@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 23:43:08 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 23:09:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ Socket::Socket()
 {
 }
 
-Socket::Socket(const std::string type, int socket) : type(type), socket(socket) {}
+Socket::Socket(std::string type, int socket) : type(type), socket(socket)
+{
+}
 
 std::string Socket::getType() const
 {
@@ -32,13 +34,6 @@ void Socket::setType(std::string new_type)
 int Socket::getSocket() const
 {
 	return socket;
-}
-
-void Socket::debug(std::string &value)
-{
-	std::cout << "socket: " << socket << std::endl;
-	std::cout << "value.size: " << value.size() << std::endl;
-	std::cout << value.c_str() << std::endl;
 }
 
 void Socket::sendData(std::string &value)

@@ -6,23 +6,20 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 21:28:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/27 21:55:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Directory.hpp"
-#include <iostream>
 
 Directory::Directory(Data &data) : data(data)
 {
-	std::cout << "entered directory" << std::endl;
 	if (data.path[data.path.size() - 1] != '/')
 		this->data.path.append("/");
 	if (data.location["autoindex"].bool_value())
 		handleDirListing();
 	else
 		handleDirIndex();
-	std::cout << "finished directory" << std::endl;
 }
 
 void Directory::handleDirListing()
