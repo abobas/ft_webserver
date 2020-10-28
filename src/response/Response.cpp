@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 21:04:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 23:20:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Response::Response(Data &&data) : data(data)
 	log = Log::getInstance();
 	if (!isValid())
 		return;
+	log->logEntry("data is valid");
 	try
 	{
 		if (isProxy())

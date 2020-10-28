@@ -1,9 +1,7 @@
-### REFACTORING ###
-- Logger in Response (Logs assignment operator / copy constructor)
-- try / catch blocks
-- alle perrors() vangen in logError()
-
 ### CHUNKED CONTENT  ### 
+- chunked logic toevoegen aan socket.receive() <--> client_read.transform()
+===== gelezen chunks bufferen
+===== stopping condition: bepaald symbool (combinatie met lege body / content length ???)
 - chunked transfer voor dynamic content
 - READ INTO CHUNKED RFC
 - aan socket.receive() en socket.send() chunked logic toevoegen

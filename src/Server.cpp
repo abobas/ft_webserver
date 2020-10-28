@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 22:17:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 00:18:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,6 @@ Server::Server(Json &&config) : config(config)
 	{
 		log->logError(e);
 	}
-}
-
-Server::~Server()
-{
-	delete log;
 }
 
 void Server::runtime()
@@ -140,9 +135,16 @@ void Server::acceptClient(Socket &listen)
 
 void Server::readClient(Socket &client)
 {
-	addMessage(client, client.receive());
-	log->logSocket("read client", client);
-	transformSocket(client);
+	if (client.closedClient())
+		disconnectSocket(client);
+	else
+	{
+		addMessage(client, client.receive());
+		log->logSocket("read client", client.getSocket());
+		log->logPlain(messages[client], 1);
+		transformSocket(client);
+	}
+
 }
 
 void Server::writeClient(Socket &client)
@@ -154,20 +156,20 @@ void Server::writeClient(Socket &client)
 		addSocket(response.getProxySocket());
 		addMessage(response.getProxySocket(), response.getProxyRequest());
 		addPair(client.getSocket(), sockets.back().getSocket());
-		log->logSocket("connected with proxy", response.getProxySocket());
-		transformSocket(client);
+		log->logSocket("connected with proxy", response.getProxySocket().getSocket());
+		client.setType("waiting_client_write");
 	}
 	else
 	{
-		log->logSocket("wrote client", client);
-		disconnectSocket(client);
+		log->logSocket("wrote client", client.getSocket());
+		transformSocket(client);
 	}
 }
 
 void Server::writeProxy(Socket &proxy)
 {
 	proxy.sendData(messages[proxy]);
-	log->logSocket("wrote proxy", proxy);
+	log->logSocket("wrote proxy", proxy.getSocket());
 	deleteMessage(proxy);
 	transformSocket(proxy);
 }
@@ -175,7 +177,7 @@ void Server::writeProxy(Socket &proxy)
 void Server::readProxy(Socket &proxy)
 {
 	addMessage(proxy, proxy.receive());
-	log->logSocket("read proxy", proxy);
+	log->logSocket("read proxy", proxy.getSocket());
 	transformSocket(proxy);
 }
 
@@ -195,7 +197,7 @@ void Server::writeWaitingClient(Socket &client)
 	if (proxy == client || proxy.getType() != "proxy_done")
 		return;
 	client.sendData(messages[proxy]);
-	log->logSocket("wrote client", client);
+	log->logSocket("wrote client", client.getSocket());
 	deleteMessage(proxy);
 	disconnectSocket(proxy);
 	deletePair(client.getSocket());
@@ -207,19 +209,21 @@ void Server::transformSocket(Socket &socket)
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
-		socket.setType("waiting_client_write");
+		socket.setType("client_read");
 	else if (socket.getType() == "proxy_write")
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	log->logSocket("transformed socket", socket);
+	else if (socket.getType() == "waiting_client_write")
+		socket.setType("client_read");
+	log->logSocket("transformed socket", socket.getSocket());
 }
 
 void Server::disconnectSocket(Socket &socket)
 {
 	close(socket.getSocket());
 	deleteSocket(socket);
-	log->logSocket("disconnected socket", socket);
+	log->logSocket("disconnected socket", socket.getSocket());
 }
 
 void Server::addSocket(Socket &insert)

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 22:34:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 23:48:59 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void HttpResponse::addHeader(std::string name, std::string value)
 void HttpResponse::sendData(std::string &&data)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData(data);
 }
@@ -48,7 +48,7 @@ void HttpResponse::sendData(std::string &&data)
 void HttpResponse::sendData(std::string &data)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData(data);
 }
@@ -56,7 +56,7 @@ void HttpResponse::sendData(std::string &data)
 void HttpResponse::sendData(char const *data)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData(data);
 }
@@ -64,7 +64,7 @@ void HttpResponse::sendData(char const *data)
 void HttpResponse::sendFile(std::string &path)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	addFileHeaders(path);
 	sendHeaders();
 	request.getSocket().sendFile(path);
@@ -73,7 +73,7 @@ void HttpResponse::sendFile(std::string &path)
 void HttpResponse::sendFileHeaders(std::string &path)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	addFileHeaders(path);
 	sendHeaders();
 }
@@ -81,7 +81,7 @@ void HttpResponse::sendFileHeaders(std::string &path)
 void HttpResponse::sendCreated(std::string &&path)
 {
 	addStatusHeader(CREATED, "Created");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	addHeader("content-location", path);
 	addFileHeaders(path);
 	sendHeaders();
@@ -91,7 +91,7 @@ void HttpResponse::sendCreated(std::string &&path)
 void HttpResponse::sendModified(std::string &&path)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	addHeader("content-location", path);
 	addFileHeaders(path);
 	sendHeaders();
@@ -102,7 +102,7 @@ void HttpResponse::sendNotFound()
 {
 	addStatusHeader(NOT_FOUND, "Not Found");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("404: Not found");
 }
@@ -111,7 +111,7 @@ void HttpResponse::sendBadRequest()
 {
 	addStatusHeader(BAD_REQUEST, "Bad Request");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("400: Bad request");
 }
@@ -120,7 +120,7 @@ void HttpResponse::sendBadMethod()
 {
 	addStatusHeader(METHOD_NOT_ALLOWED, "Method Not Allowed");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("405: Method not allowed");
 }
@@ -129,7 +129,7 @@ void HttpResponse::sendInternalError()
 {
 	addStatusHeader(INTERNAL_SERVER_ERROR, "Internal Server Error");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("500: Internal server error");
 }
@@ -138,7 +138,7 @@ void HttpResponse::sendNotImplemented()
 {
 	addStatusHeader(NOT_IMPLEMENTED, "Not Implemented");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("501: Not implemented");
 }
@@ -147,7 +147,7 @@ void HttpResponse::sendServiceUnavailable()
 {
 	addStatusHeader(SERVICE_UNAVAILABLE, "Service Unavailable");
 	addHeader("content-type", "text/plain");
-	addConnectionHeader("close");
+	addConnectionHeader("keep-alive");
 	sendHeaders();
 	request.getSocket().sendData("503: Service unavailable");
 }

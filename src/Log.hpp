@@ -6,13 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:48 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 20:07:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 00:18:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Socket.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -23,9 +22,10 @@ class Log
 {
 public:
 	static Log *getInstance();
-	void logSocket(std::string message, Socket socket);
 	void logSocket(std::string message, int socket);
 	void logEntry(std::string message);
+	void logEntry(std::string message, int number);
+	void logPlain(std::string message, int mode);
 	void logError(const char *error);
 
 private:
@@ -33,5 +33,6 @@ private:
 	std::ofstream file;
 
 	Log(std::string path);
+	~Log();
 	std::string getTime();
 };

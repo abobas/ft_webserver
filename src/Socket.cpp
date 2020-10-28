@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 21:22:22 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 00:39:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Socket::Socket()
 
 Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 {
+	log = Log::getInstance();
 }
 
 int Socket::getListenSocket(int port)
@@ -40,6 +41,17 @@ int Socket::getListenSocket(int port)
 	return new_socket;
 }
 
+bool Socket::closedClient()
+{
+	char buf[10];
+	int ret = recv(socket_fd, buf, 10, MSG_PEEK);
+	if (ret < 0)
+		log->logError("recv()");
+	else if (ret > 0)
+		return false;
+	return true;
+}
+
 int Socket::acceptClient()
 {
 	struct sockaddr client_address;
@@ -52,13 +64,15 @@ int Socket::acceptClient()
 void Socket::sendData(std::string &value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
-		perror("send()");
+		log->logError("send()");
+	log->logPlain(value, 0);
 }
 
 void Socket::sendData(std::string &&value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
-		perror("send()");
+		log->logError("send()");
+	log->logPlain(value, 0);
 }
 
 void Socket::sendFile(std::string &path)
@@ -69,15 +83,15 @@ void Socket::sendFile(std::string &path)
 	int fd = open(path.c_str(), O_RDONLY);
 	if (fd < 0)
 	{
-		perror("open()");
+		log->logError("open()");
 		return;
 	}
 	while (1)
 	{
 		int ret = read(fd, buf, 256);
-		if (ret == -1)
+		if (ret < 0)
 		{
-			perror("read()");
+			log->logError("read()");
 			break ;
 		}
 		buf[ret] = '\0';
@@ -97,9 +111,9 @@ std::string Socket::receive()
 	while (1)
 	{
 		int ret = recv(socket_fd, buf, 256, 0);
-		if (ret == -1)
+		if (ret <= 0)
 		{
-			perror("recv()");
+			log->logError("recv()");
 			break ;
 		}
 		buf[ret] = '\0';
@@ -107,6 +121,7 @@ std::string Socket::receive()
 		if (ret < 256)
 			break;
 	}
+	log->logEntry("bytes received", buffer.size());
 	return buffer;
 }
 

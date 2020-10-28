@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:06:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 23:21:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,7 @@ int main(int ac, char **av)
 	catch (const char *e)
 	{
 		std::cerr << e << std::endl;
+		return 1;
 	}
+	return 0;
 }

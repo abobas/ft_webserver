@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 19:53:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 00:19:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ Log::Log(std::string path)
 	}
 }
 
-void Log::logSocket(std::string message, Socket socket)
+Log::~Log()
 {
-	file << getTime() << message + " " << socket.getSocket() << std::endl;
+	delete instance;
 }
 
 void Log::logSocket(std::string message, int socket)
@@ -44,6 +44,20 @@ void Log::logSocket(std::string message, int socket)
 void Log::logEntry(std::string message)
 {
 	file << getTime() << message << std::endl;
+}
+
+void Log::logEntry(std::string message, int number)
+{
+	file << getTime() << message + " " << number << std::endl;
+}
+
+void Log::logPlain(std::string message, int mode = 0)
+{
+	if (mode == 1)
+		file << "-----------------------------------" << std::endl;
+	file << message << std::endl;
+	if (mode == 1)
+		file << "-----------------------------------" << std::endl;
 }
 
 void Log::logError(const char *error)
