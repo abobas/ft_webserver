@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 21:52:14 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 22:34:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ public:
 	static const int SERVICE_UNAVAILABLE;
 
 	HttpResponse(HttpRequest &httpRequest);
-	void sendDataRaw(std::string &data);
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
 	void sendData(char const *data);
@@ -71,4 +70,5 @@ private:
 	void addLastModifiedHeader(std::string &path);
 	void addDateHeader();
 	void addServerHeader();
+	void addConnectionHeader(std::string value);
 };

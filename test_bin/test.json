@@ -6,28 +6,28 @@
             "listen": 80,
             "locations": {
                 "/": {
-					"root": "/home/abobas/webserver/test/YoupiBanane",
+					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "index.html",
                     "accepted-methods": ["GET"],
                     "autoindex": false
                 },
 
                 "/put_test/": {
-					"root": "/home/abobas/webserver/test/YoupiBanane",
+					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "",
 					"accepted-methods": ["PUT"],
 					"autoindex": false
 				},
 
 				"/post_body": {
-					"root": "/home/abobas/webserver/test/YoupiBanane",
+					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "",
 					"accepted-methods": ["PUT"],
 					"autoindex": false
 				},
 
-				"/directory/": {
-					"root": "/home/abobas/webserver/test/YoupiBanane",
+				"/directory": {
+					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "youpi.bad_extension",
 					"accepted-methods": ["GET"],
 					"autoindex": false

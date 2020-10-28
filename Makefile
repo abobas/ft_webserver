@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/10/28 21:41:20 by abobas        ########   odam.nl          #
+#    Updated: 2020/10/28 22:40:22 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ run:
 				sudo ./webserv --config config/config.json
 
 tester:
-				sudo ./webserv --config test/test.json
+				sudo ./webserv --config test_bin/test.json
 
 clean:
 				rm -rf *.o
