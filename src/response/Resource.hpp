@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   File.hpp                                           :+:    :+:            */
+/*   Resource.hpp                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 01:40:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 21:02:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,32 @@
 #include "Data.hpp"
 #include "Directory.hpp"
 #include "Cgi.hpp"
+#include "Upload.hpp"
+#include "../Log.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 /**
-* @brief Analyzes request and sends file to client.
+* @brief Handles file requests.
 */
-class File
+class Resource
 {
 public:
-    File(Data &data);
+    Resource(Data &data);
 
 private:
     Data data;
+	Log *log;
     struct stat file;
 
-	void fileHandler();
+	void handleFile();
+	void handleDirectory();
+	void handleCgi();
+	void handleUpload();
     bool setStat();
+	bool isDirectory();
+	bool isRegular();
 	bool isCgi();
+	bool isUpload();
 };

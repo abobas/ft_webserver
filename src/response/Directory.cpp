@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 21:55:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:39:13 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,7 @@ void Directory::handleDirIndex()
 	
 	dir = opendir(data.path.c_str());
 	if (!dir)
-	{
-		perror("opendir()");
-		data.response.sendInternalError();
-		return ;
-	}
+		throw "opendir()";
 	for (struct dirent *dirent = readdir(dir); dirent != NULL; dirent = readdir(dir))
 	{
 		if (file == dirent->d_name)

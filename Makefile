@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/10/28 19:24:37 by abobas        ########   odam.nl          #
+#    Updated: 2020/10/28 20:50:19 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRC = 			main.cpp \
 				Socket.cpp \
 				response/Response.cpp \
 				response/Data.cpp \
-				response/File.cpp \
+				response/Resource.cpp \
 				response/Directory.cpp \
 				response/Proxy.cpp \
 				response/Cgi.cpp \

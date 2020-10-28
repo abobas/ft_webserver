@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 19:54:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:50:55 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ Server::Server(Json &&config) : config(config)
 	{
 		log->logError(e);
 	}
+}
+
+Server::~Server()
+{
+	delete log;
 }
 
 void Server::runtime()
@@ -144,7 +149,7 @@ void Server::writeClient(Socket &client)
 {
 	Response response(Data(client, config, messages[client]));
 	deleteMessage(client);
-	if (response.isProxySet())
+	if (response.getProxyValue())
 	{
 		addSocket(response.getProxySocket());
 		addMessage(response.getProxySocket(), response.getProxyRequest());

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 15:13:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:44:19 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <dirent.h>
 
 /**
-* @brief Sends directory listing or index file to client.
+* @brief Handles directory listings and index files.
 */
 class Directory
 {

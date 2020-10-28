@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 01:21:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:12:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,10 @@ static std::string lineTerminator = "\r\n";
 
 Proxy::Proxy(Data &data) : data(data)
 {
-	try
-	{
-		setPath();
-		createProxySocket();
-		setProxyAddress();
-		connectProxySocket();
-	}
-	catch (const char *e)
-	{
-		throw e;
-	}
+	setPath();
+	createProxySocket();
+	setProxyAddress();
+	connectProxySocket();
 }
 
 void Proxy::setPath()

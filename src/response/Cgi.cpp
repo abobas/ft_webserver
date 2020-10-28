@@ -6,29 +6,18 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 16:28:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:42:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cgi.hpp"
 
-//debugging
-#include <iostream>
-
 Cgi::Cgi(Data &data) : data(data)
 {
-	try
-	{
-		setEnvironment();
-		setTmp();
-		executeScript();
-		deleteTmp();
-	}
-	catch (const char *e)
-	{
-		perror(e);
-		data.response.sendInternalError();
-	}
+	setEnvironment();
+	setTmp();
+	executeScript();
+	deleteTmp();
 }
 
 void Cgi::executeScript()
@@ -53,21 +42,12 @@ void Cgi::childProcess()
 	argv.push_back(NULL);
 	fd = open(tmp_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
 	if (fd < 0)
-	{
-		perror("child: open()");
 		exit(1);
-	}
 	if (dup2(fd, STDOUT_FILENO) < 0)
-	{
-		perror("child: dup2()");
 		exit(1);
-	}
 	close(fd);
 	if (execve(data.path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
-	{
-		perror("child: execve()");
 		exit(1);
-	}
 }
 
 void Cgi::parentProcess()
@@ -91,7 +71,6 @@ void Cgi::parentProcess()
 	}
 	if (exit == 0)
 	{
-		std::cout << "written to " << tmp_path << std::endl;
 		data.response.addHeader("content-type", "text/html");
 		data.response.sendFile(tmp_path);
 	}
@@ -106,10 +85,7 @@ void Cgi::setTmp()
 
 void Cgi::deleteTmp()
 {
-	if (remove(tmp_path.c_str()) < 0)
-		perror("remove()");
-	else
-		std::cout << "deleted " << tmp_path << std::endl;
+	remove(tmp_path.c_str());
 }
 
 void Cgi::setEnvironment()
@@ -119,10 +95,6 @@ void Cgi::setEnvironment()
 	setServerEnv();
 	setPathEnv();
 	env.push_back(NULL);
-	// std::cout << "--------ENV---------" << std::endl;
-	// for (auto n : env)
-	// 	std::cout << n << std::endl;
-	// std::cout << "--------------------" << std::endl;
 }
 
 void Cgi::setConfigEnv()

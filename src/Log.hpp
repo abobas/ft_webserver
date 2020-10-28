@@ -6,9 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:48 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 19:48:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:07:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 #include "Socket.hpp"
 #include <fstream>

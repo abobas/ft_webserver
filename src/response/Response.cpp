@@ -6,37 +6,50 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 01:29:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 21:04:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 
 Response::Response(Data &&data) : data(data)
-{	
+{
+	log = Log::getInstance();
 	if (!isValid())
-		return ;
+		return;
 	try
 	{
 		if (isProxy())
 			handleProxy();
-		else if (isFile())
-			File file(this->data);
-		else if (isUpload())
-			Upload upload(this->data);
+		else if (isResource())
+			handleResource();
 		else
-			data.response.sendNotImplemented();
+			this->data.response.sendNotImplemented();
 	}
 	catch (const char *e)
 	{
-		perror(e);
-		data.response.sendInternalError();
+		log->logError(e);
+		this->data.response.sendInternalError();
 	}
+}
+
+void Response::handleProxy()
+{
+	log->logEntry("handling proxy request");
+	Proxy proxy(data);
+	proxy_socket = proxy.getProxySocket();
+	proxy_request = proxy.getProxyRequest();
+	setProxyValue();
+}
+
+void Response::handleResource()
+{
+	Resource resource(data);
 }
 
 bool Response::isValid()
 {
-	if (!validMethod())
+	if (!acceptedMethod())
 	{
 		data.response.sendBadMethod();
 		return false;
@@ -49,7 +62,7 @@ bool Response::isValid()
 	return true;
 }
 
-bool Response::validMethod()
+bool Response::acceptedMethod()
 {
 	if (data.method.empty())
 		return false;
@@ -70,30 +83,10 @@ bool Response::isProxy()
 	return false;
 }
 
-void Response::handleProxy()
-{
-	try
-	{
-		Proxy proxy(this->data);
-		this->proxy = proxy.getProxySocket();
-		proxy_request = proxy.getProxyRequest();
-		proxy_true = true;
-	}
-	catch (const char *e)
-	{
-		throw e;
-	}
-}
-
-bool Response::isFile()
+bool Response::isResource()
 {
 	if (data.method == "GET" || data.method == "HEAD")
 		return true;
-	return false;
-}
-
-bool Response::isUpload()
-{
 	if (data.method == "PUT" || data.method == "POST")
 		return true;
 	return false;
@@ -101,7 +94,7 @@ bool Response::isUpload()
 
 Socket Response::getProxySocket()
 {
-	return proxy;
+	return proxy_socket;
 }
 
 std::string Response::getProxyRequest()
@@ -109,7 +102,12 @@ std::string Response::getProxyRequest()
 	return proxy_request;
 }
 
-bool Response::isProxySet()
+void Response::setProxyValue()
 {
-	return proxy_true;
+	proxy_value = true;
+}
+
+bool Response::getProxyValue()
+{
+	return proxy_value;
 }

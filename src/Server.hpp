@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 19:45:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 20:51:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Server
 
 public:
 	Server(Json &&config);
+	~Server();
 
 private:
 	std::vector<Socket> sockets;
@@ -46,7 +47,7 @@ private:
 	};
 	fd_set read_set;
 	fd_set write_set;
-
+	
 	void createListenSockets();
 	void runtime();
 	void fillSelectSets();
