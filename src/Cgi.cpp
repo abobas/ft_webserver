@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 01:46:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 16:28:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void Cgi::parentProcess()
 
 void Cgi::setTmp()
 {
-	tmp_path = "/tmp/webserv-cgi-output-" + std::to_string(rand());
+	tmp_path = "./tmp/webserv-cgi-output-" + std::to_string(rand());
 }
 
 void Cgi::deleteTmp()

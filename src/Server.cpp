@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 15:28:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 16:50:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,14 @@ Server::Server(Json &&config) : config(config)
 	try
 	{
 		createListenSockets();
-		createLogs("./logs/logs.txt");
+		log.createLogFile("./logs/logs.txt");
 		while (1)
 			runtime();
 	}
 	catch (const char *e)
 	{
-		logs << getTime() << e << ": " << strerror(errno) << std::endl;
+		log.logError(e);
 	}
-}
-
-std::string Server::getTime()
-{
-	struct timeval time;
-	struct tm *tmp;
-	char string[128];
-
-	if (gettimeofday(&time, NULL))
-		return "";
-	tmp = localtime(&time.tv_sec);
-	strftime(string, 128, "%x %X", tmp);
-	return std::string(string) + " ";
 }
 
 void Server::runtime()
@@ -47,18 +34,6 @@ void Server::runtime()
 		throw "select()";
 	if (select > 0)
 		handleOperations();
-}
-
-void Server::createLogs(std::string path)
-{
-	logs.open(path.c_str(), std::ios::out | std::ios::trunc);
-	if (!logs.is_open())
-		throw "is_open()";
-}
-
-void Server::logSocket(std::string message, Socket &socket)
-{
-	logs << getTime() << message + " " << socket.getSocket() << std::endl;
 }
 
 void Server::createListenSockets()
@@ -169,17 +144,17 @@ void Server::acceptClient(Socket &listen)
 	client = accept(listen.getSocket(), &client_address, &client_address_length);
 	if (client < 0)
 	{
-		logs << getTime() << " accept(): " << strerror(errno) << std::endl;
+		log.logError("accept()");
 		return;
 	}
 	addSocket(Socket("client_read", client));
-	logs << getTime() << "accepted client " << client << std::endl;
+	log.logSocket("accepted client", client);
 }
 
 void Server::readClient(Socket &client)
 {
 	addMessage(client, client.receive());
-	logs << getTime() << "read client " << client.getSocket() << std::endl;
+	log.logSocket("read client", client);
 	transformSocket(client);
 }
 
@@ -192,12 +167,12 @@ void Server::writeClient(Socket &client)
 		addSocket(response.getProxySocket());
 		addMessage(response.getProxySocket(), response.getProxyRequest());
 		addPair(client.getSocket(), sockets.back().getSocket());
-		logs << getTime() << "connected with proxy " << response.getProxySocket().getSocket() << std::endl;
+		log.logSocket("connected with proxy", response.getProxySocket());
 		transformSocket(client);
 	}
 	else
 	{
-		logs << getTime() << "wrote client " << client.getSocket() << std::endl;
+		log.logSocket("wrote client", client);
 		disconnectSocket(client);
 	}
 }
@@ -205,7 +180,7 @@ void Server::writeClient(Socket &client)
 void Server::writeProxy(Socket &proxy)
 {
 	proxy.sendData(messages[proxy]);
-	logs << getTime() << "wrote proxy " << proxy.getSocket() << std::endl;
+	log.logSocket("wrote proxy", proxy);
 	deleteMessage(proxy);
 	transformSocket(proxy);
 }
@@ -213,7 +188,7 @@ void Server::writeProxy(Socket &proxy)
 void Server::readProxy(Socket &proxy)
 {
 	addMessage(proxy, proxy.receive());
-	logs << getTime() << "read proxy " << proxy.getSocket() << std::endl;
+	log.logSocket("read proxy", proxy);
 	transformSocket(proxy);
 }
 
@@ -233,7 +208,7 @@ void Server::writeWaitingClient(Socket &client)
 	if (proxy == client || proxy.getType() != "proxy_done")
 		return;
 	client.sendData(messages[proxy]);
-	logs << getTime() << "wrote client " << client.getSocket() << std::endl;
+	log.logSocket("wrote client", client);
 	deleteMessage(proxy);
 	disconnectSocket(proxy);
 	deletePair(client.getSocket());
@@ -242,7 +217,6 @@ void Server::writeWaitingClient(Socket &client)
 
 void Server::transformSocket(Socket &socket)
 {
-	logs << getTime() << "transformed socket " << socket.getSocket() << " from " << socket.getType();
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
@@ -251,14 +225,14 @@ void Server::transformSocket(Socket &socket)
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	logs << " to " << socket.getType() << std::endl;
+	log.logSocket("transformed socket", socket);
 }
 
 void Server::disconnectSocket(Socket &socket)
 {
 	close(socket.getSocket());
 	deleteSocket(socket);
-	logs << getTime() << "disconnected socket " << socket.getSocket() << std::endl;
+	log.logSocket("disconnected socket", socket);
 }
 
 void Server::addSocket(Socket &insert)

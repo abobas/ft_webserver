@@ -6,14 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 15:29:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 16:37:42 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Socket.hpp"
 #include "json/Json.hpp"
+#include "Socket.hpp"
+#include "Logs.hpp"
 #include "Response.hpp"
 #include "Data.hpp"
 #include <fstream>
@@ -42,8 +43,8 @@ private:
 	std::vector<Socket> sockets;
 	std::map<int, int> pairs;
 	std::map<Socket, std::string> messages;
-	std::ofstream logs;
 	Json config;
+	Logs log;
 	struct timeval tv
 	{
 		tv.tv_sec = 1, 
@@ -53,8 +54,6 @@ private:
 	fd_set write_set;
 
 	void createListenSockets();
-	void createLogs(std::string path);
-	void logSocket(std::string message, Socket &socket);
 	std::string getTime();
 	void runtime();
 	void fillSelectSets();

@@ -6,11 +6,12 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/10/28 03:44:06 by abobas        ########   odam.nl          #
+#    Updated: 2020/10/28 16:54:46 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = 			main.cpp \
+				Logs.cpp \
 				Data.cpp \
 				Server.cpp \
 				Socket.cpp \
