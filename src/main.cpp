@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 03:31:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 17:06:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ Json getConfig(char *config)
 
 int main(int ac, char **av)
 {
-
 	try
 	{
 		validateInput(ac, av);

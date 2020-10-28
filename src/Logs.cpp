@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 16:51:37 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 17:22:31 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ void Logs::logSocket(std::string message, Socket socket)
 void Logs::logSocket(std::string message, int socket)
 {
 	file << getTime() << message + " " << socket << std::endl;
+}
+
+void Logs::logEntry(std::string message)
+{
+	file << getTime() << message << std::endl;
 }
 
 void Logs::logError(const char *error)

@@ -1,6 +1,6 @@
 ### REFACTORING ###
-- Log class
-- Socket functions in Socket class
+- Logger in Response
+- try / catch blocks
 
 ### LOGGER TOEVOEGEN ###
 - Log class

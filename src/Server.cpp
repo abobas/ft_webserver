@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 16:50:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 17:41:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ Server::Server(Json &&config) : config(config)
 {
 	try
 	{
-		createListenSockets();
 		log.createLogFile("./logs/logs.txt");
+		createListenSockets();
 		while (1)
 			runtime();
 	}
@@ -38,24 +38,11 @@ void Server::runtime()
 
 void Server::createListenSockets()
 {
-	int new_socket;
-	int enable = 1;
-	sockaddr_in new_address;
-
 	for (auto server : config["http"]["servers"].array_items())
 	{
-		memset(&new_address, 0, sizeof(new_address));
-		new_socket = socket(AF_INET, SOCK_STREAM, 0);
-		if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-			throw "setsockopt()";
-		new_address.sin_family = AF_INET;
-		new_address.sin_addr.s_addr = INADDR_ANY;
-		new_address.sin_port = htons(server["listen"].number_value());
-		if (bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address)) < 0)
-			throw "bind()";
-		if (listen(new_socket, SOMAXCONN) < 0)
-			throw "listen()";
-		addSocket(Socket("listen", new_socket));
+		int listen = getListenSocket(server["listen"].number_value());
+		addSocket(Socket("listen", listen));
+		log.logSocket("created socket", listen);
 	}
 }
 
@@ -136,12 +123,7 @@ void Server::handleOperations()
 
 void Server::acceptClient(Socket &listen)
 {
-	int client;
-	struct sockaddr client_address;
-	unsigned int client_address_length = 0;
-
-	memset(&client_address, 0, sizeof(client_address));
-	client = accept(listen.getSocket(), &client_address, &client_address_length);
+	int client = getAcceptedClient(listen.getSocket());
 	if (client < 0)
 	{
 		log.logError("accept()");

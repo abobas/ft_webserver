@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 16:37:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 17:44:55 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,12 @@
 #include "Logs.hpp"
 #include "Response.hpp"
 #include "Data.hpp"
-#include <fstream>
+#include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <string>
-#include <cstring>
 #include <sys/time.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <sys/select.h>
-#include <arpa/inet.h>
 
 /**
 * @brief Handles incoming connections and serves responses to clients' requests.
@@ -54,26 +48,30 @@ private:
 	fd_set write_set;
 
 	void createListenSockets();
-	std::string getTime();
 	void runtime();
 	void fillSelectSets();
 	int getSelectRange();
 	int selectCall();
 	void handleOperations();
+	
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);
 	void writeClient(Socket &client);
 	void writeWaitingClient(Socket &client);
+
 	void readProxy(Socket &proxy);
 	void writeProxy(Socket &proxy);
-	void transformSocket(Socket &socket);
-	void disconnectSocket(Socket &socket);
+
 	void addSocket(Socket &insert);
 	void addSocket(Socket &&insert);
 	void deleteSocket(Socket &erase);
+	void transformSocket(Socket &socket);
+	void disconnectSocket(Socket &socket);
+	
 	Socket &findPair(Socket &client);
 	void addPair(int key, int value);
 	void deletePair(int key);
+	
 	void addMessage(Socket &socket, std::string &&request);
 	void addMessage(Socket &&socket, std::string &&request);
 	void deleteMessage(Socket &socket);
