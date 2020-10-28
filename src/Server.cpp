@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 20:50:55 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 21:21:10 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void Server::createListenSockets()
 {
 	for (auto server : config["http"]["servers"].array_items())
 	{
-		int listen = getListenSocket(server["listen"].number_value());
+		int listen = Socket::getListenSocket(server["listen"].number_value());
 		addSocket(Socket("listen", listen));
 		log->logSocket("created socket", listen);
 	}
@@ -128,7 +128,7 @@ void Server::handleOperations()
 
 void Server::acceptClient(Socket &listen)
 {
-	int client = getAcceptedClient(listen.getSocket());
+	int client = listen.acceptClient();
 	if (client < 0)
 	{
 		log->logError("accept()");
