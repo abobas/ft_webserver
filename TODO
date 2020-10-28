@@ -1,10 +1,9 @@
-### PROXY ###
-- waitingClient write
-- proxy state update niet in PAIRS[CLIENT] returned value
+### REFACTORING ###
+- Log class
+- Socket functions in Socket class
 
 ### LOGGER TOEVOEGEN ###
-- global
-- stream overload
+- Log class
 - https://cppcodetips.wordpress.com/2014/01/02/a-simple-logger-class-in-c/
 
 

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 03:50:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 15:29:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ public:
 
 private:
 	std::vector<Socket> sockets;
+	std::map<int, int> pairs;
 	std::map<Socket, std::string> messages;
-	std::map<Socket, Socket> pairs;
 	std::ofstream logs;
 	Json config;
 	struct timeval tv
@@ -54,6 +54,7 @@ private:
 
 	void createListenSockets();
 	void createLogs(std::string path);
+	void logSocket(std::string message, Socket &socket);
 	std::string getTime();
 	void runtime();
 	void fillSelectSets();
@@ -71,8 +72,9 @@ private:
 	void addSocket(Socket &insert);
 	void addSocket(Socket &&insert);
 	void deleteSocket(Socket &erase);
-	void addPair(Socket &key, Socket &value);
-	void deletePair(Socket &key);
+	Socket &findPair(Socket &client);
+	void addPair(int key, int value);
+	void deletePair(int key);
 	void addMessage(Socket &socket, std::string &&request);
 	void addMessage(Socket &&socket, std::string &&request);
 	void deleteMessage(Socket &socket);

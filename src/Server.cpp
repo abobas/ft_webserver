@@ -6,13 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 04:07:21 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 15:28:54 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-Server::Server(Json &&config) : config(config) 
+Server::Server(Json &&config) : config(config)
 {
 	try
 	{
@@ -54,6 +54,11 @@ void Server::createLogs(std::string path)
 	logs.open(path.c_str(), std::ios::out | std::ios::trunc);
 	if (!logs.is_open())
 		throw "is_open()";
+}
+
+void Server::logSocket(std::string message, Socket &socket)
+{
+	logs << getTime() << message + " " << socket.getSocket() << std::endl;
 }
 
 void Server::createListenSockets()
@@ -184,11 +189,10 @@ void Server::writeClient(Socket &client)
 	deleteMessage(client);
 	if (response.isProxySet())
 	{
-		Socket proxy = response.getProxySocket();
-		addSocket(proxy);
-		addMessage(proxy, response.getProxyRequest());
-		addPair(client, sockets.back());
-		logs << getTime() << "connected with proxy " << proxy.getSocket() << std::endl;
+		addSocket(response.getProxySocket());
+		addMessage(response.getProxySocket(), response.getProxyRequest());
+		addPair(client.getSocket(), sockets.back().getSocket());
+		logs << getTime() << "connected with proxy " << response.getProxySocket().getSocket() << std::endl;
 		transformSocket(client);
 	}
 	else
@@ -213,17 +217,26 @@ void Server::readProxy(Socket &proxy)
 	transformSocket(proxy);
 }
 
+Socket &Server::findPair(Socket &client)
+{
+	for (auto &socket : sockets)
+	{
+		if (socket.getSocket() == pairs[client.getSocket()])
+			return socket;
+	}
+	return client;
+}
+
 void Server::writeWaitingClient(Socket &client)
 {
-	// debugging
-	logs << getTime() << "pairs[client].getType() " << pairs[client].getType() << std::endl;
-	if (pairs[client].getType() != "proxy_done")
+	Socket proxy = findPair(client);
+	if (proxy == client || proxy.getType() != "proxy_done")
 		return;
-	client.sendData(messages[pairs[client]]);
+	client.sendData(messages[proxy]);
 	logs << getTime() << "wrote client " << client.getSocket() << std::endl;
-	deleteMessage(pairs[client]);
-	disconnectSocket(pairs[client]);
-	deletePair(client);
+	deleteMessage(proxy);
+	disconnectSocket(proxy);
+	deletePair(client.getSocket());
 	disconnectSocket(client);
 }
 
@@ -245,7 +258,8 @@ void Server::disconnectSocket(Socket &socket)
 {
 	close(socket.getSocket());
 	deleteSocket(socket);
-	logs << getTime() << "disconnected socket " << socket.getSocket() << std::endl;}
+	logs << getTime() << "disconnected socket " << socket.getSocket() << std::endl;
+}
 
 void Server::addSocket(Socket &insert)
 {
@@ -262,12 +276,12 @@ void Server::deleteSocket(Socket &erase)
 	sockets.erase(std::find(sockets.begin(), sockets.end(), erase));
 }
 
-void Server::addPair(Socket &key, Socket &value)
+void Server::addPair(int key, int value)
 {
 	pairs.insert({key, value});
 }
 
-void Server::deletePair(Socket &key)
+void Server::deletePair(int key)
 {
 	pairs.erase(key);
 }
