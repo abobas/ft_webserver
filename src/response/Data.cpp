@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:47:11 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 02:02:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 18:02:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,6 @@ Data::Data(Socket &client, Json &config, std::string &request)
 		return ;
 	setPath();
 	setMethod();
-}
-
-Data getData(Socket &client, Json &config, std::string &request)
-{
-	return Data(client, config, request);
 }
 
 void Data::setServer()

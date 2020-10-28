@@ -6,17 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:42:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 19:19:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 18:02:31 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Socket.hpp"
-#include "json/Json.hpp"
-#include "http/HttpParser.hpp"
-#include "http/HttpRequest.hpp"
-#include "http/HttpResponse.hpp"
+#include "../Socket.hpp"
+#include "../json/Json.hpp"
+#include "../http/HttpParser.hpp"
+#include "../http/HttpRequest.hpp"
+#include "../http/HttpResponse.hpp"
 #include <string>
 
 /**
@@ -44,5 +44,3 @@ private:
 	void setPath();
 	void setMethod();
 };
-
-Data getData(Socket &client, Json &config, std::string &request);

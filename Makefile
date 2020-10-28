@@ -6,21 +6,21 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/10/28 16:54:46 by abobas        ########   odam.nl          #
+#    Updated: 2020/10/28 18:00:33 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = 			main.cpp \
 				Logs.cpp \
-				Data.cpp \
 				Server.cpp \
 				Socket.cpp \
-				Response.cpp \
-				File.cpp \
-				Directory.cpp \
-				Proxy.cpp \
-				Cgi.cpp \
-				Upload.cpp \
+				response/Response.cpp \
+				response/Data.cpp \
+				response/File.cpp \
+				response/Directory.cpp \
+				response/Proxy.cpp \
+				response/Cgi.cpp \
+				response/Upload.cpp \
 				json/Json.cpp \
 				http/HttpParser.cpp \
 				http/HttpRequest.cpp \

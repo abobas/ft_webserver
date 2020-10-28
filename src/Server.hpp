@@ -6,17 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:44:55 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 17:49:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "json/Json.hpp"
 #include "Socket.hpp"
 #include "Logs.hpp"
-#include "Response.hpp"
-#include "Data.hpp"
+#include "json/Json.hpp"
+#include "response/Response.hpp"
+#include "response/Data.hpp"
 #include <string>
 #include <vector>
 #include <map>
