@@ -6,14 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/23 17:37:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 00:48:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "json/Json.hpp"
 #include <iostream>
-#include <fstream>
 #include <fcntl.h>
 
 void validateInput(int ac, char **av)
@@ -41,6 +40,7 @@ Json getConfig(char *config)
 
 int main(int ac, char **av)
 {
+	
 	try
 	{
 		validateInput(ac, av);

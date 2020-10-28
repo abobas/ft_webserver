@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 13:54:50 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 01:43:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ int Server::getSelectRange()
 	int max = 0;
 	for (auto socket : sockets)
 	{
-		if (socket.getSocket() + 1 > max)
-			max = socket.getSocket() + 1;
+		if (socket.getSocket() > max)
+			max = socket.getSocket();
 	}
-	return (max);
+	return (max + 1);
 }
 
 int Server::selectCall()
@@ -172,7 +172,7 @@ void Server::writeClient(Socket &client)
 	std::cout << "-----------------------------------" << std::endl;
 	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
 
-	Response response(getData(client, config, messages[client]));
+	Response response(Data(client, config, messages[client]));
 
 	std::cout << "finished " << client.getType() << " " << client.getSocket() << std::endl;
 	std::cout << "-----------------------------------" << std::endl;

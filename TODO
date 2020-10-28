@@ -1,23 +1,21 @@
-### CGI ###
-- uitgebreidere .php scripts testen
-- ubuntu_cgi_tester testen
-- query form testen
 
-### SIGPIPE ERROR ###
-- if connection closed && socket write() -> SIGPIPE
-- SIGPIPE signal - > kill process -> ERROR 141
-- FIX -> SIGPIPE signal catcher <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### LOGGER TOEVOEGEN ###
+- global
+- stream overload
+- https://cppcodetips.wordpress.com/2014/01/02/a-simple-logger-class-in-c/
 
 ### PROXY ###
-- write operation failed (sigpipe) [FIX SIGPIPE FIRST] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PRIORITY>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+- waitingClient write
 
 ### CHUNKED CONTENT  ### 
 - chunked transfer voor dynamic content
 - READ INTO CHUNKED RFC
 - aan socket.receive() en socket.send() chunked logic toevoegen
 
-### LOGGER TOEVOEGEN ###
-- global
-- stream overload
+### CGI ###
+- uitgebreidere .php scripts testen
+- ubuntu_cgi_tester testen
+- query form testen
 
-### TRY CATCH BLOKS TOEVOEGEN ###
+######## UBUNTU DINGEN #########
+- connect returned altijd 0 op Linux - (http://cr.yp.to/docs/connect.html)

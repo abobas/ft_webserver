@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 21:50:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 01:40:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ private:
     Data data;
     struct stat file;
 
+	void fileHandler();
     bool setStat();
 	bool isCgi();
 };

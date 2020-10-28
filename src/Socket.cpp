@@ -6,12 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 23:09:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 01:36:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-#include <iostream>
 
 Socket::Socket()
 {
@@ -38,18 +37,14 @@ int Socket::getSocket() const
 
 void Socket::sendData(std::string &value)
 {
-	std::cout << "entered socket " << socket << " write()" << std::endl;
-	if (write(socket, value.c_str(), value.size()) < 0)
-		perror("write()");
-	std::cout << "finished socket " << socket << " write()" << std::endl;
+	if (send(socket, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
+		perror("send()");
 }
 
 void Socket::sendData(std::string &&value)
 {
-	std::cout << "entered socket " << socket << " write()" << std::endl;
-	if (write(socket, value.c_str(), value.size()) < 0)
-		perror("write()");
-	std::cout << "finished socket " << socket << " write()" << std::endl;
+	if (send(socket, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
+		perror("send()");
 }
 
 void Socket::sendFile(std::string &path)
@@ -58,9 +53,19 @@ void Socket::sendFile(std::string &path)
 	std::string buffer;
 
 	int fd = open(path.c_str(), O_RDONLY);
+	if (fd < 0)
+	{
+		perror("open()");
+		return;
+	}
 	while (1)
 	{
 		int ret = read(fd, buf, 256);
+		if (ret == -1)
+		{
+			perror("read()");
+			break ;
+		}
 		buf[ret] = '\0';
 		buffer += buf;
 		if (ret < 256)
@@ -77,7 +82,12 @@ std::string Socket::receive()
 
 	while (1)
 	{
-		int ret = read(socket, buf, 256);
+		int ret = recv(socket, buf, 256, 0);
+		if (ret == -1)
+		{
+			perror("recv()");
+			break ;
+		}
 		buf[ret] = '\0';
 		buffer += buf;
 		if (ret < 256)

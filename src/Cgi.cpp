@@ -6,11 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 23:05:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 01:46:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cgi.hpp"
+
+//debugging
 #include <iostream>
 
 Cgi::Cgi(Data &data) : data(data)
