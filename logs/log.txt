@@ -1,0 +1,12 @@
+10/28/20 22:00:18 created socket 4
+10/28/20 22:00:23 accepted client 5
+10/28/20 22:00:23 read client 5
+10/28/20 22:00:23 transformed socket 5
+10/28/20 22:00:23 handling directory request
+10/28/20 22:00:23 wrote client 5
+10/28/20 22:00:23 disconnected socket 5
+10/28/20 22:00:23 accepted client 5
+10/28/20 22:00:23 read client 5
+10/28/20 22:00:23 transformed socket 5
+10/28/20 22:00:23 wrote client 5
+10/28/20 22:00:23 disconnected socket 5
