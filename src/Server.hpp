@@ -6,14 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:49:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 19:45:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Socket.hpp"
-#include "Logs.hpp"
+#include "Log.hpp"
 #include "json/Json.hpp"
 #include "response/Response.hpp"
 #include "response/Data.hpp"
@@ -38,10 +38,10 @@ private:
 	std::map<int, int> pairs;
 	std::map<Socket, std::string> messages;
 	Json config;
-	Logs log;
+	Log *log;
 	struct timeval tv
 	{
-		tv.tv_sec = 1, 
+		tv.tv_sec = 1,
 		tv.tv_usec = 0
 	};
 	fd_set read_set;
@@ -53,7 +53,7 @@ private:
 	int getSelectRange();
 	int selectCall();
 	void handleOperations();
-	
+
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);
 	void writeClient(Socket &client);
@@ -67,11 +67,11 @@ private:
 	void deleteSocket(Socket &erase);
 	void transformSocket(Socket &socket);
 	void disconnectSocket(Socket &socket);
-	
+
 	Socket &findPair(Socket &client);
 	void addPair(int key, int value);
 	void deletePair(int key);
-	
+
 	void addMessage(Socket &socket, std::string &&request);
 	void addMessage(Socket &&socket, std::string &&request);
 	void deleteMessage(Socket &socket);

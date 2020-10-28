@@ -1,49 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Logs.cpp                                           :+:    :+:            */
+/*   Log.cpp                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:22:31 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 19:53:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Logs.hpp"
+#include "Log.hpp"
 
-Logs::Logs()
+Log *Log::instance = NULL;
+
+Log *Log::getInstance()
 {
+	if (!instance)
+		instance = new Log("./logs/log.txt");
+	return instance;
 }
 
-void Logs::createLogFile(std::string path)
+Log::Log(std::string path)
 {
 	file.open(path.c_str(), std::ios::out | std::ios::trunc);
 	if (!file.is_open())
-		throw "is_open()";
+	{
+		std::cerr << "Error: could not create log.txt" << std::endl;
+		exit(1);
+	}
 }
 
-void Logs::logSocket(std::string message, Socket socket)
+void Log::logSocket(std::string message, Socket socket)
 {
 	file << getTime() << message + " " << socket.getSocket() << std::endl;
 }
 
-void Logs::logSocket(std::string message, int socket)
+void Log::logSocket(std::string message, int socket)
 {
 	file << getTime() << message + " " << socket << std::endl;
 }
 
-void Logs::logEntry(std::string message)
+void Log::logEntry(std::string message)
 {
 	file << getTime() << message << std::endl;
 }
 
-void Logs::logError(const char *error)
+void Log::logError(const char *error)
 {
 	file << getTime() << error << ": " << strerror(errno) << std::endl;
 }
 
-std::string Logs::getTime()
+std::string Log::getTime()
 {
 	struct timeval time;
 	struct tm *tmp;

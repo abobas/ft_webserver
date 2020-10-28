@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:41:08 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 18:15:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <arpa/inet.h>
 
 /**
-* @brief Handles socket operations like reading / writing.
+* @brief Handles socket operations.
 */
 class Socket
 {

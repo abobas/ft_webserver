@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Logs.hpp                                           :+:    :+:            */
+/*   Log.hpp                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:48 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 17:22:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 19:48:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,19 @@
 #include <string.h>
 #include <sys/time.h>
 
-class Logs
+class Log
 {
 public:
-	Logs();
-	void createLogFile(std::string path);
+	static Log *getInstance();
 	void logSocket(std::string message, Socket socket);
 	void logSocket(std::string message, int socket);
 	void logEntry(std::string message);
 	void logError(const char *error);
 
 private:
+	static Log *instance;
 	std::ofstream file;
+
+	Log(std::string path);
 	std::string getTime();
 };

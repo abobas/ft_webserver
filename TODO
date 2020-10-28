@@ -1,11 +1,7 @@
 ### REFACTORING ###
-- Logger in Response
+- Logger in Response (Logs assignment operator / copy constructor)
 - try / catch blocks
-
-### LOGGER TOEVOEGEN ###
-- Log class
-- https://cppcodetips.wordpress.com/2014/01/02/a-simple-logger-class-in-c/
-
+- alle perrors() vangen in logError()
 
 ### CHUNKED CONTENT  ### 
 - chunked transfer voor dynamic content
