@@ -6,30 +6,54 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 01:43:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/28 04:07:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include <iostream>
 
-Server::Server(const Json &&config) : config(config)
+Server::Server(Json &&config) : config(config) 
 {
-	createListenSockets();
-	while (1)
-		runtime();
+	try
+	{
+		createListenSockets();
+		createLogs("./logs/logs.txt");
+		while (1)
+			runtime();
+	}
+	catch (const char *e)
+	{
+		logs << getTime() << e << ": " << strerror(errno) << std::endl;
+	}
+}
+
+std::string Server::getTime()
+{
+	struct timeval time;
+	struct tm *tmp;
+	char string[128];
+
+	if (gettimeofday(&time, NULL))
+		return "";
+	tmp = localtime(&time.tv_sec);
+	strftime(string, 128, "%x %X", tmp);
+	return std::string(string) + " ";
 }
 
 void Server::runtime()
 {
 	int select = selectCall();
 	if (select < 0)
-	{
-		perror("select()");
-		throw "fatal error";
-	}
+		throw "select()";
 	if (select > 0)
 		handleOperations();
+}
+
+void Server::createLogs(std::string path)
+{
+	logs.open(path.c_str(), std::ios::out | std::ios::trunc);
+	if (!logs.is_open())
+		throw "is_open()";
 }
 
 void Server::createListenSockets()
@@ -43,23 +67,14 @@ void Server::createListenSockets()
 		memset(&new_address, 0, sizeof(new_address));
 		new_socket = socket(AF_INET, SOCK_STREAM, 0);
 		if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-		{
-			perror("setsockopt()");
-			throw "fatal error";
-		}
+			throw "setsockopt()";
 		new_address.sin_family = AF_INET;
 		new_address.sin_addr.s_addr = INADDR_ANY;
 		new_address.sin_port = htons(server["listen"].number_value());
 		if (bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address)) < 0)
-		{
-			perror("bind()");
-			throw "fatal error";
-		}
+			throw "bind()";
 		if (listen(new_socket, SOMAXCONN) < 0)
-		{
-			perror("listen()");
-			throw "fatal error";
-		}
+			throw "listen()";
 		addSocket(Socket("listen", new_socket));
 	}
 }
@@ -149,84 +164,72 @@ void Server::acceptClient(Socket &listen)
 	client = accept(listen.getSocket(), &client_address, &client_address_length);
 	if (client < 0)
 	{
-		perror("accept()");
+		logs << getTime() << " accept(): " << strerror(errno) << std::endl;
 		return;
 	}
 	addSocket(Socket("client_read", client));
-	std::cout << "accepted client " << client << std::endl;
+	logs << getTime() << "accepted client " << client << std::endl;
 }
 
 void Server::readClient(Socket &client)
 {
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
 	addMessage(client, client.receive());
-	std::cout << messages[client] << std::endl;
-	std::cout << "finished " << client.getType() << " " << client.getSocket() << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
+	logs << getTime() << "read client " << client.getSocket() << std::endl;
 	transformSocket(client);
 }
 
 void Server::writeClient(Socket &client)
 {
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
-
 	Response response(Data(client, config, messages[client]));
-
-	std::cout << "finished " << client.getType() << " " << client.getSocket() << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
-
 	deleteMessage(client);
 	if (response.isProxySet())
 	{
-		addSocket(response.getProxySocket());
-		addMessage(response.getProxySocket(), response.getProxyRequest());
-		addPair(client, response.getProxySocket());
+		Socket proxy = response.getProxySocket();
+		addSocket(proxy);
+		addMessage(proxy, response.getProxyRequest());
+		addPair(client, sockets.back());
+		logs << getTime() << "connected with proxy " << proxy.getSocket() << std::endl;
 		transformSocket(client);
 	}
 	else
+	{
+		logs << getTime() << "wrote client " << client.getSocket() << std::endl;
 		disconnectSocket(client);
+	}
 }
 
 void Server::writeProxy(Socket &proxy)
 {
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << "entered " << proxy.getType() << " " << proxy.getSocket() << std::endl;
 	proxy.sendData(messages[proxy]);
-	std::cout << "finished " << proxy.getType() << " " << proxy.getSocket() << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
+	logs << getTime() << "wrote proxy " << proxy.getSocket() << std::endl;
 	deleteMessage(proxy);
 	transformSocket(proxy);
 }
 
 void Server::readProxy(Socket &proxy)
 {
-	std::cout << "-----------------------------------" << std::endl;
-	std::cout << "entered " << proxy.getType() << " " << proxy.getSocket() << std::endl;
 	addMessage(proxy, proxy.receive());
-	std::cout << messages[proxy] << std::endl;
-	std::cout << "finished " << proxy.getType() << " " << proxy.getSocket() << std::endl;
-	std::cout << "-----------------------------------" << std::endl;
+	logs << getTime() << "read proxy " << proxy.getSocket() << std::endl;
 	transformSocket(proxy);
 }
 
 void Server::writeWaitingClient(Socket &client)
 {
+	// debugging
+	logs << getTime() << "pairs[client].getType() " << pairs[client].getType() << std::endl;
 	if (pairs[client].getType() != "proxy_done")
 		return;
-	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
 	client.sendData(messages[pairs[client]]);
+	logs << getTime() << "wrote client " << client.getSocket() << std::endl;
 	deleteMessage(pairs[client]);
 	disconnectSocket(pairs[client]);
 	deletePair(client);
 	disconnectSocket(client);
-	std::cout << "entered " << client.getType() << " " << client.getSocket() << std::endl;
 }
 
 void Server::transformSocket(Socket &socket)
 {
-	std::cout << "entered transform " << socket.getType() << " " << socket.getSocket() << std::endl;
+	logs << getTime() << "transformed socket " << socket.getSocket() << " from " << socket.getType();
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
@@ -235,14 +238,18 @@ void Server::transformSocket(Socket &socket)
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	std::cout << "finished transform " << socket.getType() << " " << socket.getSocket() << std::endl;
+	logs << " to " << socket.getType() << std::endl;
 }
 
 void Server::disconnectSocket(Socket &socket)
 {
 	close(socket.getSocket());
 	deleteSocket(socket);
-	std::cout << "disconnected " << socket.getType() << " " << socket.getSocket() << std::endl;
+	logs << getTime() << "disconnected socket " << socket.getSocket() << std::endl;}
+
+void Server::addSocket(Socket &insert)
+{
+	sockets.push_back(insert);
 }
 
 void Server::addSocket(Socket &&insert)
@@ -255,7 +262,7 @@ void Server::deleteSocket(Socket &erase)
 	sockets.erase(std::find(sockets.begin(), sockets.end(), erase));
 }
 
-void Server::addPair(Socket &key, Socket &&value)
+void Server::addPair(Socket &key, Socket &value)
 {
 	pairs.insert({key, value});
 }

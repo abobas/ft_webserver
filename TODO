@@ -1,11 +1,12 @@
+### PROXY ###
+- waitingClient write
+- proxy state update niet in PAIRS[CLIENT] returned value
 
 ### LOGGER TOEVOEGEN ###
 - global
 - stream overload
 - https://cppcodetips.wordpress.com/2014/01/02/a-simple-logger-class-in-c/
 
-### PROXY ###
-- waitingClient write
 
 ### CHUNKED CONTENT  ### 
 - chunked transfer voor dynamic content
