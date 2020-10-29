@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 00:39:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 01:12:39 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ bool Socket::closedClient()
 {
 	char buf[10];
 	int ret = recv(socket_fd, buf, 10, MSG_PEEK);
+	log->logEntry("recv(MSG_PEEK)", ret);
 	if (ret < 0)
 		log->logError("recv()");
 	else if (ret > 0)
@@ -65,14 +66,14 @@ void Socket::sendData(std::string &value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logPlain(value, 0);
+	log->logBlock(value);
 }
 
 void Socket::sendData(std::string &&value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logPlain(value, 0);
+	log->logBlock(value);
 }
 
 void Socket::sendFile(std::string &path)
