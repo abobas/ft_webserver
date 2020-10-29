@@ -1,10 +1,30 @@
+
+### SOCKET READ ###
+--- herkend end of headers correct met CRLF
+--- herkend bodies nog niet in requests
+------- herkend nog niet POST / PUT methods
+------- herkend nog niet transfer-encoding (chunked)
+
+### REFACTORING ###
+--- error responses op server / io operations level
+--- http header parsing op io operations level
+
+//////////////////////////////////////////////////////////////
+
 ### CHUNKED CONTENT  ### 
+--- socket blijft lezen tot received bytes == 1 && no body alleen carriage return (\r\n)
+
 - chunked logic toevoegen aan socket.receive() <--> client_read.transform()
 ===== gelezen chunks bufferen
 ===== stopping condition: bepaald symbool (combinatie met lege body / content length ???)
 - chunked transfer voor dynamic content
 - READ INTO CHUNKED RFC
 - aan socket.receive() en socket.send() chunked logic toevoegen
+
+#### TODO ####
+- sendData && sendFile && receiveData error return teovoegen aan zowel response, server als httpResponse
+- httpResponse misschien splitsen in headerBuilder // HTTP syntax writer
+- HTTP syntax writer nodig buiten response (dus excl request / data class) voov versturen error returns en meer
 
 ### CGI ###
 - uitgebreidere .php scripts testen

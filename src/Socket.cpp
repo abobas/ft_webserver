@@ -6,11 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 01:12:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 14:09:37 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+
+static std::string ChunkedTerminator = "\n";
 
 Socket::Socket()
 {
@@ -43,9 +45,8 @@ int Socket::getListenSocket(int port)
 
 bool Socket::closedClient()
 {
-	char buf[10];
-	int ret = recv(socket_fd, buf, 10, MSG_PEEK);
-	log->logEntry("recv(MSG_PEEK)", ret);
+	char buf[1];
+	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
 	if (ret < 0)
 		log->logError("recv()");
 	else if (ret > 0)
@@ -62,49 +63,34 @@ int Socket::acceptClient()
 	return accept(getSocket(), &client_address, &client_address_length);
 }
 
+void Socket::receiveData()
+{
+	std::string buffer = readSocket();
+	message += buffer;
+	if (message.substr(message.size() - 3) == "\n\r\n")
+		end_of_file = true;
+}
+
 void Socket::sendData(std::string &value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(value);
+	//log->logBlock(value);
 }
 
 void Socket::sendData(std::string &&value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(value);
+	//log->logBlock(value);
 }
 
 void Socket::sendFile(std::string &path)
 {
-	char buf[257];
-	std::string buffer;
-
-	int fd = open(path.c_str(), O_RDONLY);
-	if (fd < 0)
-	{
-		log->logError("open()");
-		return;
-	}
-	while (1)
-	{
-		int ret = read(fd, buf, 256);
-		if (ret < 0)
-		{
-			log->logError("read()");
-			break ;
-		}
-		buf[ret] = '\0';
-		buffer += buf;
-		if (ret < 256)
-			break;
-	}
-	close(fd);
-	sendData(buffer);
+	sendData(readFile(path));
 }
 
-std::string Socket::receive()
+std::string Socket::readSocket()
 {
 	char buf[257];
 	std::string buffer;
@@ -122,8 +108,42 @@ std::string Socket::receive()
 		if (ret < 256)
 			break;
 	}
-	log->logEntry("bytes received", buffer.size());
 	return buffer;
+}
+
+std::string Socket::readFile(std::string &path)
+{
+	std::string buffer;
+	char buf[257];
+	int fd;
+	
+	fd = open(path.c_str(), O_RDONLY);
+	if (fd < 0)
+	{
+		log->logError("open()");
+		return buffer;
+	}
+	while (1)
+	{
+		int ret = read(fd, buf, 256);
+		if (ret < 0)
+		{
+			log->logError("read()");
+			break;
+		}
+		buf[ret] = '\0';
+		buffer += buf;
+		if (ret < 256)
+			break;
+	}
+	close(fd);
+	return buffer;
+}
+
+void Socket::cleanSocket()
+{
+	message.clear();
+	end_of_file = false;
 }
 
 std::string Socket::getType() const
@@ -139,4 +159,14 @@ void Socket::setType(std::string new_type)
 int Socket::getSocket() const
 {
 	return socket_fd;
+}
+
+std::string Socket::getMessage() const
+{
+	return message;
+}
+
+bool Socket::getEndOfFile() const
+{
+	return end_of_file;
 }

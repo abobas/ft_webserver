@@ -7,7 +7,7 @@
             "locations": {
                 "/": {
 					"root": "/home/abobas/webserver/test_data/YoupiBanane",
-					"index": "",
+					"index": "index.html",
                     "accepted-methods": ["GET"],
                     "autoindex": false
                 },

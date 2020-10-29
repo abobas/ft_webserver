@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 00:05:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 14:09:19 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,28 @@ public:
 	static int getListenSocket(int port);
 	int acceptClient();
 	bool closedClient();
+	void cleanSocket();
+	
 	void sendData(std::string &value);
 	void sendData(std::string &&value);
 	void sendFile(std::string &path);
-	std::string receive();
-	std::string getType() const;
+	void receiveData();
+
 	void setType(std::string new_type);
 	int getSocket() const;
+	bool getEndOfFile() const;
+	std::string getMessage() const;
+	std::string getType() const;
 
 private:
 	Log *log;
 	std::string type;
+	std::string message;
 	int socket_fd;
+	bool end_of_file = false;
+
+	std::string readFile(std::string &path);
+	std::string readSocket();
 };
 
 inline bool operator==(const Socket &lhs, const Socket &rhs)
@@ -54,6 +64,10 @@ inline bool operator==(const Socket &lhs, const Socket &rhs)
 	if (lhs.getSocket() != rhs.getSocket())
 		return false;
 	if (lhs.getType() != rhs.getType())
+		return false;
+	if (lhs.getEndOfFile() != rhs.getEndOfFile())
+		return false;
+	if (lhs.getMessage() != rhs.getMessage())
 		return false;
 	return true;
 }

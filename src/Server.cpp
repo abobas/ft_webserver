@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 01:11:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 14:12:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void Server::fillSelectSets()
 			FD_SET(socket.getSocket(), &read_set);
 		else if (socket.getType() == "proxy_write")
 			FD_SET(socket.getSocket(), &write_set);
-		else if (socket.getType() == "waiting_client_write")
+		else if (socket.getType() == "wait_client_write")
 			FD_SET(socket.getSocket(), &write_set);
 	}
 }
@@ -113,7 +113,7 @@ void Server::handleOperations()
 			if (FD_ISSET(socket.getSocket(), &write_set))
 				writeProxy(socket);
 		}
-		else if (socket.getType() == "waiting_client_write")
+		else if (socket.getType() == "wait_client_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
 				writeWaitingClient(socket);
@@ -139,12 +139,17 @@ void Server::readClient(Socket &client)
 		disconnectSocket(client);
 	else
 	{
-		addMessage(client, client.receive());
-		log->logEntry("read client", client.getSocket());
-		log->logBlock(messages[client]);
+		client.receiveData();
+		if (!client.getEndOfFile())
+		{
+			log->logEntry("read part of client", client.getSocket());
+			return;
+		}
+		log->logEntry("fully read client", client.getSocket());
+		log->logBlock(client.getMessage());
+		addMessage(client, client.getMessage());
 		transformSocket(client);
 	}
-
 }
 
 void Server::writeClient(Socket &client)
@@ -157,7 +162,8 @@ void Server::writeClient(Socket &client)
 		addMessage(response.getProxySocket(), response.getProxyRequest());
 		addPair(client.getSocket(), sockets.back().getSocket());
 		log->logEntry("connected with proxy", response.getProxySocket().getSocket());
-		client.setType("waiting_client_write");
+		client.setType("wait_client_write");
+		log->logEntry("transformed socket", client.getSocket());
 	}
 	else
 	{
@@ -176,8 +182,16 @@ void Server::writeProxy(Socket &proxy)
 
 void Server::readProxy(Socket &proxy)
 {
-	addMessage(proxy, proxy.receive());
-	log->logEntry("read proxy", proxy.getSocket());
+	proxy.receiveData();
+	if (!proxy.getEndOfFile())
+	{
+		log->logEntry("read part of proxy", proxy.getSocket());
+		//log->logBlock(proxy.getMessage());
+		return;
+	}
+	log->logEntry("fully read proxy", proxy.getSocket());
+	//log->logBlock(proxy.getMessage());
+	addMessage(proxy, proxy.getMessage());
 	transformSocket(proxy);
 }
 
@@ -201,7 +215,7 @@ void Server::writeWaitingClient(Socket &client)
 	deleteMessage(proxy);
 	disconnectSocket(proxy);
 	deletePair(client.getSocket());
-	disconnectSocket(client);
+	transformSocket(client);
 }
 
 void Server::transformSocket(Socket &socket)
@@ -209,19 +223,26 @@ void Server::transformSocket(Socket &socket)
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
+	{
 		socket.setType("client_read");
+		socket.cleanSocket();
+	}
+	else if (socket.getType() == "wait_client_write")
+	{
+		socket.setType("client_read");
+		socket.cleanSocket();
+	}
 	else if (socket.getType() == "proxy_write")
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	else if (socket.getType() == "waiting_client_write")
-		socket.setType("client_read");
 	log->logEntry("transformed socket", socket.getSocket());
 }
 
 void Server::disconnectSocket(Socket &socket)
 {
-	close(socket.getSocket());
+	if (close(socket.getSocket() < 0))
+		log->logError("close()");
 	deleteSocket(socket);
 	log->logEntry("disconnected socket", socket.getSocket());
 }

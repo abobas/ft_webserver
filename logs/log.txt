@@ -1,53 +1,44 @@
-10/29/20 00:40:11 created socket 4
-10/29/20 00:40:16 accepted client 5
-10/29/20 00:40:16 bytes received 69
-10/29/20 00:40:16 read client 5
+10/29/20 14:12:41 created socket 4
+10/29/20 14:12:44 accepted client 5
+10/29/20 14:12:44 read part of client 5
+10/29/20 14:12:44 fully read client 5
 -----------------------------------
 GET / HTTP/1.1
-Host: localhost
+Host: localhost:80
 User-Agent: Go-http-client/1.1
-Acce
------------------------------------
-10/29/20 00:40:16 transformed socket 5
-10/29/20 00:40:16 data is valid
-10/29/20 00:40:16 handling directory request
-HTTP/1.1 404 Not Found
-connection: keep-alive
-content-type: text/plain
-
-
-404: Not found
-10/29/20 00:40:16 wrote client 5
-10/29/20 00:40:16 transformed socket 5
-10/29/20 00:40:16 bytes received 20
-10/29/20 00:40:16 read client 5
------------------------------------
-pt-Encoding: gzip
-
------------------------------------
-10/29/20 00:40:16 transformed socket 5
- 405 Method Not Allowed
-connection: keep-alive
-content-type: text/plain
-
-
-405: Method not allowed
-10/29/20 00:40:16 wrote client 5
-10/29/20 00:40:16 transformed socket 5
-10/29/20 00:40:16 bytes received 1
-10/29/20 00:40:16 read client 5
------------------------------------
+Accept-Encoding: gzip
 
 
 -----------------------------------
-10/29/20 00:40:16 transformed socket 5
- 405 Method Not Allowed
-connection: keep-alive
-content-type: text/plain
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:44 data is valid
+10/29/20 14:12:44 handling directory request
+10/29/20 14:12:44 wrote client 5
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:44 read part of client 5
+10/29/20 14:12:44 fully read client 5
+-----------------------------------
+POST / HTTP/1.1
+Host: localhost:80
+User-Agent: Go-http-client/1.1
+Transfer-Encoding: chunked
+Content-Type: test/file
+Accept-Encoding: gzip
 
 
-10/29/20 00:40:16 send(): Broken pipe
-405: Method not allowed
-10/29/20 00:40:16 wrote client 5
-10/29/20 00:40:16 transformed socket 5
-10/29/20 00:40:16 disconnected socket 5
+-----------------------------------
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:44 wrote client 5
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:44 read part of client 5
+10/29/20 14:12:44 read part of client 5
+10/29/20 14:12:44 fully read client 5
+-----------------------------------
+0
+
+
+-----------------------------------
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:44 wrote client 5
+10/29/20 14:12:44 transformed socket 5
+10/29/20 14:12:53 disconnected socket 5

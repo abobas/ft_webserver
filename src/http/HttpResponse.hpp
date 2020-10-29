@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 22:34:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 12:26:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ public:
 	static const int INTERNAL_SERVER_ERROR;
 	static const int NOT_IMPLEMENTED;
 	static const int SERVICE_UNAVAILABLE;
+	static const std::string CONNECTION_TYPE;
 
 	HttpResponse(HttpRequest &httpRequest);
 	void sendData(std::string &data);
