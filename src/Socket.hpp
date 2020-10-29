@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 14:09:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 20:38:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Log.hpp"
 #include <string>
+#include <algorithm>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
@@ -39,7 +40,6 @@ public:
 	
 	void sendData(std::string &value);
 	void sendData(std::string &&value);
-	void sendFile(std::string &path);
 	void receiveData();
 
 	void setType(std::string new_type);
@@ -47,16 +47,20 @@ public:
 	bool getEndOfFile() const;
 	std::string getMessage() const;
 	std::string getType() const;
-
+	
 private:
 	Log *log;
 	std::string type;
 	std::string message;
 	int socket_fd;
+	bool headers_read = true;
+	bool chunked = false;
 	bool end_of_file = false;
 
-	std::string readFile(std::string &path);
 	std::string readSocket();
+	bool isChunked();
+	bool endOfHeaders();
+	bool endOfChunked();
 };
 
 inline bool operator==(const Socket &lhs, const Socket &rhs)

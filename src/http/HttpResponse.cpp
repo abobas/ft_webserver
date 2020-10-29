@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 13:59:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 20:49:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,23 @@ const int HttpResponse::INTERNAL_SERVER_ERROR = 500;
 const int HttpResponse::NOT_IMPLEMENTED = 501;
 const int HttpResponse::SERVICE_UNAVAILABLE = 503;
 const std::string HttpResponse::CONNECTION_TYPE = "keep-alive";
-
-static std::string lineTerminator = "\r\n";
+const std::string HttpResponse::ENCODING_TYPE = "chunked";
 
 HttpResponse::HttpResponse(HttpRequest &request) : request(request)
 {
+	log = Log::getInstance();
+}
+
+void HttpResponse::sendHeaders()
+{
+	std::ostringstream oss;
+	oss << request.getVersion() << " " << status << " " << status_message << CRLF;
+
+	for (auto &header : response_headers)
+		oss << header.first.c_str() << ": " << header.second.c_str() << CRLF;
+
+	oss << CRLF;
+	request.getSocket().sendData(oss.str());
 }
 
 void HttpResponse::addHeader(std::string name, std::string value)
@@ -38,131 +50,201 @@ void HttpResponse::addHeader(std::string name, std::string value)
 	response_headers.insert(std::pair<std::string, std::string>(name, value));
 }
 
+void HttpResponse::sendBodyData(std::string &data)
+{
+	std::stringstream stream;
+	
+	stream << std::hex << data.size();
+	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
+	request.getSocket().sendData("0" + CRLF + CRLF);
+}
+
+void HttpResponse::sendBodyData(std::string &&data)
+{
+	std::stringstream stream;
+	
+	stream << std::hex << data.size();
+	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
+	request.getSocket().sendData("0" + CRLF + CRLF);
+}
+
 void HttpResponse::sendData(std::string &&data)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData(data);
+	sendBodyData(data);
 }
 
 void HttpResponse::sendData(std::string &data)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData(data);
-}
-
-void HttpResponse::sendData(char const *data)
-{
-	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
-	sendHeaders();
-	request.getSocket().sendData(data);
+	sendBodyData(data);
 }
 
 void HttpResponse::sendFile(std::string &path)
 {
+	std::string buffer;
+	struct stat file;
+
+	if (stat(path.c_str(), &file) < 0)
+	{
+		sendInternalError();
+		return;
+	}
+	if (readFile(path, buffer) < 0)
+	{
+		sendInternalError();
+		return;
+	}
 	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	addFileHeaders(path);
 	sendHeaders();
-	request.getSocket().sendFile(path);
+	sendBodyData(buffer);
+}
+
+void HttpResponse::sendFileRaw(std::string &path)
+{
+	std::string buffer;
+	struct stat file;
+
+	if (stat(path.c_str(), &file) < 0)
+	{
+		sendInternalError();
+		return;
+	}
+	if (readFile(path, buffer) < 0)
+	{
+		sendInternalError();
+		return;
+	}
+	sendBodyData(buffer);
 }
 
 void HttpResponse::sendFileHeaders(std::string &path)
 {
+	struct stat file;
+	
+	if (stat(path.c_str(), &file) < 0)
+	{
+		sendInternalError();
+		return;
+	}
 	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	addFileHeaders(path);
 	sendHeaders();
+}
+
+int HttpResponse::readFile(std::string &path, std::string &buffer)
+{
+	char buf[257];
+	int fd;
+	
+	fd = open(path.c_str(), O_RDONLY);
+	if (fd < 0)
+	{
+		log->logError("open()");
+		return -1;
+	}
+	while (1)
+	{
+		int ret = read(fd, buf, 256);
+		if (ret < 0)
+		{
+			log->logError("read()");
+			close(fd);
+			return -1;
+		}
+		buf[ret] = '\0';
+		buffer += buf;
+		if (ret < 256)
+			break;
+	}
+	close(fd);
+	return 0;
 }
 
 void HttpResponse::sendCreated(std::string &&path)
 {
 	addStatusHeader(CREATED, "Created");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	addHeader("content-location", path);
 	addFileHeaders(path);
 	sendHeaders();
-	request.getSocket().sendData("201: Created");
+	sendBodyData("201: Created");
 }
 
 void HttpResponse::sendModified(std::string &&path)
 {
 	addStatusHeader(OK, "OK");
-	addConnectionHeader(CONNECTION_TYPE);
+	addStandardHeaders();
 	addHeader("content-location", path);
 	addFileHeaders(path);
 	sendHeaders();
-	request.getSocket().sendData("200: OK (Modified)");
+	sendBodyData("200: OK (Modified)");
 }
 
 void HttpResponse::sendNotFound()
 {
 	addStatusHeader(NOT_FOUND, "Not Found");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("404: Not found");
+	sendBodyData("404: Not found");
 }
 
 void HttpResponse::sendBadRequest()
 {
 	addStatusHeader(BAD_REQUEST, "Bad Request");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("400: Bad request");
+	sendBodyData("400: Bad request");
 }
 
 void HttpResponse::sendBadMethod()
 {
 	addStatusHeader(METHOD_NOT_ALLOWED, "Method Not Allowed");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("405: Method not allowed");
+	sendBodyData("405: Method not allowed");
 }
 
 void HttpResponse::sendInternalError()
 {
 	addStatusHeader(INTERNAL_SERVER_ERROR, "Internal Server Error");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("500: Internal server error");
+	sendBodyData("500: Internal server error");
 }
 
 void HttpResponse::sendNotImplemented()
 {
 	addStatusHeader(NOT_IMPLEMENTED, "Not Implemented");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("501: Not implemented");
+	sendBodyData("501: Not implemented");
 }
 
 void HttpResponse::sendServiceUnavailable()
 {
 	addStatusHeader(SERVICE_UNAVAILABLE, "Service Unavailable");
-	addHeader("content-type", "text/plain");
-	addConnectionHeader(CONNECTION_TYPE);
+	addPlainTextHeader();
+	addStandardHeaders();
 	sendHeaders();
-	request.getSocket().sendData("503: Service unavailable");
+	sendBodyData("503: Service unavailable");
 }
 
-void HttpResponse::sendHeaders()
+void HttpResponse::addPlainTextHeader()
 {
-	std::ostringstream oss;
-	oss << request.getVersion() << " " << status << " " << status_message << lineTerminator;
-
-	for (auto &header : response_headers)
-		oss << header.first.c_str() << ": " << header.second.c_str() << lineTerminator;
-
-	oss << lineTerminator;
-	request.getSocket().sendData(oss.str());
+	addHeader("content-type", "text/plain");
 }
 
 void HttpResponse::addStatusHeader(const int http_status, const std::string message)
@@ -171,13 +253,18 @@ void HttpResponse::addStatusHeader(const int http_status, const std::string mess
 	status_message = message;
 }
 
+void HttpResponse::addStandardHeaders()
+{
+	addDateHeader();
+	addServerHeader();
+	addTransferEncoding(ENCODING_TYPE);
+	addConnectionHeader(CONNECTION_TYPE);
+}
+
 void HttpResponse::addFileHeaders(std::string &path)
 {
-	addContentLengthHeader(path);
 	addContentTypeHeader(path);
-	addDateHeader();
 	addLastModifiedHeader(path);
-	addServerHeader();
 }
 
 void HttpResponse::addContentLengthHeader(std::string &path)
@@ -191,8 +278,8 @@ void HttpResponse::addContentLengthHeader(std::string &path)
 void HttpResponse::addContentTypeHeader(std::string &path)
 {
 	std::string type;
-	size_t pos = path.find('.');
 	
+	size_t pos = path.find('.');
 	if (pos == std::string::npos)
 		return;
 	if (path.substr(pos + 1) == "html" || path.substr(pos + 1) == "txt")
@@ -240,4 +327,9 @@ void HttpResponse::addServerHeader()
 void HttpResponse::addConnectionHeader(std::string value)
 {
 	addHeader("connection", value);
+}
+
+void HttpResponse::addTransferEncoding(std::string value)
+{
+	addHeader("transfer-encoding", value);
 }

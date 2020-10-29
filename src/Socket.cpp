@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 14:09:37 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 20:38:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ bool Socket::closedClient()
 {
 	char buf[1];
 	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
+	log->logEntry("recv() value", ret);
 	if (ret < 0)
 		log->logError("recv()");
 	else if (ret > 0)
@@ -63,31 +64,73 @@ int Socket::acceptClient()
 	return accept(getSocket(), &client_address, &client_address_length);
 }
 
+bool Socket::endOfHeaders()
+{
+	if (message.size() < 4)
+		return false;
+	if (message.substr(message.size() - 4) == "\r\n\r\n")
+		return true;
+	return false;
+}
+
+bool Socket::endOfChunked()
+{
+	if (message.size() < 5)
+		return false;
+	if (message.substr(message.size() - 5) == "0\r\n\r\n")
+		return true;
+	return false;
+}
+
+bool Socket::isChunked()
+{
+	std::string lower;
+
+	for (auto c : message.substr())
+		lower += static_cast<char>(std::tolower(c));
+	if (lower.find("transfer-encoding: chunked") != std::string::npos)
+		return true;
+	return false;
+}
+
 void Socket::receiveData()
 {
 	std::string buffer = readSocket();
 	message += buffer;
-	if (message.substr(message.size() - 3) == "\n\r\n")
-		end_of_file = true;
+	if (!headers_read)
+	{
+		if (endOfHeaders())
+		{
+			headers_read = true;
+			chunked = isChunked();
+			if (chunked)
+				log->logEntry("chunked request made");
+		}
+	}
+	if (headers_read)
+	{
+		if (chunked)
+		{
+			if (endOfChunked())
+				end_of_file = true;
+		}
+		else
+			end_of_file = true;
+	}
 }
 
 void Socket::sendData(std::string &value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(value);
+	log->logBlock(value);
 }
 
 void Socket::sendData(std::string &&value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(value);
-}
-
-void Socket::sendFile(std::string &path)
-{
-	sendData(readFile(path));
+	log->logBlock(value);
 }
 
 std::string Socket::readSocket()
@@ -111,38 +154,11 @@ std::string Socket::readSocket()
 	return buffer;
 }
 
-std::string Socket::readFile(std::string &path)
-{
-	std::string buffer;
-	char buf[257];
-	int fd;
-	
-	fd = open(path.c_str(), O_RDONLY);
-	if (fd < 0)
-	{
-		log->logError("open()");
-		return buffer;
-	}
-	while (1)
-	{
-		int ret = read(fd, buf, 256);
-		if (ret < 0)
-		{
-			log->logError("read()");
-			break;
-		}
-		buf[ret] = '\0';
-		buffer += buf;
-		if (ret < 256)
-			break;
-	}
-	close(fd);
-	return buffer;
-}
-
 void Socket::cleanSocket()
 {
 	message.clear();
+	chunked = false;
+	headers_read = false;
 	end_of_file = false;
 }
 

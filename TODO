@@ -1,25 +1,19 @@
 
-### SOCKET READ ###
---- herkend end of headers correct met CRLF
---- herkend bodies nog niet in requests
-------- herkend nog niet POST / PUT methods
-------- herkend nog niet transfer-encoding (chunked)
-
 ### REFACTORING ###
 --- error responses op server / io operations level
 --- http header parsing op io operations level
+--- serious refactoring. httpResponse / httpRequest / Parser uit elkaar trekken
+--- SERVER /// SOCKET needs TRANSMIT && RECEIVE objects 
+
+### TIME OUT ####
+- timer toevoegen aan config
+- timer toevoegen aan socket state
+
+### PROXY ####
+- support toevoegen voor client body in request
 
 //////////////////////////////////////////////////////////////
 
-### CHUNKED CONTENT  ### 
---- socket blijft lezen tot received bytes == 1 && no body alleen carriage return (\r\n)
-
-- chunked logic toevoegen aan socket.receive() <--> client_read.transform()
-===== gelezen chunks bufferen
-===== stopping condition: bepaald symbool (combinatie met lege body / content length ???)
-- chunked transfer voor dynamic content
-- READ INTO CHUNKED RFC
-- aan socket.receive() en socket.send() chunked logic toevoegen
 
 #### TODO ####
 - sendData && sendFile && receiveData error return teovoegen aan zowel response, server als httpResponse
