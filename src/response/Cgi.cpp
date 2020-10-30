@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 17:54:07 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 00:40:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,7 @@ void Cgi::parentProcess()
 		}
 	}
 	if (exit == 0)
-	{
-		data.response.addHeader("content-type", "text/html");
-		data.response.sendFileRaw(tmp_path);
-	}
+		data.response.sendCgi(tmp_path);
 	else
 		data.response.sendInternalError();
 }

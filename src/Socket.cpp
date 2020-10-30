@@ -6,13 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 20:38:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 01:43:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 
-static std::string ChunkedTerminator = "\n";
+std::string CRLF = "\r\n";
 
 Socket::Socket()
 {
@@ -64,6 +64,7 @@ int Socket::acceptClient()
 	return accept(getSocket(), &client_address, &client_address_length);
 }
 
+// testen of message.find(CRLF+CRLF) werkt
 bool Socket::endOfHeaders()
 {
 	if (message.size() < 4)
@@ -93,6 +94,17 @@ bool Socket::isChunked()
 	return false;
 }
 
+bool Socket::hasBody()
+{
+	std::string lower;
+
+	for (auto c : message.substr())
+		lower += static_cast<char>(std::tolower(c));
+	if (lower.find("content-length:") != std::string::npos)
+		return true;
+	return false;
+}
+
 void Socket::receiveData()
 {
 	std::string buffer = readSocket();
@@ -103,8 +115,12 @@ void Socket::receiveData()
 		{
 			headers_read = true;
 			chunked = isChunked();
+			// has_body = hasBody();
 			if (chunked)
 				log->logEntry("chunked request made");
+			// if (has_body)
+			// 	log->logEntry("request has body");
+			/// if both chunked && has_body == bad request
 		}
 	}
 	if (headers_read)
@@ -114,6 +130,10 @@ void Socket::receiveData()
 			if (endOfChunked())
 				end_of_file = true;
 		}
+		// if (has_body)
+		// {
+		// 	// deze shit verder uitwerken
+		// }
 		else
 			end_of_file = true;
 	}

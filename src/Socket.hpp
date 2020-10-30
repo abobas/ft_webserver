@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 20:38:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 22:38:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,15 @@ private:
 	std::string type;
 	std::string message;
 	int socket_fd;
+	
 	bool headers_read = true;
+	bool has_body = false;
 	bool chunked = false;
 	bool end_of_file = false;
 
 	std::string readSocket();
 	bool isChunked();
+	bool hasBody();
 	bool endOfHeaders();
 	bool endOfChunked();
 };

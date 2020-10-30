@@ -1,5 +1,6 @@
 {
 	"http": {
+		"max_body": 0,
 		"servers": [
         {
             "name": "localhost",
@@ -41,7 +42,7 @@
 				"SERVER_PROTOCOL": "HTTP/1.1",
 				"SERVER_SOFTWARE": "bigkahuna-latest"
 			},
-			"files": [".bla"]
+			"files": [".blag"]
 		}
 	}
 }

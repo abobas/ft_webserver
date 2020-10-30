@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 20:23:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 22:00:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ private:
 	void setProxyValue();
 	
 	bool isValid();
-	bool acceptedMethod();
+	bool acceptedMethod(std::string &methods);
 	bool isResource();
 };

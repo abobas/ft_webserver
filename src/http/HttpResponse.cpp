@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 20:49:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 02:17:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,52 @@ const int HttpResponse::INTERNAL_SERVER_ERROR = 500;
 const int HttpResponse::NOT_IMPLEMENTED = 501;
 const int HttpResponse::SERVICE_UNAVAILABLE = 503;
 const std::string HttpResponse::CONNECTION_TYPE = "keep-alive";
-const std::string HttpResponse::ENCODING_TYPE = "chunked";
+
+static std::string CRLF = "\r\n";
 
 HttpResponse::HttpResponse(HttpRequest &request) : request(request)
 {
 	log = Log::getInstance();
 }
 
+void HttpResponse::sendData(std::string &&data)
+{
+	addStatusHeader(OK, "OK");
+	addGeneralHeaders();
+	addDataHeaders(data);
+	sendHeaders();
+	sendBody(data);
+}
+
+void HttpResponse::sendData(std::string &data)
+{
+	addStatusHeader(OK, "OK");
+	addGeneralHeaders();
+	addDataHeaders(data);
+	sendHeaders();
+	sendBody(data);
+}
+
+void HttpResponse::sendFile(std::string &path)
+{
+	std::string buffer;
+
+	if (readFile(path, buffer) < 0)
+	{
+		sendInternalError();
+		return;
+	}
+	addStatusHeader(OK, "OK");
+	addGeneralHeaders();
+	addFileHeaders(path);
+	sendHeaders();
+	sendBody(buffer);
+}
+
 void HttpResponse::sendHeaders()
 {
 	std::ostringstream oss;
-	oss << request.getVersion() << " " << status << " " << status_message << CRLF;
+	oss << "HTTP/1.1" << " " << status << " " << status_message << CRLF;
 
 	for (auto &header : response_headers)
 		oss << header.first.c_str() << ": " << header.second.c_str() << CRLF;
@@ -50,93 +85,56 @@ void HttpResponse::addHeader(std::string name, std::string value)
 	response_headers.insert(std::pair<std::string, std::string>(name, value));
 }
 
-void HttpResponse::sendBodyData(std::string &data)
+void HttpResponse::sendBody(std::string &data)
 {
-	std::stringstream stream;
-	
-	stream << std::hex << data.size();
-	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
-	request.getSocket().sendData("0" + CRLF + CRLF);
+	if (request.getMethod() == "HEAD")
+		return ;
+	request.getSocket().sendData(data);
 }
 
-void HttpResponse::sendBodyData(std::string &&data)
+void HttpResponse::sendBody(std::string &&data)
 {
-	std::stringstream stream;
-	
-	stream << std::hex << data.size();
-	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
-	request.getSocket().sendData("0" + CRLF + CRLF);
+	if (request.getMethod() == "HEAD")
+		return ;
+	request.getSocket().sendData(data);
 }
 
-void HttpResponse::sendData(std::string &&data)
-{
-	addStatusHeader(OK, "OK");
-	addStandardHeaders();
-	sendHeaders();
-	sendBodyData(data);
-}
-
-void HttpResponse::sendData(std::string &data)
-{
-	addStatusHeader(OK, "OK");
-	addStandardHeaders();
-	sendHeaders();
-	sendBodyData(data);
-}
-
-void HttpResponse::sendFile(std::string &path)
+void HttpResponse::sendCgi(std::string &path)
 {
 	std::string buffer;
-	struct stat file;
 
-	if (stat(path.c_str(), &file) < 0)
-	{
-		sendInternalError();
-		return;
-	}
 	if (readFile(path, buffer) < 0)
 	{
 		sendInternalError();
 		return;
 	}
 	addStatusHeader(OK, "OK");
-	addStandardHeaders();
-	addFileHeaders(path);
+	addHeader("content-type", "text/html");
+	addTransferEncodingHeader("chunked");
 	sendHeaders();
-	sendBodyData(buffer);
+	sendBodyChunked(buffer);
 }
 
-void HttpResponse::sendFileRaw(std::string &path)
+void HttpResponse::sendBodyChunked(std::string &data)
 {
-	std::string buffer;
-	struct stat file;
-
-	if (stat(path.c_str(), &file) < 0)
-	{
-		sendInternalError();
-		return;
-	}
-	if (readFile(path, buffer) < 0)
-	{
-		sendInternalError();
-		return;
-	}
-	sendBodyData(buffer);
-}
-
-void HttpResponse::sendFileHeaders(std::string &path)
-{
-	struct stat file;
+	std::stringstream stream;
 	
-	if (stat(path.c_str(), &file) < 0)
-	{
-		sendInternalError();
-		return;
-	}
-	addStatusHeader(OK, "OK");
-	addStandardHeaders();
-	addFileHeaders(path);
-	sendHeaders();
+	if (request.getMethod() == "HEAD")
+		return ;
+	stream << std::hex << data.size();
+	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
+	request.getSocket().sendData("0" + CRLF + CRLF);
+}
+
+void HttpResponse::sendBodyChunked(std::string &&data)
+{
+	std::stringstream stream;
+	
+	if (request.getMethod() == "HEAD")
+		return ;
+	stream << std::hex << data.size();
+	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
+	request.getSocket().sendData("0" + CRLF + CRLF);
 }
 
 int HttpResponse::readFile(std::string &path, std::string &buffer)
@@ -168,106 +166,137 @@ int HttpResponse::readFile(std::string &path, std::string &buffer)
 	return 0;
 }
 
-void HttpResponse::sendCreated(std::string &&path)
+void HttpResponse::sendCreated(std::string &path, std::string uri)
 {
+	std::string buffer;
+
+	if (readFile(path, buffer) < 0)
+	{
+		sendInternalError();
+		return;
+	}
 	addStatusHeader(CREATED, "Created");
-	addStandardHeaders();
-	addHeader("content-location", path);
+	addHeader("content-location", uri);
+	addGeneralHeaders();
 	addFileHeaders(path);
 	sendHeaders();
-	sendBodyData("201: Created");
+	sendBody(buffer);
 }
 
-void HttpResponse::sendModified(std::string &&path)
+void HttpResponse::sendModified(std::string &path, std::string uri)
 {
+	std::string buffer;
+	
+	if (readFile(path, buffer) < 0)
+	{
+		sendInternalError();
+		return;
+	}
 	addStatusHeader(OK, "OK");
-	addStandardHeaders();
-	addHeader("content-location", path);
+	addHeader("content-location", uri);
+	addGeneralHeaders();
 	addFileHeaders(path);
 	sendHeaders();
-	sendBodyData("200: OK (Modified)");
+	sendBody(buffer);
 }
 
 void HttpResponse::sendNotFound()
 {
-	addStatusHeader(NOT_FOUND, "Not Found");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(NOT_FOUND, "not found");
+	addGeneralHeaders();
+	addDataHeaders("404: not found\n");
 	sendHeaders();
-	sendBodyData("404: Not found");
+	sendBody("404: not found\n");
 }
 
 void HttpResponse::sendBadRequest()
 {
-	addStatusHeader(BAD_REQUEST, "Bad Request");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(BAD_REQUEST, "bad request");
+	addGeneralHeaders();
+	addDataHeaders("400: bad request\n");
 	sendHeaders();
-	sendBodyData("400: Bad request");
+	sendBody("400: bad request\n");
 }
 
-void HttpResponse::sendBadMethod()
+void HttpResponse::sendForbidden()
 {
-	addStatusHeader(METHOD_NOT_ALLOWED, "Method Not Allowed");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(FORBIDDEN, "forbidden");
+	addGeneralHeaders();
+	addDataHeaders("403: forbidden\n");
 	sendHeaders();
-	sendBodyData("405: Method not allowed");
+	sendBody("403: forbidden\n");
+}
+
+void HttpResponse::sendBadMethod(std::string allow)
+{
+	addStatusHeader(METHOD_NOT_ALLOWED, "method not allowed");
+	addHeader("allow", allow);
+	addGeneralHeaders();
+	addDataHeaders("405: method not allowed\n");
+	sendHeaders();
+	sendBody("405: method not allowed\n");
 }
 
 void HttpResponse::sendInternalError()
 {
-	addStatusHeader(INTERNAL_SERVER_ERROR, "Internal Server Error");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(INTERNAL_SERVER_ERROR, "internal server error");
+	addGeneralHeaders();
+	addDataHeaders("500: internal server error\n");
 	sendHeaders();
-	sendBodyData("500: Internal server error");
+	sendBody("500: internal server error\n");
 }
 
 void HttpResponse::sendNotImplemented()
 {
-	addStatusHeader(NOT_IMPLEMENTED, "Not Implemented");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(NOT_IMPLEMENTED, "not implemented");
+	addGeneralHeaders();
+	addDataHeaders("501: not implemented\n");
 	sendHeaders();
-	sendBodyData("501: Not implemented");
+	sendBody("501: not implemented\n");
 }
 
 void HttpResponse::sendServiceUnavailable()
 {
-	addStatusHeader(SERVICE_UNAVAILABLE, "Service Unavailable");
-	addPlainTextHeader();
-	addStandardHeaders();
+	addStatusHeader(SERVICE_UNAVAILABLE, "service unavailable");
+	addGeneralHeaders();
+	addDataHeaders("503: service unavailable\n");
 	sendHeaders();
-	sendBodyData("503: Service unavailable");
+	sendBody("503: service unavailable\n");
 }
 
-void HttpResponse::addPlainTextHeader()
+void HttpResponse::addGeneralHeaders()
 {
-	addHeader("content-type", "text/plain");
+	addDateHeader();
+	addServerHeader();
+	addConnectionHeader(CONNECTION_TYPE);
 }
 
-void HttpResponse::addStatusHeader(const int http_status, const std::string message)
+void HttpResponse::addDataHeaders(std::string &data)
+{
+	addHeader("content-type", "text/html");
+	addHeader("content-length", std::to_string(data.size()));
+}
+
+void HttpResponse::addDataHeaders(std::string &&data)
+{
+	addHeader("content-type", "text/html");
+	addHeader("content-length", std::to_string(data.size()));
+}
+
+void HttpResponse::addFileHeaders(std::string &path)
+{
+	addFileTypeHeader(path);
+	addFileLengthHeader(path);
+	addLastModifiedHeader(path);
+}
+
+void HttpResponse::addStatusHeader(int http_status, std::string message)
 {
 	status = http_status;
 	status_message = message;
 }
 
-void HttpResponse::addStandardHeaders()
-{
-	addDateHeader();
-	addServerHeader();
-	addTransferEncoding(ENCODING_TYPE);
-	addConnectionHeader(CONNECTION_TYPE);
-}
-
-void HttpResponse::addFileHeaders(std::string &path)
-{
-	addContentTypeHeader(path);
-	addLastModifiedHeader(path);
-}
-
-void HttpResponse::addContentLengthHeader(std::string &path)
+void HttpResponse::addFileLengthHeader(std::string &path)
 {
 	struct stat file;
 	if (stat(path.c_str(), &file) < 0)
@@ -275,7 +304,7 @@ void HttpResponse::addContentLengthHeader(std::string &path)
 	addHeader("content-length", std::to_string(file.st_size));
 }
 
-void HttpResponse::addContentTypeHeader(std::string &path)
+void HttpResponse::addFileTypeHeader(std::string &path)
 {
 	std::string type;
 	
@@ -329,7 +358,7 @@ void HttpResponse::addConnectionHeader(std::string value)
 	addHeader("connection", value);
 }
 
-void HttpResponse::addTransferEncoding(std::string value)
+void HttpResponse::addTransferEncodingHeader(std::string value)
 {
 	addHeader("transfer-encoding", value);
 }

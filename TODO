@@ -1,11 +1,22 @@
 
+###### TESTER #######
+--- CRLF cleanen uit http request body (transfer encoding)
+
+### HTTP MESSAGE RECEIVAL ####
+--- message body alleen in request als transfer-encoding of content-length headers gezet zijn.
+-------- has_body implementeren of gewoon socket uitlezen? EOF nu niet goed te bepalen
+-------------- RFC verder uitpluizen??
+
 ### REFACTORING ###
 --- error responses op server / io operations level
 --- http header parsing op io operations level
 --- serious refactoring. httpResponse / httpRequest / Parser uit elkaar trekken
---- SERVER /// SOCKET needs TRANSMIT && RECEIVE objects 
+-------- SERVER /// SOCKET needs TRANSMIT && RECEIVE objects
+-------- HTTP Request -->> Request Processing (Config x Message x MessageParser)
 
-### TIME OUT ####
+### NEW FEATURES ####
+- CONFIG: default error pages
+- CONFIG: CGI; toevoegen path naar CGI-executable, accepted CGI methods
 - timer toevoegen aan config
 - timer toevoegen aan socket state
 
@@ -13,17 +24,6 @@
 - support toevoegen voor client body in request
 
 //////////////////////////////////////////////////////////////
-
-
-#### TODO ####
-- sendData && sendFile && receiveData error return teovoegen aan zowel response, server als httpResponse
-- httpResponse misschien splitsen in headerBuilder // HTTP syntax writer
-- HTTP syntax writer nodig buiten response (dus excl request / data class) voov versturen error returns en meer
-
-### CGI ###
-- uitgebreidere .php scripts testen
-- ubuntu_cgi_tester testen
-- query form testen
 
 ######## UBUNTU DINGEN #########
 - connect returned altijd 0 op Linux - (http://cr.yp.to/docs/connect.html)

@@ -6,11 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 17:07:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 01:42:53 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+static struct timeval tv
+{
+	tv.tv_sec = 0,
+	tv.tv_usec = 0
+};
 
 Server::Server(Json &&config) : config(config)
 {
@@ -33,7 +39,7 @@ void Server::runtime()
 	if (select < 0)
 		throw "select()";
 	if (select > 0)
-		handleOperations();
+		handleOperations(select);
 }
 
 void Server::createListenSockets()
@@ -84,39 +90,59 @@ int Server::selectCall()
 	return (select(getSelectRange(), &read_set, &write_set, NULL, &tv));
 }
 
-void Server::handleOperations()
+void Server::handleOperations(int select)
 {
 	for (auto &socket : sockets)
 	{
+		if (select < 1)
+			return ;
 		if (socket.getType() == "listen")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
+			{
 				acceptClient(socket);
+				select--;
+			}
 		}
 		else if (socket.getType() == "client_read")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
+			{
 				readClient(socket);
+				select--;
+			}
 		}
 		else if (socket.getType() == "client_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
+			{
 				writeClient(socket);
+				select--;
+			}
 		}
 		else if (socket.getType() == "proxy_read")
 		{
 			if (FD_ISSET(socket.getSocket(), &read_set))
+			{
 				readProxy(socket);
+				select--;
+			}
 		}
 		else if (socket.getType() == "proxy_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
+			{
 				writeProxy(socket);
+				select--;
+			}
 		}
 		else if (socket.getType() == "wait_client_write")
 		{
 			if (FD_ISSET(socket.getSocket(), &write_set))
+			{
 				writeWaitingClient(socket);
+				select--;
+			}
 		}
 	}
 }
@@ -143,7 +169,7 @@ void Server::readClient(Socket &client)
 		client.receiveData();
 		if (!client.getEndOfFile())
 		{
-			log->logEntry("read part of client", client.getSocket());
+			log->logEntry("partly client", client.getSocket());
 			return;
 		}
 		log->logEntry("fully read client", client.getSocket());
@@ -164,7 +190,7 @@ void Server::writeClient(Socket &client)
 		addPair(client.getSocket(), sockets.back().getSocket());
 		log->logEntry("connected with proxy", response.getProxySocket().getSocket());
 		client.setType("wait_client_write");
-		log->logEntry("transformed socket", client.getSocket());
+		log->logEntry("client is now waiting", client.getSocket());
 	}
 	else
 	{
@@ -187,11 +213,10 @@ void Server::readProxy(Socket &proxy)
 	if (!proxy.getEndOfFile())
 	{
 		log->logEntry("read part of proxy", proxy.getSocket());
-		//log->logBlock(proxy.getMessage());
 		return;
 	}
 	log->logEntry("fully read proxy", proxy.getSocket());
-	//log->logBlock(proxy.getMessage());
+	log->logBlock(proxy.getMessage());
 	addMessage(proxy, proxy.getMessage());
 	transformSocket(proxy);
 }
@@ -221,6 +246,7 @@ void Server::writeWaitingClient(Socket &client)
 
 void Server::transformSocket(Socket &socket)
 {
+	log->logEntry("transforming from " + socket.getType(), socket.getSocket());
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
@@ -237,7 +263,7 @@ void Server::transformSocket(Socket &socket)
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	log->logEntry("transformed socket", socket.getSocket());
+	log->logEntry("transformed into " + socket.getType(), socket.getSocket());
 }
 
 void Server::disconnectSocket(Socket &socket)

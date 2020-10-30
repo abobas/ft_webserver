@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 16:59:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/29 22:00:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,39 @@ void Response::handleResource()
 
 bool Response::isValid()
 {
-	if (!acceptedMethod())
+	std::string methods;
+	
+	if (data.method.empty() || data.request.getVersion() != "HTTP/1.1")
 	{
-		data.response.sendBadMethod();
+		log->logEntry("bad request");
+		data.response.sendBadRequest();
+		return false;
+	}
+	if (!acceptedMethod(methods))
+	{
+		log->logEntry("bad method");
+		data.response.sendBadMethod(methods);
 		return false;
 	}
 	if (data.not_found)
 	{
+		log->logEntry("not found");
 		data.response.sendNotFound();
 		return false;
 	}
 	return true;
 }
 
-bool Response::acceptedMethod()
+bool Response::acceptedMethod(std::string &methods)
 {
-	if (data.method.empty())
-		return false;
-	if (data.location["accepted-methods"].array_items().empty())
-		return false;
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
+		methods += accepted.string_value() + ", ";
 		if (accepted.string_value() == data.method)
 			return true;
 	}
+	if (!methods.empty())
+		methods = methods.substr(0, methods.size() - 2);
 	return false;
 }
 

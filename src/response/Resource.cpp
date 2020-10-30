@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 21:03:35 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 00:36:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@ Resource::Resource(Data &data) : data(data)
 void Resource::handleFile()
 {
 	log->logEntry("handling file request");
-	if (data.method == "HEAD")
-		data.response.sendFileHeaders(data.path);
-	else
-		data.response.sendFile(data.path);
+	data.response.sendFile(data.path);
 }
 
 void Resource::handleCgi()

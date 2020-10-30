@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/23 20:38:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/26 18:21:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 02:37:02 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,27 @@
 
 Upload::Upload(Data &data) : data(data)
 {
+	if (maxBodyLimit())
+		return;
     if (existingFile())
     {
-        if (deleteFile() < 0)
-            return ;
+        deleteFile();
         modified = true;
     }
     addFile();
+}
+
+bool Upload::maxBodyLimit()
+{
+	if (data.config["http"]["max_body"].number_value() != 0)
+	{
+		if (data.request.getBody().size() > data.config["http"]["max_body"].number_value())
+		{
+			data.response.sendForbidden();
+			return true;
+		}
+	}
+	return false;
 }
 
 void Upload::addFile()
@@ -29,16 +43,14 @@ void Upload::addFile()
     
     file.open(data.path.c_str(), std::ofstream::out);
     if (!file.is_open())
-    {
-        data.response.sendInternalError();
-        return ;
-    }
+		throw ("open()");
+	/// TRANSFER ENCODING GARBAGE CLEANEN UIT BODY
     file << data.request.getBody();
     file.close();
     if (modified)
-        data.response.sendModified(data.request.getPath());
+        data.response.sendModified(data.path, data.request.getPath());
     else
-        data.response.sendCreated(data.request.getPath());
+        data.response.sendCreated(data.path, data.request.getPath());
 }
 
 bool Upload::existingFile()
@@ -55,13 +67,8 @@ bool Upload::existingFile()
     }
 }
 
-int Upload::deleteFile()
+void Upload::deleteFile()
 {
     if (remove(data.path.c_str()) < 0)
-    {
-		perror("remove()");
-        data.response.sendInternalError();
-        return -1;
-    }
-    return 0;
+		throw "remove()";
 }

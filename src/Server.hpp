@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 23:56:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 01:22:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,6 @@ private:
 	std::map<Socket, std::string> messages;
 	Json config;
 	Log *log;
-	struct timeval tv
-	{
-		tv.tv_sec = 1,
-		tv.tv_usec = 0
-	};
 	fd_set read_set;
 	fd_set write_set;
 	
@@ -52,7 +47,7 @@ private:
 	void fillSelectSets();
 	int getSelectRange();
 	int selectCall();
-	void handleOperations();
+	void handleOperations(int select);
 
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);

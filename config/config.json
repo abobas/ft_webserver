@@ -1,5 +1,6 @@
 {
 	"http": {
+		"max_body": 10000,
 		"servers": [
         {
             "name": "localhost",
@@ -32,12 +33,13 @@
         }
 	],
 		"cgi": {
+			"files": [".php", ".pl", ".sh"],
 			"cgi_params": {
 				"GATEWAY_INTERFACE": "CGI/1.1",
 				"SERVER_PROTOCOL": "HTTP/1.1",
 				"SERVER_SOFTWARE": "bigkahuna-latest"
-			},
-			"files": [".php", ".pl", ".sh"]
+			}
+			
 		}
 	}
 }
