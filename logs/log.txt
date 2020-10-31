@@ -1,237 +1,178 @@
-02:01:55 - created socket 4
-02:03:04 - accepted client 5
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling directory request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:25:44 - created socket 4
+16:25:44 - created socket 5
+16:25:46 - accepted client 6
+16:25:47 - fully read client 6
+16:25:47 - transforming from client_read 6
+16:25:47 - transformed into client_write 6
+16:25:47 - handling directory request
+16:25:47 - wrote client 6
+16:25:47 - transforming from client_write 6
+16:25:47 - transformed into client_read 6
+16:25:50 - accepted client 7
+16:25:50 - fully read client 7
+16:25:50 - transforming from client_read 7
+16:25:50 - transformed into client_write 7
+16:25:50 - handling directory request
+16:25:50 - wrote client 7
+16:25:50 - transforming from client_write 7
+16:25:50 - transformed into client_read 7
 -------begin-of-message------
-
-POST / HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Content-Type: test/file
-Accept-Encoding: gzip
+GET /favicon.ico HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/
 
 
 --------end-of-message-------
-02:03:04 - chunked request made
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - bad method
-02:03:04 - invalid request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:25:51 - fully read client 7
+16:25:51 - transforming from client_read 7
+16:25:51 - transformed into client_write 7
+16:25:51 - wrote client 7
+16:25:51 - transforming from client_write 7
+16:25:51 - transformed into client_read 7
 -------begin-of-message------
-HEAD / HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
+GET /cgi-bin HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - bad method
-02:03:04 - invalid request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:25:52 - fully read client 7
+16:25:52 - transforming from client_read 7
+16:25:52 - transformed into client_write 7
+16:25:52 - handling directory request
+16:25:52 - wrote client 7
+16:25:52 - transforming from client_write 7
+16:25:52 - transformed into client_read 7
 -------begin-of-message------
-GET /directory HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/test.pl HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling directory request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:25:55 - fully read client 7
+16:25:55 - transforming from client_read 7
+16:25:55 - transformed into client_write 7
+16:25:55 - handling CGI request
+16:25:55 - wrote client 7
+16:25:55 - transforming from client_write 7
+16:25:55 - transformed into client_read 7
 -------begin-of-message------
-GET /directory/youpi.bad_extension HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/test.sh HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling file request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:25:58 - fully read client 7
+16:25:58 - transforming from client_read 7
+16:25:58 - transformed into client_write 7
+16:25:58 - handling CGI request
+16:25:58 - wrote client 7
+16:25:58 - transforming from client_write 7
+16:25:58 - transformed into client_read 7
 -------begin-of-message------
-GET /directory/youpi.bla HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/index.html HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling file request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:26:00 - fully read client 7
+16:26:00 - transforming from client_read 7
+16:26:00 - transformed into client_write 7
+16:26:00 - handling file request
+16:26:00 - wrote client 7
+16:26:00 - transforming from client_write 7
+16:26:00 - transformed into client_read 7
 -------begin-of-message------
-GET /directory/oulalala HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/test.php HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:26:02 - fully read client 7
+16:26:02 - transforming from client_read 7
+16:26:02 - transformed into client_write 7
+16:26:02 - handling CGI request
+16:26:02 - wrote client 7
+16:26:02 - transforming from client_write 7
+16:26:02 - transformed into client_read 7
 -------begin-of-message------
-GET /directory/nop HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/test.pl HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling directory request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
+16:26:04 - fully read client 7
+16:26:04 - transforming from client_read 7
+16:26:04 - transformed into client_write 7
+16:26:04 - handling CGI request
+16:26:04 - wrote client 7
+16:26:04 - transforming from client_write 7
+16:26:04 - transformed into client_read 7
 -------begin-of-message------
-GET /directory/nop/ HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /cgi-bin/index.html HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/cgi-bin
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Sat, 31 Oct 2020 16:24:57 CET
 
 
 --------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling directory request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
--------begin-of-message------
-GET /directory/nop/other.pouic HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - handling file request
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
--------begin-of-message------
-GET /directory/nop/other.pouac HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:04 - fully read client 5
-02:03:04 - transforming from client_read 5
-02:03:04 - transformed into client_write 5
-02:03:04 - wrote client 5
-02:03:04 - transforming from client_write 5
-02:03:04 - transformed into client_read 5
--------begin-of-message------
-GET /directory/Yeah HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:05 - fully read client 5
-02:03:05 - transforming from client_read 5
-02:03:05 - transformed into client_write 5
-02:03:05 - handling directory request
-02:03:05 - wrote client 5
-02:03:05 - transforming from client_write 5
-02:03:05 - transformed into client_read 5
--------begin-of-message------
-GET /directory/Yeah/not_happy.bad_extension HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:05 - fully read client 5
-02:03:05 - transforming from client_read 5
-02:03:05 - transformed into client_write 5
-02:03:05 - handling file request
-02:03:05 - wrote client 5
-02:03:05 - transforming from client_write 5
-02:03:05 - transformed into client_read 5
--------begin-of-message------
-PUT /put_test/file_should_exist_after HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:05 - chunked request made
-02:03:05 - fully read client 5
-02:03:05 - transforming from client_read 5
-02:03:05 - transformed into client_write 5
-02:03:05 - handling upload request
-02:03:05 - wrote client 5
-02:03:05 - transforming from client_write 5
-02:03:05 - transformed into client_read 5
--------begin-of-message------
-PUT /put_test/file_should_exist_after HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:06 - chunked request made
-02:03:07 - fully read client 5
-02:03:07 - transforming from client_read 5
-02:03:07 - transformed into client_write 5
-02:03:07 - handling upload request
-02:03:07 - wrote client 5
-02:03:07 - transforming from client_write 5
-02:03:07 - transformed into client_read 5
--------begin-of-message------
-POST /directory/youpi.bla HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Content-Type: test/file
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-02:03:11 - chunked request made
+16:26:06 - fully read client 7
+16:26:06 - transforming from client_read 7
+16:26:06 - transformed into client_write 7
+16:26:06 - handling file request
+16:26:06 - wrote client 7
+16:26:06 - transforming from client_write 7
+16:26:06 - transformed into client_read 7
+16:27:43 - disconnected socket 7

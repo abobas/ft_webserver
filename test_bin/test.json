@@ -41,7 +41,10 @@
 				"SERVER_PROTOCOL": "HTTP/1.1",
 				"SERVER_SOFTWARE": "bigkahuna-latest"
 			},
-			"files": [".blag"]
+			"files": {
+				".bla": "/home/abobas/webserver/test_bin/cgi_test"
+			}
+
 		}
 	}
 }

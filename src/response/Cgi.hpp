@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 22:52:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 16:29:31 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -33,6 +34,8 @@ private:
 	Data data;
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
+	std::string cgi_path;
+	bool post = false;
 	std::string tmp_path;
 
 	void executeScript();
@@ -40,9 +43,15 @@ private:
 	void parentProcess();
 	void setTmp();
 	void deleteTmp();
+	bool checkRequest();
+	void setPath();
 	void setEnvironment();
+	void setServerNameEnv();
+	void setServerPortEnv();
 	void setConfigEnv();
-	void setServerEnv();
-	void setRequestEnv();
+	void setMethodEnv();
+	void setUriEnv();
+	void setQueryEnv();
+	void setLengthEnv();	
 	void setPathEnv();
 };

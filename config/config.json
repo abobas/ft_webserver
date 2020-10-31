@@ -33,7 +33,11 @@
         }
 	],
 		"cgi": {
-			"files": [".php", ".pl", ".sh"],
+			"files": {
+				".php": "/home/abobas/webserver/data/cgi-bin/test.php",
+				".pl": "/home/abobas/webserver/data/cgi-bin/test.pl",
+				".sh": "/home/abobas/webserver/data/cgi-bin/test.sh"
+			},
 			"cgi_params": {
 				"GATEWAY_INTERFACE": "CGI/1.1",
 				"SERVER_PROTOCOL": "HTTP/1.1",

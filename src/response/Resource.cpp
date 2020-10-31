@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 00:36:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 15:41:40 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 Resource::Resource(Data &data) : data(data)
 {
 	log = Log::getInstance();
-	if (isUpload())
+	if (isCgi())
+		handleCgi();
+	else if (isUpload())
 		handleUpload();
 	else if (setStat())
 	{
 		if (isDirectory())
 			handleDirectory();
-		else if (isCgi())
-			handleCgi();
 		else if (isRegular())
 			handleFile();
 		else
@@ -76,9 +76,9 @@ bool Resource::isRegular()
 
 bool Resource::isCgi()
 {
-	for (auto file : data.config["http"]["cgi"]["files"].array_items())
+	for (auto file : data.config["http"]["cgi"]["files"].object_items())
 	{
-		std::string format = file.string_value();
+		std::string format = file.first;
 		if (data.path.substr(data.path.size() - format.size()) == format)
 			return true;
 	}
