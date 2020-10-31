@@ -1,7 +1,9 @@
 
 ###### TESTER #######
---- route names ( /directory/ ) fixen, laatste slash
 --- CGI x POST ???
+---------- request body schrijven naar pipe -> cin van CGI
+--- route names ( /directory/ ) fixen, laatste slash
+
 
 ### HTTP MESSAGE RECEIVAL ####
 --- message body alleen in request als transfer-encoding of content-length headers gezet zijn.

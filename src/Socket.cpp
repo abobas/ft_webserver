@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 00:44:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 01:48:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ void Socket::receiveData()
 		if (endOfHeaders())
 		{
 			headers_read = true;
+			log->logBlock(message);
 			chunked = isChunked();
 			if (chunked)
 				log->logEntry("chunked request made");

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/23 20:38:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 01:13:00 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 02:08:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ Upload::Upload(Data &data) : data(data)
     addFile();
 }
 
+/**
+ * TODO: per route specificeren ipv algemeen
+ */ 
 bool Upload::maxBodyLimit()
 {
 	if (data.config["http"]["max_body"].number_value() != 0)
@@ -44,7 +47,6 @@ void Upload::addFile()
     file.open(data.path.c_str(), std::ofstream::out);
     if (!file.is_open())
 		throw ("open()");
-	/// TRANSFER ENCODING GARBAGE CLEANEN UIT BODY
     file << data.request.getBody();
     file.close();
     if (modified)
