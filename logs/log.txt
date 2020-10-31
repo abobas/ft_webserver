@@ -1,0 +1,103 @@
+01:23:13 - created socket 4
+01:23:17 - accepted client 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling directory request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - chunked request made
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - bad method
+01:23:17 - invalid request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - bad method
+01:23:17 - invalid request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling directory request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling file request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling file request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling directory request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling directory request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling file request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling directory request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling file request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:17 - chunked request made
+01:23:17 - fully read client 5
+01:23:17 - transforming from client_read 5
+01:23:17 - transformed into client_write 5
+01:23:17 - handling upload request
+01:23:17 - wrote client 5
+01:23:17 - transforming from client_write 5
+01:23:17 - transformed into client_read 5
+01:23:22 - disconnected socket 5

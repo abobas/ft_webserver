@@ -1,6 +1,7 @@
 
 ###### TESTER #######
---- CRLF cleanen uit http request body (transfer encoding)
+--- route names ( /directory/ ) fixen, laatste slash
+--- CGI x POST ???
 
 ### HTTP MESSAGE RECEIVAL ####
 --- message body alleen in request als transfer-encoding of content-length headers gezet zijn.
@@ -15,7 +16,7 @@
 -------- HTTP Request -->> Request Processing (Config x Message x MessageParser)
 
 ### NEW FEATURES ####
-- CONFIG: default error pages
+- CONFIG: default error pages: https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-to-use-custom-error-pages-on-ubuntu-14-04
 - CONFIG: CGI; toevoegen path naar CGI-executable, accepted CGI methods
 - timer toevoegen aan config
 - timer toevoegen aan socket state

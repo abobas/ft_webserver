@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 01:43:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 00:44:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ bool Socket::closedClient()
 {
 	char buf[1];
 	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
-	log->logEntry("recv() value", ret);
 	if (ret < 0)
 		log->logError("recv()");
 	else if (ret > 0)
@@ -64,21 +63,16 @@ int Socket::acceptClient()
 	return accept(getSocket(), &client_address, &client_address_length);
 }
 
-// testen of message.find(CRLF+CRLF) werkt
 bool Socket::endOfHeaders()
 {
-	if (message.size() < 4)
-		return false;
-	if (message.substr(message.size() - 4) == "\r\n\r\n")
+	if (message.find("\r\n\r\n") != std::string::npos)
 		return true;
 	return false;
 }
 
 bool Socket::endOfChunked()
 {
-	if (message.size() < 5)
-		return false;
-	if (message.substr(message.size() - 5) == "0\r\n\r\n")
+	if (message.find("0\r\n\r\n") != std::string::npos)
 		return true;
 	return false;
 }
@@ -105,6 +99,38 @@ bool Socket::hasBody()
 	return false;
 }
 
+void Socket::decodeChunkedBody(std::string &body)
+{
+	std::string decoded;
+	std::string chunk;
+	size_t pos_start;
+	size_t pos_end;
+	
+	while (body.find("\r\n") != std::string::npos)
+	{
+		pos_start = body.find("\r\n");
+		pos_end = body.find("\r\n", pos_start + 1);
+		chunk = body.substr(pos_start + 2, pos_end - (pos_start + 2));
+		decoded += chunk;
+		body = body.substr(pos_end + 2);
+	}
+	body = decoded;
+}
+
+void Socket::cleanBody()
+{
+	std::string header_part;
+	std::string body_part;
+
+	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
+	body_part = message.substr(header_part.size());
+	decodeChunkedBody(body_part);
+	message = header_part + body_part;
+}
+
+/**
+ * TODO: checken wat hier moet gebeuren met body in request als content-length header aanwezig is ipv transfer-encoding
+ */
 void Socket::receiveData()
 {
 	std::string buffer = readSocket();
@@ -115,12 +141,12 @@ void Socket::receiveData()
 		{
 			headers_read = true;
 			chunked = isChunked();
-			// has_body = hasBody();
 			if (chunked)
 				log->logEntry("chunked request made");
+			// has_body = hasBody();
 			// if (has_body)
 			// 	log->logEntry("request has body");
-			/// if both chunked && has_body == bad request
+			
 		}
 	}
 	if (headers_read)
@@ -128,12 +154,11 @@ void Socket::receiveData()
 		if (chunked)
 		{
 			if (endOfChunked())
+			{
+				cleanBody();
 				end_of_file = true;
+			}
 		}
-		// if (has_body)
-		// {
-		// 	// deze shit verder uitwerken
-		// }
 		else
 			end_of_file = true;
 	}
@@ -143,14 +168,14 @@ void Socket::sendData(std::string &value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(value);
+	//log->logBlock(value);
 }
 
 void Socket::sendData(std::string &&value)
 {
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(value);
+	//log->logBlock(value);
 }
 
 std::string Socket::readSocket()

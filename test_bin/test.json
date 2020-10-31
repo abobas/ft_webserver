@@ -13,7 +13,7 @@
                     "autoindex": false
                 },
 
-                "/put_test/": {
+                "/put_test": {
 					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "",
 					"accepted-methods": ["PUT"],

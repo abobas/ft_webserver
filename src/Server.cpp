@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 01:42:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 00:45:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ void Server::acceptClient(Socket &listen)
 
 void Server::readClient(Socket &client)
 {
-	log->logEntry("entered readClient()", client.getSocket());
 	if (client.closedClient())
 		disconnectSocket(client);
 	else
@@ -169,11 +168,11 @@ void Server::readClient(Socket &client)
 		client.receiveData();
 		if (!client.getEndOfFile())
 		{
-			log->logEntry("partly client", client.getSocket());
+			//log->logEntry("partly client", client.getSocket());
 			return;
 		}
 		log->logEntry("fully read client", client.getSocket());
-		log->logBlock(client.getMessage());
+		//log->logBlock(client.getMessage());
 		addMessage(client, client.getMessage());
 		transformSocket(client);
 	}

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 22:38:21 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/30 13:10:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ private:
 	bool end_of_file = false;
 
 	std::string readSocket();
+	
+	void cleanBody();
+	void decodeChunkedBody(std::string &body);
 	bool isChunked();
 	bool hasBody();
 	bool endOfHeaders();
