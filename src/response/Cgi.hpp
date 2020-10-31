@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 16:29:31 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 20:56:04 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Data.hpp"
+#include "../Log.hpp"
 #include <vector>
 #include <unistd.h>
 #include <fcntl.h>
@@ -21,6 +22,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 
 /**
 * @brief Executes CGI file and sends output to client.
@@ -32,15 +34,26 @@ public:
 
 private:
 	Data data;
+	Log *log;
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
 	std::string cgi_path;
 	bool post = false;
-	std::string tmp_path;
+	struct stat file;
+	int parent_output[2];
+	int child_output[2];
+	pid_t pid;
+	
+	void createPipes();
+	int readOperation(int fd, std::string &buffer);
 
 	void executeScript();
-	void childProcess();
 	void parentProcess();
+	void parentWritePipe();
+	void closePipe(int mode);
+	void childClosePipe(int mode);
+	int parentWait();
+	void childProcess();
 	void setTmp();
 	void deleteTmp();
 	bool checkRequest();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 02:17:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 17:45:00 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ public:
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
 	void sendFile(std::string &path);
-	void sendCgi(std::string &path);
+	void sendCgi(std::string &buffer);
 	void sendCreated(std::string &path, std::string uri);
 	void sendModified(std::string &path, std::string uri);
 	void sendNotFound();

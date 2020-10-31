@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:23 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/27 13:41:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 20:45:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,4 +177,3 @@ std::map<std::string, std::string> HttpParser::getHeaders()
 {
 	return headers;
 }
-

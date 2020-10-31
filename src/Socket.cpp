@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 01:48:45 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 22:34:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,17 +88,6 @@ bool Socket::isChunked()
 	return false;
 }
 
-bool Socket::hasBody()
-{
-	std::string lower;
-
-	for (auto c : message.substr())
-		lower += static_cast<char>(std::tolower(c));
-	if (lower.find("content-length:") != std::string::npos)
-		return true;
-	return false;
-}
-
 void Socket::decodeChunkedBody(std::string &body)
 {
 	std::string decoded;
@@ -115,6 +104,7 @@ void Socket::decodeChunkedBody(std::string &body)
 		body = body.substr(pos_end + 2);
 	}
 	body = decoded;
+	log->logEntry("chunked content size (decoded) is", body.size());
 }
 
 void Socket::cleanBody()
@@ -128,9 +118,35 @@ void Socket::cleanBody()
 	message = header_part + body_part;
 }
 
-/**
- * TODO: checken wat hier moet gebeuren met body in request als content-length header aanwezig is ipv transfer-encoding
- */
+bool Socket::isContent()
+{
+	std::string lower;
+	size_t pos;
+
+	for (auto c : message.substr())
+		lower += static_cast<char>(std::tolower(c));
+	pos = lower.find("content-length:");
+	if (pos != std::string::npos)
+	{
+		size_t end_pos = lower.find("\r\n", pos);
+		content_size = std::stoi(lower.substr(pos + 15, end_pos - (pos + 15)));
+		return true;
+	}
+	return false;
+}
+
+bool Socket::endOfContent()
+{
+	std::string header_part;
+	std::string body_part;
+
+	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
+	body_part = message.substr(header_part.size());
+	if (body_part.size() == content_size)
+		return true;
+	return false;
+}
+
 void Socket::receiveData()
 {
 	std::string buffer = readSocket();
@@ -140,14 +156,15 @@ void Socket::receiveData()
 		if (endOfHeaders())
 		{
 			headers_read = true;
-			log->logBlock(message);
 			chunked = isChunked();
 			if (chunked)
-				log->logEntry("chunked request made");
-			// has_body = hasBody();
-			// if (has_body)
-			// 	log->logEntry("request has body");
-			
+				log->logEntry("request is chunked");
+			content = isContent();
+			if (content)
+			{
+				log->logEntry("request has content");
+				log->logEntry("content size is", content_size);
+			}
 		}
 	}
 	if (headers_read)
@@ -159,6 +176,11 @@ void Socket::receiveData()
 				cleanBody();
 				end_of_file = true;
 			}
+		}
+		else if (content)
+		{
+			if (endOfContent())
+				end_of_file = true;
 		}
 		else
 			end_of_file = true;
@@ -181,12 +203,12 @@ void Socket::sendData(std::string &&value)
 
 std::string Socket::readSocket()
 {
-	char buf[257];
+	char buf[1025];
 	std::string buffer;
 
 	while (1)
 	{
-		int ret = recv(socket_fd, buf, 256, 0);
+		int ret = recv(socket_fd, buf, 1024, 0);
 		if (ret <= 0)
 		{
 			log->logError("recv()");
@@ -194,7 +216,7 @@ std::string Socket::readSocket()
 		}
 		buf[ret] = '\0';
 		buffer += buf;
-		if (ret < 256)
+		if (ret < 1024)
 			break;
 	}
 	return buffer;
@@ -204,6 +226,7 @@ void Socket::cleanSocket()
 {
 	message.clear();
 	chunked = false;
+	content = false;
 	headers_read = false;
 	end_of_file = false;
 }

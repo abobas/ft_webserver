@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 22:06:27 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 15:41:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 20:24:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,14 @@ bool Resource::isCgi()
 	{
 		std::string format = file.first;
 		if (data.path.substr(data.path.size() - format.size()) == format)
-			return true;
+		{
+			Json::object obj = file.second.object_items();
+			for (auto accepted : obj["accepted-methods"].array_items())
+			{
+				if (accepted.string_value() == data.method)
+					return true;
+			}
+		}	
 	}
 	return false;
 }

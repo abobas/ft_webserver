@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 21:45:05 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 22:00:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 20:47:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,22 @@ bool Response::isValid()
 
 bool Response::acceptedMethod(std::string &methods)
 {
+	if (isCgi())
+	{
+		for (auto file : data.config["http"]["cgi"]["files"].object_items())
+		{
+			std::string format = file.first;
+			if (data.path.substr(data.path.size() - format.size()) == format)
+			{
+				Json::object obj = file.second.object_items();
+				for (auto accepted : obj["accepted-methods"].array_items())
+				{
+					if (accepted.string_value() == data.method)
+						return true;
+				}
+			}
+		}	
+	}
 	for (auto accepted : data.location["accepted-methods"].array_items())
 	{
 		methods += accepted.string_value() + ", ";
@@ -92,6 +108,17 @@ bool Response::isProxy()
 {
 	if (data.location["proxy_pass"].string_value().size() != 0)
 		return true;
+	return false;
+}
+
+bool Response::isCgi()
+{
+	for (auto file : data.config["http"]["cgi"]["files"].object_items())
+	{
+		std::string format = file.first;
+		if (data.path.substr(data.path.size() - format.size()) == format)
+			return true;
+	}
 	return false;
 }
 

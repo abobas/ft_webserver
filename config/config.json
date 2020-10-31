@@ -34,9 +34,20 @@
 	],
 		"cgi": {
 			"files": {
-				".php": "/home/abobas/webserver/data/cgi-bin/test.php",
-				".pl": "/home/abobas/webserver/data/cgi-bin/test.pl",
-				".sh": "/home/abobas/webserver/data/cgi-bin/test.sh"
+				".php": {
+					"path": "/home/abobas/webserver/data/cgi-bin/test.php",
+					"accepted-methods": ["GET", "POST"]
+				},
+
+				".pl": {
+					"path": "/home/abobas/webserver/data/cgi-bin/test.pl",
+					"accepted-methods": ["GET", "POST"]
+				},
+
+				".sh": {
+					"path": "/home/abobas/webserver/data/cgi-bin/test.sh",
+					"accepted-methods": ["GET", "POST"]
+				}
 			},
 			"cgi_params": {
 				"GATEWAY_INTERFACE": "CGI/1.1",

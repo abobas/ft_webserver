@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 16:29:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 22:35:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,77 +14,154 @@
 
 Cgi::Cgi(Data &data) : data(data)
 {
+	log = Log::getInstance();
 	if (!checkRequest())
 		return ;
 	setPath();
 	setEnvironment();
-	setTmp();
+	createPipes();
 	executeScript();
-	deleteTmp();
+}
+
+void Cgi::createPipes()
+{
+	if (pipe(parent_output) < 0)
+		throw "pipe()";
+	if (pipe(child_output) < 0)
+	{
+		close(parent_output[0]);
+		close(parent_output[1]);
+		throw "pipe()";
+	}
 }
 
 void Cgi::executeScript()
 {
-	pid_t pid;
-
 	pid = fork();
 	if (pid < 0)
+	{
+		closePipe(2);
 		throw "fork()";
+	}
 	else if (pid == 0)
 		childProcess();
 	else
 		parentProcess();
 }
 
+
 void Cgi::childProcess()
 {
 	std::vector<char *> argv;
-	int fd;
 
+	int ret_in = dup2(parent_output[0], STDIN_FILENO);
+	int ret_out = dup2(child_output[1], STDOUT_FILENO);
+	closePipe(3);
+	if (ret_in < 0 || ret_out < 0)
+	{
+		closePipe(4);
+		exit(1);
+	}
 	argv.push_back(const_cast<char *>(cgi_path.c_str()));
 	argv.push_back(NULL);
-	fd = open(tmp_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
-	if (fd < 0)
-		exit(1);
-	if (dup2(fd, STDOUT_FILENO) < 0)
-		exit(1);
-	close(fd);
 	if (execve(cgi_path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
 		exit(1);
 }
 
 void Cgi::parentProcess()
 {
-	int status;
 	int exit;
+	std::string cgi_output;
+	
+	parentWritePipe();
+	exit = parentWait();
+	if (exit != 0)
+	{
+		closePipe(1);
+		throw "child process";
+	}
+	int ret = readOperation(child_output[0], cgi_output);
+	// readOperation closes fd
+	//closePipe(1);
+	if (ret < 0)
+		throw "read()";
+	data.response.sendCgi(cgi_output);
+}
 
-	while (1)
+void Cgi::parentWritePipe()
+{
+	std::string cgi_input;
+	
+	if (post)
+		cgi_input = data.request.getBody();
+	else
+	{
+		int fd = open(data.path.c_str(), O_RDONLY);
+		if (fd < 0)
+		{
+			closePipe(2);
+			kill(pid, SIGKILL);
+			throw "open()";
+		}
+		if (readOperation(fd, cgi_input) < 0)
+		{
+			closePipe(2);
+			kill(pid, SIGKILL);
+			throw "read()";
+		}
+	}
+	if (write(parent_output[1], cgi_input.c_str(), cgi_input.size()) < 0)
+	{
+		closePipe(2);
+		kill(pid, SIGKILL);
+		throw "write()";
+	}
+	closePipe(0);
+}
+
+int Cgi::parentWait()
+{
+	int status;
+	
+	while (true)
 	{
 		wait(&status);
 		if (WIFEXITED(status))
-		{
-			exit = WEXITSTATUS(status);
-			break;
-		}
+			return WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
-		{
-			exit = WTERMSIG(status);
-			break;
-		}
+			return WTERMSIG(status);
 	}
-	if (exit == 0)
-		data.response.sendCgi(tmp_path);
-	else
-		data.response.sendInternalError();
+}
+
+void Cgi::closePipe(int mode)
+{
+	if (mode == 0 || mode == 2 || mode == 4)
+	{
+		if (close(parent_output[0]) < 0)
+			log->logError("close(parent_output[0])");
+	}
+	if (mode == 0 || mode == 2 || mode == 3)
+	{
+		if (close(parent_output[1]) < 0)
+			log->logError("close(parent_output[1])");
+	}
+	if (mode == 1 || mode == 2 || mode == 3)
+	{
+		if (close(child_output[0]) < 0)
+			log->logError("close(child_output[0])");
+	}
+	if (mode == 0 || mode == 2 || mode == 4)
+	{
+		if (close(child_output[1]) < 0)
+			log->logError("close(child_output[1])");
+	}
 }
 
 bool Cgi::checkRequest()
 {
-	struct stat file;
-	
-	if (stat(data.path.c_str(), &file) < 0)
+	if (data.method == "GET")
 	{
-		if (data.method == "GET")
+		if (stat(data.path.c_str(), &file) < 0)
 		{
 			data.response.sendNotFound();
 			return false;
@@ -95,16 +172,6 @@ bool Cgi::checkRequest()
 	return true;	
 }
 
-void Cgi::setTmp()
-{
-	tmp_path = "./tmp/webserv-cgi-output-" + std::to_string(rand());
-}
-
-void Cgi::deleteTmp()
-{
-	remove(tmp_path.c_str());
-}
-
 void Cgi::setPath()
 {
 	for (auto file : data.config["http"]["cgi"]["files"].object_items())
@@ -112,7 +179,8 @@ void Cgi::setPath()
 		std::string format = file.first;
 		if (data.path.substr(data.path.size() - format.size()) == format)
 		{
-			cgi_path = file.second.string_value();
+			Json::object obj = file.second.object_items();
+			cgi_path = obj["path"].string_value();
 			return;
 		}
 	}
@@ -172,10 +240,11 @@ void Cgi::setQueryEnv()
 	
 void Cgi::setLengthEnv()
 {
-	if (data.request.getHeader("content-length").empty())
-		return;
 	std::string length("CONTENT_LENGTH=");
-	length += data.request.getHeader("content-length");
+	if (post)
+		length += std::to_string(data.request.getBody().size());
+	else
+		length += std::to_string(file.st_size);
 	memory.push_back(std::move(length));
 	env.push_back(memory.back().c_str());	
 }
@@ -202,4 +271,25 @@ void Cgi::setPathEnv()
 	script += cgi_path;
 	memory.push_back(std::move(script));
 	env.push_back(memory.back().c_str());
+}
+
+int Cgi::readOperation(int fd, std::string &buffer)
+{
+	char buf[1025];
+	
+	while (1)
+	{
+		int ret = read(fd, buf, 1024);
+		if (ret < 0)
+		{
+			close(fd);
+			return -1;
+		}
+		buf[ret] = '\0';
+		buffer += buf;
+		if (ret < 1024)
+			break;
+	}
+	close(fd);
+	return 0;
 }

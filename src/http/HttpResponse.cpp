@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 02:17:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/10/31 17:45:10 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,15 +99,8 @@ void HttpResponse::sendBody(std::string &&data)
 	request.getSocket().sendData(data);
 }
 
-void HttpResponse::sendCgi(std::string &path)
+void HttpResponse::sendCgi(std::string &buffer)
 {
-	std::string buffer;
-
-	if (readFile(path, buffer) < 0)
-	{
-		sendInternalError();
-		return;
-	}
 	addStatusHeader(OK, "OK");
 	addHeader("content-type", "text/html");
 	addTransferEncodingHeader("chunked");
@@ -139,7 +132,7 @@ void HttpResponse::sendBodyChunked(std::string &&data)
 
 int HttpResponse::readFile(std::string &path, std::string &buffer)
 {
-	char buf[257];
+	char buf[1025];
 	int fd;
 	
 	fd = open(path.c_str(), O_RDONLY);
@@ -150,7 +143,7 @@ int HttpResponse::readFile(std::string &path, std::string &buffer)
 	}
 	while (1)
 	{
-		int ret = read(fd, buf, 256);
+		int ret = read(fd, buf, 1024);
 		if (ret < 0)
 		{
 			log->logError("read()");
@@ -159,7 +152,7 @@ int HttpResponse::readFile(std::string &path, std::string &buffer)
 		}
 		buf[ret] = '\0';
 		buffer += buf;
-		if (ret < 256)
+		if (ret < 1024)
 			break;
 	}
 	close(fd);

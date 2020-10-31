@@ -29,7 +29,7 @@
 				"/directory": {
 					"root": "/home/abobas/webserver/test_data/YoupiBanane",
 					"index": "youpi.bad_extension",
-					"accepted-methods": ["GET", "POST"],
+					"accepted-methods": ["GET"],
 					"autoindex": false
 				}
             }
@@ -42,7 +42,10 @@
 				"SERVER_SOFTWARE": "bigkahuna-latest"
 			},
 			"files": {
-				".bla": "/home/abobas/webserver/test_bin/cgi_test"
+				".bla": {
+					"path": "/home/abobas/webserver/test_bin/cgi_test",
+					"accepted-methods": ["POST"]
+				}
 			}
 
 		}
