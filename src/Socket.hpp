@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 22:21:45 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 20:49:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ private:
 	bool chunked = false;
 	bool end_of_file = false;
 
-	std::string readSocket();
+	void readSocket(std::string &buffer);
 	void cleanBody();
 	void decodeChunkedBody(std::string &body);
 	bool isChunked();

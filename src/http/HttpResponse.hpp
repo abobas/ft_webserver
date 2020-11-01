@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 17:45:00 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 01:27:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,14 @@ public:
 	static const std::string ENCODING_TYPE;
 
 	HttpResponse(HttpRequest &httpRequest);
+
+	void sendChunkHeader();
+	void sendChunk(const char *buffer, int size);
+	void sendChunkEnd();
+
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
 	void sendFile(std::string &path);
-	void sendCgi(std::string &buffer);
 	void sendCreated(std::string &path, std::string uri);
 	void sendModified(std::string &path, std::string uri);
 	void sendNotFound();
@@ -69,8 +73,6 @@ private:
 	void sendHeaders();
 	void sendBody(std::string &data);
 	void sendBody(std::string &&data);
-	void sendBodyChunked(std::string &data);
-	void sendBodyChunked(std::string &&data);
 	void addHeader(std::string name, std::string value);
 	void addStatusHeader(int http_status, std::string message);
 	void addGeneralHeaders();

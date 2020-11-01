@@ -6,11 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 22:34:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 21:34:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+
+// read / write syscall of 1 MB
+#define IO_SIZE 1048576
 
 std::string CRLF = "\r\n";
 
@@ -72,9 +75,14 @@ bool Socket::endOfHeaders()
 
 bool Socket::endOfChunked()
 {
-	if (message.find("0\r\n\r\n") != std::string::npos)
+	std::string end = message.substr(message.size() - 7);
+	if (end.find("0\r\n\r\n") != std::string::npos)
 		return true;
 	return false;
+	
+	// if (message.find("0\r\n\r\n") != std::string::npos)
+	// 	return true;
+	// return false;
 }
 
 bool Socket::isChunked()
@@ -149,8 +157,11 @@ bool Socket::endOfContent()
 
 void Socket::receiveData()
 {
-	std::string buffer = readSocket();
+	std::string buffer;
+	
+	readSocket(buffer);
 	message += buffer;
+	log->logEntry("bytes read from client:", buffer.size());
 	if (!headers_read)
 	{
 		if (endOfHeaders())
@@ -165,6 +176,7 @@ void Socket::receiveData()
 				log->logEntry("request has content");
 				log->logEntry("content size is", content_size);
 			}
+			//log->logBlock(message);
 		}
 	}
 	if (headers_read)
@@ -201,25 +213,26 @@ void Socket::sendData(std::string &&value)
 	//log->logBlock(value);
 }
 
-std::string Socket::readSocket()
+void Socket::readSocket(std::string &buffer)
 {
-	char buf[1025];
-	std::string buffer;
+	char buf[IO_SIZE + 1];
 
-	while (1)
+	while (true)
 	{
-		int ret = recv(socket_fd, buf, 1024, 0);
-		if (ret <= 0)
+		int ret = recv(socket_fd, buf, IO_SIZE, 0);
+		if (ret < 0)
 		{
 			log->logError("recv()");
 			break ;
 		}
-		buf[ret] = '\0';
-		buffer += buf;
-		if (ret < 1024)
+		if (ret > 0)
+		{
+			buf[ret] = '\0';
+			buffer += buf;
+		}
+		if (ret < IO_SIZE)
 			break;
 	}
-	return buffer;
 }
 
 void Socket::cleanSocket()

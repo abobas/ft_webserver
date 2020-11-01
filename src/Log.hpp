@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:48 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 23:04:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 00:38:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Log
 public:
 	static Log *getInstance();
 	void logEntry(std::string message);
-	void logEntry(std::string message, int number);
+	void logEntry(std::string message, long number);
 	void logBlock(std::string message);
 	void logError(const char *error);
 

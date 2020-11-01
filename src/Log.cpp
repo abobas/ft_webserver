@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 01:46:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 00:39:00 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Log::logEntry(std::string message)
 	file << getTime() << message << std::endl;
 }
 
-void Log::logEntry(std::string message, int number)
+void Log::logEntry(std::string message, long number)
 {
 	file << getTime() << message + " " << number << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:27:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 17:45:10 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 01:38:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,34 +99,24 @@ void HttpResponse::sendBody(std::string &&data)
 	request.getSocket().sendData(data);
 }
 
-void HttpResponse::sendCgi(std::string &buffer)
+void HttpResponse::sendChunkHeader()
 {
 	addStatusHeader(OK, "OK");
 	addHeader("content-type", "text/html");
 	addTransferEncodingHeader("chunked");
 	sendHeaders();
-	sendBodyChunked(buffer);
 }
 
-void HttpResponse::sendBodyChunked(std::string &data)
+void HttpResponse::sendChunk(const char *buffer, int size)
 {
 	std::stringstream stream;
 	
-	if (request.getMethod() == "HEAD")
-		return ;
-	stream << std::hex << data.size();
-	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
-	request.getSocket().sendData("0" + CRLF + CRLF);
+	stream << std::hex << size;
+	request.getSocket().sendData(stream.str() + CRLF + buffer + CRLF);
 }
 
-void HttpResponse::sendBodyChunked(std::string &&data)
+void HttpResponse::sendChunkEnd()
 {
-	std::stringstream stream;
-	
-	if (request.getMethod() == "HEAD")
-		return ;
-	stream << std::hex << data.size();
-	request.getSocket().sendData(stream.str() + CRLF + data + CRLF);
 	request.getSocket().sendData("0" + CRLF + CRLF);
 }
 

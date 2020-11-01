@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 20:56:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/01 01:43:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,16 @@ private:
 	
 	void createPipes();
 	int readOperation(int fd, std::string &buffer);
+	void writeOperation(int fd, const char *buffer, int size);
+	
+	bool waitCheck();
 
 	void executeScript();
 	void parentProcess();
 	void parentWritePipe();
 	void closePipe(int mode);
 	void childClosePipe(int mode);
-	int parentWait();
+	
 	void childProcess();
 	void setTmp();
 	void deleteTmp();
