@@ -6,16 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/01 21:34:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/02 22:32:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 
-// read / write syscall of 1 MB
-#define IO_SIZE 1048576
-
-std::string CRLF = "\r\n";
+Log *Socket::log = Log::getInstance();
 
 Socket::Socket()
 {
@@ -23,179 +20,29 @@ Socket::Socket()
 
 Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 {
-	log = Log::getInstance();
 }
 
-int Socket::getListenSocket(int port)
-{
-	int new_socket;
-	int enable = 1;
-	sockaddr_in new_address;
-
-	memset(&new_address, 0, sizeof(new_address));
-	new_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-		throw "setsockopt()";
-	new_address.sin_family = AF_INET;
-	new_address.sin_addr.s_addr = INADDR_ANY;
-	new_address.sin_port = htons(port);
-	if (bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address)) < 0)
-		throw "bind()";
-	if (listen(new_socket, SOMAXCONN) < 0)
-		throw "listen()";
-	return new_socket;
-}
-
-bool Socket::closedClient()
+bool Socket::isAlive()
 {
 	char buf[1];
 	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
 	if (ret < 0)
 		log->logError("recv()");
 	else if (ret > 0)
-		return false;
-	return true;
-}
-
-int Socket::acceptClient()
-{
-	struct sockaddr client_address;
-	unsigned int client_address_length = 0;
-
-	memset(&client_address, 0, sizeof(client_address));
-	return accept(getSocket(), &client_address, &client_address_length);
-}
-
-bool Socket::endOfHeaders()
-{
-	if (message.find("\r\n\r\n") != std::string::npos)
 		return true;
 	return false;
 }
 
-bool Socket::endOfChunked()
+void Socket::receiveMessage()
 {
-	std::string end = message.substr(message.size() - 7);
-	if (end.find("0\r\n\r\n") != std::string::npos)
-		return true;
-	return false;
-	
-	// if (message.find("0\r\n\r\n") != std::string::npos)
-	// 	return true;
-	// return false;
-}
-
-bool Socket::isChunked()
-{
-	std::string lower;
-
-	for (auto c : message.substr())
-		lower += static_cast<char>(std::tolower(c));
-	if (lower.find("transfer-encoding: chunked") != std::string::npos)
-		return true;
-	return false;
-}
-
-void Socket::decodeChunkedBody(std::string &body)
-{
-	std::string decoded;
-	std::string chunk;
-	size_t pos_start;
-	size_t pos_end;
-	
-	while (body.find("\r\n") != std::string::npos)
+	log->logEntry("receiveMessage called socket", socket_fd);
+	receiver = Receiver::getInstance(socket_fd);
+	receiver->receiveMessage();
+	if (receiver->isReady())
 	{
-		pos_start = body.find("\r\n");
-		pos_end = body.find("\r\n", pos_start + 1);
-		chunk = body.substr(pos_start + 2, pos_end - (pos_start + 2));
-		decoded += chunk;
-		body = body.substr(pos_end + 2);
-	}
-	body = decoded;
-	log->logEntry("chunked content size (decoded) is", body.size());
-}
-
-void Socket::cleanBody()
-{
-	std::string header_part;
-	std::string body_part;
-
-	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
-	body_part = message.substr(header_part.size());
-	decodeChunkedBody(body_part);
-	message = header_part + body_part;
-}
-
-bool Socket::isContent()
-{
-	std::string lower;
-	size_t pos;
-
-	for (auto c : message.substr())
-		lower += static_cast<char>(std::tolower(c));
-	pos = lower.find("content-length:");
-	if (pos != std::string::npos)
-	{
-		size_t end_pos = lower.find("\r\n", pos);
-		content_size = std::stoi(lower.substr(pos + 15, end_pos - (pos + 15)));
-		return true;
-	}
-	return false;
-}
-
-bool Socket::endOfContent()
-{
-	std::string header_part;
-	std::string body_part;
-
-	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
-	body_part = message.substr(header_part.size());
-	if (body_part.size() == content_size)
-		return true;
-	return false;
-}
-
-void Socket::receiveData()
-{
-	std::string buffer;
-	
-	readSocket(buffer);
-	message += buffer;
-	log->logEntry("bytes read from client:", buffer.size());
-	if (!headers_read)
-	{
-		if (endOfHeaders())
-		{
-			headers_read = true;
-			chunked = isChunked();
-			if (chunked)
-				log->logEntry("request is chunked");
-			content = isContent();
-			if (content)
-			{
-				log->logEntry("request has content");
-				log->logEntry("content size is", content_size);
-			}
-			//log->logBlock(message);
-		}
-	}
-	if (headers_read)
-	{
-		if (chunked)
-		{
-			if (endOfChunked())
-			{
-				cleanBody();
-				end_of_file = true;
-			}
-		}
-		else if (content)
-		{
-			if (endOfContent())
-				end_of_file = true;
-		}
-		else
-			end_of_file = true;
+		received = true;
+		receiver->getMessage(message);
+		receiver->deleteInstance(socket_fd);
 	}
 }
 
@@ -213,35 +60,14 @@ void Socket::sendData(std::string &&value)
 	//log->logBlock(value);
 }
 
-void Socket::readSocket(std::string &buffer)
+std::string Socket::getMessage()
 {
-	char buf[IO_SIZE + 1];
-
-	while (true)
-	{
-		int ret = recv(socket_fd, buf, IO_SIZE, 0);
-		if (ret < 0)
-		{
-			log->logError("recv()");
-			break ;
-		}
-		if (ret > 0)
-		{
-			buf[ret] = '\0';
-			buffer += buf;
-		}
-		if (ret < IO_SIZE)
-			break;
-	}
+	return message;
 }
 
-void Socket::cleanSocket()
+bool Socket::isReady()
 {
-	message.clear();
-	chunked = false;
-	content = false;
-	headers_read = false;
-	end_of_file = false;
+	return received;
 }
 
 std::string Socket::getType() const
@@ -259,12 +85,3 @@ int Socket::getSocket() const
 	return socket_fd;
 }
 
-std::string Socket::getMessage() const
-{
-	return message;
-}
-
-bool Socket::getEndOfFile() const
-{
-	return end_of_file;
-}

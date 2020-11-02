@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 22:23:39 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/02 21:57:00 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Server::Server(Json &&config) : config(config)
 	{
 		createListenSockets();
 		while (1)
-			runtime();
+			mainLoop();
 	}
 	catch (const char *e)
 	{
@@ -33,7 +33,37 @@ Server::Server(Json &&config) : config(config)
 	}
 }
 
-void Server::runtime()
+void Server::createListenSockets()
+{
+	for (auto server : config["http"]["servers"].array_items())
+	{
+		int listen = getListenSocket(server["listen"].number_value());
+		addSocket(Socket("listen", listen));
+		log->logEntry("created socket", listen);
+	}
+}
+
+int Server::getListenSocket(int port)
+{
+	int new_socket;
+	int enable = 1;
+	sockaddr_in new_address;
+
+	memset(&new_address, 0, sizeof(new_address));
+	new_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+		throw "setsockopt()";
+	new_address.sin_family = AF_INET;
+	new_address.sin_addr.s_addr = INADDR_ANY;
+	new_address.sin_port = htons(port);
+	if (bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address)) < 0)
+		throw "bind()";
+	if (listen(new_socket, SOMAXCONN) < 0)
+		throw "listen()";
+	return new_socket;
+}
+
+void Server::mainLoop()
 {
 	int select = selectCall();
 	if (select < 0)
@@ -42,14 +72,10 @@ void Server::runtime()
 		handleOperations(select);
 }
 
-void Server::createListenSockets()
+int Server::selectCall()
 {
-	for (auto server : config["http"]["servers"].array_items())
-	{
-		int listen = Socket::getListenSocket(server["listen"].number_value());
-		addSocket(Socket("listen", listen));
-		log->logEntry("created socket", listen);
-	}
+	fillSelectSets();
+	return (select(getSelectRange(), &read_set, &write_set, NULL, &tv));
 }
 
 void Server::fillSelectSets()
@@ -84,72 +110,61 @@ int Server::getSelectRange()
 	return (max + 1);
 }
 
-int Server::selectCall()
-{
-	fillSelectSets();
-	return (select(getSelectRange(), &read_set, &write_set, NULL, &tv));
-}
-
 void Server::handleOperations(int select)
 {
 	for (auto &socket : sockets)
 	{
 		if (select < 1)
-			return ;
-		if (socket.getType() == "listen")
+			break;
+		if (FD_ISSET(socket.getSocket(), getSet(socket)))
 		{
-			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
-				acceptClient(socket);
-				select--;
-			}
-		}
-		else if (socket.getType() == "client_read")
-		{
-			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
-				readClient(socket);
-				select--;
-			}
-		}
-		else if (socket.getType() == "client_write")
-		{
-			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
-				writeClient(socket);
-				select--;
-			}
-		}
-		else if (socket.getType() == "proxy_read")
-		{
-			if (FD_ISSET(socket.getSocket(), &read_set))
-			{
-				readProxy(socket);
-				select--;
-			}
-		}
-		else if (socket.getType() == "proxy_write")
-		{
-			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
-				writeProxy(socket);
-				select--;
-			}
-		}
-		else if (socket.getType() == "wait_client_write")
-		{
-			if (FD_ISSET(socket.getSocket(), &write_set))
-			{
-				writeWaitingClient(socket);
-				select--;
-			}
+			executeOperation(socket);
+			select--;
 		}
 	}
 }
 
+fd_set *Server::getSet(Socket &socket)
+{
+	if (socket.getType() == "listen")
+		return &read_set;
+	else if (socket.getType() == "client_read")
+		return &read_set;
+	else if (socket.getType() == "client_write")
+		return &write_set;
+	else if (socket.getType() == "proxy_read")
+		return &read_set;
+	else if (socket.getType() == "proxy_write")
+		return &write_set;
+	else if (socket.getType() == "wait_client_write")
+		return &write_set;
+	return NULL;
+}
+
+void Server::executeOperation(Socket &socket)
+{
+	if (socket.getType() == "listen")
+		acceptClient(socket);
+	else if (socket.getType() == "client_read")
+		readClient(socket);
+	else if (socket.getType() == "client_write")
+		writeClient(socket);
+	else if (socket.getType() == "proxy_read")
+		readProxy(socket);
+	else if (socket.getType() == "proxy_write")
+		writeProxy(socket);
+	else if (socket.getType() == "wait_client_write")
+		writeWaitingClient(socket);
+}
+
 void Server::acceptClient(Socket &listen)
 {
-	int client = listen.acceptClient();
+	int client;
+	struct sockaddr client_address;
+	unsigned int client_address_length = 0;
+
+	memset(&client_address, 0, sizeof(client_address));
+	client = accept(listen.getSocket(), &client_address, &client_address_length);
 	if (client < 0)
 	{
 		log->logError("accept()");
@@ -161,21 +176,17 @@ void Server::acceptClient(Socket &listen)
 
 void Server::readClient(Socket &client)
 {
-	if (client.closedClient())
-		disconnectSocket(client);
-	else
+	if (!client.isAlive())
 	{
-		client.receiveData();
-		if (!client.getEndOfFile())
-		{
-			//log->logEntry("partly client", client.getSocket());
-			return;
-		}
-		log->logEntry("fully read client", client.getSocket());
-		//log->logBlock(client.getMessage());
-		addMessage(client, client.getMessage());
-		transformSocket(client);
+		disconnectSocket(client);
+		return;
 	}
+	client.receiveMessage();
+	if (!client.isReady())
+		return;
+	log->logEntry("read client", client.getSocket());
+	addMessage(client, client.getMessage());
+	transformSocket(client);
 }
 
 void Server::writeClient(Socket &client)
@@ -208,12 +219,9 @@ void Server::writeProxy(Socket &proxy)
 
 void Server::readProxy(Socket &proxy)
 {
-	proxy.receiveData();
-	if (!proxy.getEndOfFile())
-	{
-		log->logEntry("read part of proxy", proxy.getSocket());
+	proxy.receiveMessage();
+	if (!proxy.isReady())
 		return;
-	}
 	log->logEntry("fully read proxy", proxy.getSocket());
 	log->logBlock(proxy.getMessage());
 	addMessage(proxy, proxy.getMessage());
@@ -245,24 +253,18 @@ void Server::writeWaitingClient(Socket &client)
 
 void Server::transformSocket(Socket &socket)
 {
-	log->logEntry("transforming from " + socket.getType(), socket.getSocket());
+	//log->logEntry("transforming from " + socket.getType(), socket.getSocket());
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
-	{
 		socket.setType("client_read");
-		socket.cleanSocket();
-	}
 	else if (socket.getType() == "wait_client_write")
-	{
 		socket.setType("client_read");
-		socket.cleanSocket();
-	}
 	else if (socket.getType() == "proxy_write")
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	log->logEntry("transformed into " + socket.getType(), socket.getSocket());
+	//log->logEntry("transformed into " + socket.getType(), socket.getSocket());
 }
 
 void Server::disconnectSocket(Socket &socket)

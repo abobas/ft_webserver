@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/23 20:28:07 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/30 02:33:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/02 01:41:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 #include "Data.hpp"
 #include <stdio.h>
 #include <fstream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /**
 * @brief Handles uploading of files by client.
