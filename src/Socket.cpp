@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 22:32:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 11:44:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,28 +22,9 @@ Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 {
 }
 
-bool Socket::isAlive()
+void Socket::evaluateMessage()
 {
-	char buf[1];
-	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
-	if (ret < 0)
-		log->logError("recv()");
-	else if (ret > 0)
-		return true;
-	return false;
-}
-
-void Socket::receiveMessage()
-{
-	log->logEntry("receiveMessage called socket", socket_fd);
-	receiver = Receiver::getInstance(socket_fd);
-	receiver->receiveMessage();
-	if (receiver->isReady())
-	{
-		received = true;
-		receiver->getMessage(message);
-		receiver->deleteInstance(socket_fd);
-	}
+	
 }
 
 void Socket::sendData(std::string &value)
@@ -58,6 +39,27 @@ void Socket::sendData(std::string &&value)
 	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
 	//log->logBlock(value);
+}
+
+void Socket::receiveMessage()
+{
+	log->logEntry("receiveMessage called socket", socket_fd);
+	receiver = Receiver::getInstance(socket_fd);
+	receiver->receiveMessage();
+	received = receiver->isReady();
+	if (received)
+		receiver->consumeInstance(message);
+}
+
+bool Socket::isAlive()
+{
+	char buf[1];
+	int ret = recv(socket_fd, buf, 1, MSG_PEEK);
+	if (ret < 0)
+		log->logError("recv()");
+	else if (ret > 0)
+		return true;
+	return false;
 }
 
 std::string Socket::getMessage()

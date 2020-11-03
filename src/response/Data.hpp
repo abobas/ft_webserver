@@ -6,14 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/18 17:42:31 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/29 16:09:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:32:42 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "../Socket.hpp"
-#include "../json/Json.hpp"
+#include "../config/Json.hpp"
 #include "../http/HttpRequest.hpp"
 #include "../http/HttpResponse.hpp"
 #include <string>

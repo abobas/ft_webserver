@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 18:23:04 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 21:02:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:35:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Directory.hpp"
 #include "Cgi.hpp"
 #include "Upload.hpp"
-#include "../Log.hpp"
+#include "../logger/Log.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

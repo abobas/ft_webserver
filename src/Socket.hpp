@@ -6,14 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 22:23:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:31:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Log.hpp"
-#include "receiver/Receiver.hpp"
+#include "logger/Log.hpp"
+#include "receive/Receiver.hpp"
+#include "evaluate/Parser.hpp"
 #include <string>
 
 /**
@@ -26,21 +27,23 @@ public:
 	Socket();
 	Socket(std::string type, int socket);
 
-	bool isAlive();
 	void receiveMessage();
+	void evaluateMessage();
+	void responseMessage();
 
 	void sendData(std::string &value);
 	void sendData(std::string &&value);
-	
+
 	bool isReady();
+	bool isAlive();
+	void setType(std::string new_type);
 	std::string getMessage();
 	int getSocket() const;
 	std::string getType() const;
-	void setType(std::string new_type);
-	
+
 private:
 	static Log *log;
-	Receiver *receiver;	
+	Receiver *receiver;
 	std::string message;
 	std::string type;
 	int socket_fd;

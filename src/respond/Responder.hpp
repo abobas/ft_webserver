@@ -1,61 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   HttpResponse.hpp                                   :+:    :+:            */
+/*   Responder.hpp                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/08/26 19:10:00 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 02:35:46 by abobas        ########   odam.nl         */
+/*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
+/*   Updated: 2020/11/03 15:45:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "HttpRequest.hpp"
 #include "../logger/Log.hpp"
 #include <string>
 #include <map>
 #include <sstream>
-#include <fstream>
-#include <utility>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <time.h>
 
-class HttpResponse
+// stat
+#include <sys/stat.h>
+
+// strftime
+#include <sys/time.h>
+
+// open / read
+#include <fcntl.h>
+#include <unistd.h>
+
+// send
+#include <sys/types.h>
+#include <sys/socket.h>
+
+class Responder
 {
 public:
-	static const int CONTINUE;
-	static const int SWITCHING_PROTOCOL;
-	static const int OK;
-	static const int CREATED;
-	static const int MOVED_PERMANENTLY;
-	static const int BAD_REQUEST;
-	static const int UNAUTHORIZED;
-	static const int FORBIDDEN;
-	static const int NOT_FOUND;
-	static const int METHOD_NOT_ALLOWED;
-	static const int INTERNAL_SERVER_ERROR;
-	static const int NOT_IMPLEMENTED;
-	static const int SERVICE_UNAVAILABLE;
-	static const std::string CONNECTION_TYPE;
-	static const std::string ENCODING_TYPE;
-
-	HttpResponse(HttpRequest &httpRequest);
-
+	static Responder getResponder(int socket);
+	void sendData(std::string &data);
+	void sendData(std::string &&data);
 	void sendChunkHeader();
 	void sendChunk(const char *buffer, int size);
 	void sendChunkEnd();
-
-	void sendData(std::string &data);
-	void sendData(std::string &&data);
-	void sendFile(std::string &path);
-	void sendCreated(std::string &path, std::string uri);
-	void sendModified(std::string &path, std::string uri);
+	void sendFile(const std::string &path);
+	void sendCreated(const std::string &path, std::string uri);
+	void sendModified(const std::string &path, std::string uri);
 	void sendNotFound();
 	void sendBadRequest();
 	void sendForbidden();
@@ -65,16 +52,33 @@ public:
 	void sendServiceUnavailable();
 	
 private:
-	HttpRequest request;
-	Log *log;
+	static Log *log;
+	static std::string CRLF;
+	static int CONTINUE;
+	static int SWITCHING_PROTOCOL;
+	static int OK;
+	static int CREATED;
+	static int MOVED_PERMANENTLY;
+	static int BAD_REQUEST;
+	static int UNAUTHORIZED;
+	static int FORBIDDEN;
+	static int NOT_FOUND;
+	static int METHOD_NOT_ALLOWED;
+	static int INTERNAL_SERVER_ERROR;
+	static int NOT_IMPLEMENTED;
+	static int SERVICE_UNAVAILABLE;
+	static std::string CONNECTION_TYPE;
+	static std::string ENCODING_TYPE;
 	std::map<std::string, std::string> response_headers;
+	int socket;
 	int status;
 	std::string status_message;
 	
-	int readFile(std::string &path, std::string &buffer);
-	void sendHeaders();
-	void sendBody(std::string &data);
-	void sendBody(std::string &&data);
+	Responder(int socket);
+	void transmitData(std::string &data);
+	void transmitData(std::string &&data);
+	void transmitHeaders();
+	int readFile(const std::string &path, std::string &buffer);
 	void addHeader(std::string name, std::string value);
 	void addStatusHeader(int http_status, std::string message);
 	void addGeneralHeaders();
@@ -84,8 +88,8 @@ private:
 	void addDataHeaders(std::string &data);
 	void addDataHeaders(std::string &&data);
 	void addTransferEncodingHeader(std::string value);
-	void addFileHeaders(std::string &path);
-	void addFileTypeHeader(std::string &path);
-	void addFileLengthHeader(std::string &path);
-	void addLastModifiedHeader(std::string &path);
+	void addFileHeaders(const std::string &path);
+	void addFileTypeHeader(const std::string &path);
+	void addFileLengthHeader(const std::string &path);
+	void addLastModifiedHeader(const std::string &path);
 };

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 22:32:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 11:32:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,17 @@
 
 #define IO_SIZE 1048576
 
-std::map<int, Receiver*> Receiver::receivers;
+std::map<int, Receiver *> Receiver::receivers;
 Log *Receiver::log = Log::getInstance();
 
+Receiver::Receiver(int socket) : socket(socket)
+{
+}
+
+/**
+* @brief Creates a receiver instance if it doesn't exist already, otherwise returns existing instance.
+* @param socket Socket to receive from.
+*/
 Receiver *Receiver::getInstance(int socket) noexcept
 {
 	if (!receivers[socket])
@@ -24,21 +32,20 @@ Receiver *Receiver::getInstance(int socket) noexcept
 	return receivers[socket];
 }
 
-void Receiver::deleteInstance(int socket)
+/**
+* @brief Moves the received message into the buffer and deletes the receiver instance.
+* @param buffer reference to string which the message will be moved into.
+*/
+void Receiver::consumeInstance(std::string &buffer)
 {
-	if (receivers[socket])
-	{
-		log->logEntry("deleting receiver", socket);
-		delete receivers[socket];
-		receivers[socket] = NULL;
-		log->logEntry("deleted receiver", socket);
-	}
+	buffer = std::move(message);
+	deleteInstance(socket);
 }
 
-Receiver::Receiver(int socket) : socket(socket)
-{
-}
-
+/**
+* @brief Reads what's available in the socket and checks headers related to message bodies.
+* Keeps state of how much is received for consecutive calls.
+*/
 void Receiver::receiveMessage()
 {
 	std::string buffer;
@@ -64,6 +71,18 @@ void Receiver::receiveMessage()
 			ready = true;
 	}
 }
+
+void Receiver::deleteInstance(int socket)
+{
+	if (receivers[socket])
+	{
+		log->logEntry("deleting receiver", socket);
+		delete receivers[socket];
+		receivers[socket] = NULL;
+		log->logEntry("deleted receiver", socket);
+	}
+}
+
 
 void Receiver::readSocket(std::string &buffer)
 {
@@ -169,11 +188,6 @@ bool Receiver::headersReceived()
 	if (message.find("\r\n\r\n") != std::string::npos)
 		return true;
 	return false;
-}
-
-void Receiver::getMessage(std::string &buffer)
-{
-	buffer = std::move(message);
 }
 
 bool Receiver::isReady()

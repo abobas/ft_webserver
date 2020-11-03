@@ -6,35 +6,29 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 22:31:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 11:34:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../Log.hpp"
+#include "../logger/Log.hpp"
 #include <string>
 #include <map>
-
-//find()
 #include <algorithm>
-
-//recv()
 #include <sys/types.h>
 #include <sys/socket.h>
 
 /**
- * @brief Handles incoming socket communication.
+ * @brief Stateful object that reads from a socket until the message is completely received.
  */
 class Receiver
 {
 public:
 	static Receiver *getInstance(int socket) noexcept;
-	void deleteInstance(int socket);
-	
+	void consumeInstance(std::string &buffer);
 	void receiveMessage();
 	bool isReady();
-	void getMessage(std::string &buffer);
 
 private:
 	static Log *log;
@@ -48,12 +42,9 @@ private:
 	bool headers_ready = false;
 
 	Receiver(int socket);
-	
-	// receiving message
 	void readSocket(std::string &buffer);
+	void deleteInstance(int socket);
 	bool headersReceived();
-
-	// message body
 	void checkContent();
 	void checkContentReady();
 	void checkChunked();

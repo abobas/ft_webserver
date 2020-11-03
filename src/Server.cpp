@@ -6,21 +6,23 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 21:57:00 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:34:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-static struct timeval tv
+Log *Server::log = Log::getInstance();
+Json Server::config = Config::getConfig();
+timeval Server::tv
 {
 	tv.tv_sec = 0,
 	tv.tv_usec = 0
 };
 
-Server::Server(Json &&config) : config(config)
+
+Server::Server()
 {
-	log = Log::getInstance();
 	try
 	{
 		createListenSockets();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 16:35:55 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/31 19:55:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:34:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Data.hpp"
 #include "Resource.hpp"
 #include "Proxy.hpp"
-#include "../Log.hpp"
+#include "../logger/Log.hpp"
 
 /**
 * @brief Response builder.

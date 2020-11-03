@@ -6,12 +6,12 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/10/28 23:21:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:30:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "json/Json.hpp"
+#include "config/Config.hpp"
 #include <iostream>
 #include <fcntl.h>
 
@@ -27,23 +27,13 @@ void validateInput(int ac, char **av)
 	close(fd);
 }
 
-Json getConfig(char *config)
-{
-	std::ifstream file(config);
-	std::string raw((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	std::string error;
-	Json parsed = Json::parse(raw, error);
-	if (parsed == nullptr)
-		throw error.c_str();
-	return parsed;
-}
-
 int main(int ac, char **av)
 {
 	try
 	{
 		validateInput(ac, av);
-		Server server(getConfig(av[2]));
+		Config::initializeConfig(av[1]);
+		Server server();
 	}
 	catch (const char *e)
 	{

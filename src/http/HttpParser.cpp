@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 18:47:23 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/01 13:58:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/02 23:31:08 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ void HttpParser::parse(std::string message)
 		headers.insert(parseHeader(line));
 		line = toStringToken(it, message, lineTerminator);
 	}
-
 	body = message.substr(std::distance(message.begin(), it));
 }
 
@@ -116,31 +115,6 @@ void HttpParser::parseRequestLine(std::string &line)
 	method = toCharToken(it, line, ' ');
 	url = toCharToken(it, line, ' ');
 	version = toCharToken(it, line, ' ');
-}
-
-void HttpParser::parseResponse(std::string message)
-{
-	auto it = message.begin();
-	auto line = toStringToken(it, message, lineTerminator);
-	parseStatusLine(line);
-	line = toStringToken(it, message, lineTerminator);
-
-	while (!line.empty())
-	{
-		headers.insert(parseHeader(line));
-		line = toStringToken(it, message, lineTerminator);
-	}
-
-	body = message.substr(std::distance(message.begin(), it));
-}
-
-void HttpParser::parseStatusLine(std::string &line)
-{
-	auto it = line.begin();
-
-	version = toCharToken(it, line, ' ');
-	status = toCharToken(it, line, ' ');
-	reason = toStringToken(it, line, lineTerminator);
 }
 
 std::string HttpParser::getBody()
@@ -161,16 +135,6 @@ std::string HttpParser::getURL()
 std::string HttpParser::getVersion()
 {
 	return version;
-}
-
-std::string HttpParser::getStatus()
-{
-	return status;
-}
-
-std::string HttpParser::getReason()
-{
-	return reason;
 }
 
 std::map<std::string, std::string> HttpParser::getHeaders()

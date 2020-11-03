@@ -6,15 +6,16 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 01:27:17 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/03 02:36:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Socket.hpp"
-#include "Log.hpp"
-#include "json/Json.hpp"
+#include "logger/Log.hpp"
+#include "config/Config.hpp"
+#include "config/Json.hpp"
 #include "response/Response.hpp"
 #include "response/Data.hpp"
 #include <string>
@@ -31,19 +32,20 @@ class Server
 {
 
 public:
-	Server(Json &&config);
+	Server();
 
 private:
-	// initializiation
-	Json config;
-	Log *log;
-	void createListenSockets();
-	int getListenSocket(int port);
-
-	// polling
+	static Log *log;
+	static Json config;
+	static timeval tv;
+	std::vector<Socket> sockets;
+	std::map<int, int> pairs;
+	std::map<Socket, std::string> messages;
 	fd_set read_set;
 	fd_set write_set;
 	
+	void createListenSockets();
+	int getListenSocket(int port);
 	void mainLoop();
 	int selectCall();
 	void fillSelectSets();
@@ -51,20 +53,12 @@ private:
 	void handleOperations(int select);
 	fd_set *getSet(Socket &socket);
 	void executeOperation(Socket &socket);
-	
-	// socket operations
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);
 	void writeClient(Socket &client);
 	void writeWaitingClient(Socket &client);
 	void readProxy(Socket &proxy);
 	void writeProxy(Socket &proxy);
-
-	// managing open connections
-	std::vector<Socket> sockets;
-	std::map<int, int> pairs;
-	std::map<Socket, std::string> messages;
-	
 	void addSocket(Socket &insert);
 	void addSocket(Socket &&insert);
 	void deleteSocket(Socket &erase);
