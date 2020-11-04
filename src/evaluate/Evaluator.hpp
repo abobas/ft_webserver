@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:15:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 20:38:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ private:
 	void resolveDirectoryRequest(Matcher &matched, Parser &parsed);
 	void resolveFileRequest(Matcher &matched, Responder &respond);
 	bool isProxy(Matcher &matched);
-	bool isCgi(Matcher &matched);
+	bool isCgi(Matcher &matched, Parser &parsed);
 	bool isUpload(Parser &parsed);
 	bool isFile(Matcher &matched, struct stat *file);
 	bool isRegular(struct stat *file);

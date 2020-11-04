@@ -1,963 +1,317 @@
-17:12:41 - created socket 4
-17:12:41 - created socket 5
-17:12:44 - accepted client 6
-17:12:44 - receiveMessage called socket 6
-17:12:44 - deleting receiver 6
-17:12:44 - deleted receiver 6
-17:12:44 - read client 6
--------begin-of-message------
-GET /cgi-bin/test.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/cgi-bin
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:12:44 - transforming from client_read 6
-17:12:44 - transformed into client_write 6
-17:12:44 - writing client 6
-17:12:44 - resolving CGI request
-17:12:44 - entered parent process
-17:12:44 - writing to child now
-17:12:44 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:12:44 - child process exit status 0
--------begin-of-message------
-423
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 217<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/cgi-bin<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /cgi-bin/test.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>#!/usr/bin/perl
-
-
-
-print "<h1>Environment</h1><hr>";
-foreach (sort keys %ENV)
-{
-   print "<b>$_</b>: $ENV{$_}<br>\n";
-}
-
-print "<h2>STDIN</h2><hr>";
-read (STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
-print "$buffer <br>"; <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:12:44 - wrote client 6
-17:12:44 - transforming from client_write 6
-17:12:44 - transformed into client_read 6
-17:12:53 - receiveMessage called socket 6
-17:12:53 - deleting receiver 6
-17:12:53 - deleted receiver 6
-17:12:53 - read client 6
--------begin-of-message------
-GET /cgi-bin/test.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/cgi-bin
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:12:53 - transforming from client_read 6
-17:12:53 - transformed into client_write 6
-17:12:53 - writing client 6
-17:12:53 - resolving CGI request
-17:12:53 - entered parent process
-17:12:53 - writing to child now
-17:12:53 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:12:53 - child process exit status 0
--------begin-of-message------
-423
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 217<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/cgi-bin<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /cgi-bin/test.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>#!/usr/bin/perl
-
-
-
-print "<h1>Environment</h1><hr>";
-foreach (sort keys %ENV)
-{
-   print "<b>$_</b>: $ENV{$_}<br>\n";
-}
-
-print "<h2>STDIN</h2><hr>";
-read (STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
-print "$buffer <br>"; <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:12:53 - wrote client 6
-17:12:53 - transforming from client_write 6
-17:12:53 - transformed into client_read 6
-17:13:03 - receiveMessage called socket 6
-17:13:03 - deleting receiver 6
-17:13:03 - deleted receiver 6
-17:13:03 - read client 6
--------begin-of-message------
-GET /cgi-bin/phpinfo.php HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/cgi-bin
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:03 - transforming from client_read 6
-17:13:03 - transformed into client_write 6
-17:13:03 - writing client 6
-17:13:03 - resolving CGI request
-17:13:03 - entered parent process
-17:13:03 - writing to child now
-17:13:03 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:13:03 - child process exit status 1
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:03 - wrote client 6
-17:13:03 - transforming from client_write 6
-17:13:03 - transformed into client_read 6
-17:13:12 - receiveMessage called socket 6
-17:13:12 - deleting receiver 6
-17:13:12 - deleted receiver 6
-17:13:12 - read client 6
--------begin-of-message------
-GET /html/ HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/html/folder/
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:12 - transforming from client_read 6
-17:13:12 - transformed into client_write 6
-17:13:12 - writing client 6
-17:13:12 - resolving directory request
+20:48:46 - created socket 4
+20:48:55 - accepted client 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving directory request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 113
+content-length: 23
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 22:53:43 CET
+server: localhost:80
+
+
+--------end-of-message-------
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - message is chunked
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - request's method not accepted
+-------begin-of-message------
+HTTP/1.1 405 method not allowed
+allow: GET
+connection: keep-alive
+content-length: 24
 content-type: text/html
-date: Wed, 04 Nov 2020 17:13:12 CET
-server: localhost:443
+date: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - request's method not accepted
 -------begin-of-message------
-<p><h1>Index of /html/</h1></p><a href="/html/folder">folder</a><br><a href="/html/index.html">index.html</a><br>
---------end-of-message-------
-17:13:12 - wrote client 6
-17:13:12 - transforming from client_write 6
-17:13:12 - transformed into client_read 6
-17:13:14 - receiveMessage called socket 6
-17:13:14 - deleting receiver 6
-17:13:14 - deleted receiver 6
-17:13:14 - read client 6
--------begin-of-message------
-GET /html/folder HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/html/
-Upgrade-Insecure-Requests: 1
+HTTP/1.1 405 method not allowed
+allow: GET
+connection: keep-alive
+content-length: 24
+content-type: text/html
+date: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
-17:13:14 - transforming from client_read 6
-17:13:14 - transformed into client_write 6
-17:13:14 - writing client 6
-17:13:14 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving directory request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 183
-content-type: text/html
-date: Wed, 04 Nov 2020 17:13:14 CET
-server: localhost:443
+content-length: 32
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 22:53:22 CET
+server: localhost:80
 
 
 --------end-of-message-------
--------begin-of-message------
-<p><h1>Index of /html/folder</h1></p><a href="/html/folder/bla.pl">bla.pl</a><br><a href="/html/folder/subfolder">subfolder</a><br><a href="/html/folder/index.html">index.html</a><br>
---------end-of-message-------
-17:13:14 - wrote client 6
-17:13:14 - transforming from client_write 6
-17:13:14 - transformed into client_read 6
-17:13:18 - receiveMessage called socket 6
-17:13:18 - deleting receiver 6
-17:13:18 - deleted receiver 6
-17:13:18 - read client 6
--------begin-of-message------
-GET /html/folder/subfolder HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:18 - transforming from client_read 6
-17:13:18 - transformed into client_write 6
-17:13:18 - writing client 6
-17:13:18 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving file request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 171
-content-type: text/html
-date: Wed, 04 Nov 2020 17:13:18 CET
-server: localhost:443
+content-length: 32
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 22:53:22 CET
+server: localhost:80
 
 
 --------end-of-message-------
--------begin-of-message------
-<p><h1>Index of /html/folder/subfolder</h1></p><a href="/html/folder/subfolder/blabla.txt">blabla.txt</a><br><a href="/html/folder/subfolder/index.html">index.html</a><br>
---------end-of-message-------
-17:13:18 - wrote client 6
-17:13:18 - transforming from client_write 6
-17:13:18 - transformed into client_read 6
-17:13:22 - receiveMessage called socket 6
-17:13:22 - deleting receiver 6
-17:13:22 - deleted receiver 6
-17:13:22 - read client 6
--------begin-of-message------
-GET / HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:22 - transforming from client_read 6
-17:13:22 - transformed into client_write 6
-17:13:22 - writing client 6
-17:13:22 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving file request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 128
+content-length: 12
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Sat, 31 Oct 2020 16:30:40 CET
+server: localhost:80
+
+
+--------end-of-message-------
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+-------begin-of-message------
+HTTP/1.1 404 not found
+connection: keep-alive
+content-length: 15
 content-type: text/html
-date: Wed, 04 Nov 2020 17:13:22 CET
-server: localhost:443
+date: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
--------begin-of-message------
-<p><h1>Index of /</h1></p><a href="/html">html</a><br><a href="/cgi-bin">cgi-bin</a><br><a href="/index.html">index.html</a><br>
---------end-of-message-------
-17:13:22 - wrote client 6
-17:13:22 - transforming from client_write 6
-17:13:22 - transformed into client_read 6
-17:13:24 - receiveMessage called socket 6
-17:13:24 - deleting receiver 6
-17:13:24 - deleted receiver 6
-17:13:24 - read client 6
--------begin-of-message------
-GET /cgi-bin HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:24 - transforming from client_read 6
-17:13:24 - transformed into client_write 6
-17:13:24 - writing client 6
-17:13:24 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving directory request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 173
-content-type: text/html
-date: Wed, 04 Nov 2020 17:13:24 CET
-server: localhost:443
+content-length: 36
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 23:13:17 CET
+server: localhost:80
 
 
 --------end-of-message-------
--------begin-of-message------
-<p><h1>Index of /cgi-bin</h1></p><a href="/cgi-bin/test.pl">test.pl</a><br><a href="/cgi-bin/phpinfo.php">phpinfo.php</a><br><a href="/cgi-bin/index.html">index.html</a><br>
---------end-of-message-------
-17:13:24 - wrote client 6
-17:13:24 - transforming from client_write 6
-17:13:24 - transformed into client_read 6
-17:13:25 - receiveMessage called socket 6
-17:13:25 - deleting receiver 6
-17:13:25 - deleted receiver 6
-17:13:25 - read client 6
--------begin-of-message------
-GET /cgi-bin/test.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/cgi-bin
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:25 - transforming from client_read 6
-17:13:25 - transformed into client_write 6
-17:13:25 - writing client 6
-17:13:25 - resolving CGI request
-17:13:25 - entered parent process
-17:13:25 - writing to child now
-17:13:25 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:13:25 - child process exit status 0
--------begin-of-message------
-3ff
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 217<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/cgi-bin<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /cgi-bin/test.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>#!/usr/bin/perl
-
-
-
-print "<h1>Environment</h1><hr>";
-foreach (sort keys %ENV)
-{
-   print "<b>$_</b>: $ENV{$_}<br>\n";
-}
-
-print "<h2>STDIN</h2><hr>";
-read (STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
-print "$buffer <br>"; <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:25 - wrote client 6
-17:13:25 - transforming from client_write 6
-17:13:25 - transformed into client_read 6
-17:13:33 - receiveMessage called socket 6
-17:13:33 - deleting receiver 6
-17:13:33 - deleted receiver 6
-17:13:33 - read client 6
--------begin-of-message------
-GET /html HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:33 - transforming from client_read 6
-17:13:33 - transformed into client_write 6
-17:13:33 - writing client 6
-17:13:33 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving directory request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 112
-content-type: text/html
-date: Wed, 04 Nov 2020 17:13:33 CET
-server: localhost:443
+content-length: 36
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 23:13:17 CET
+server: localhost:80
 
 
 --------end-of-message-------
--------begin-of-message------
-<p><h1>Index of /html</h1></p><a href="/html/folder">folder</a><br><a href="/html/index.html">index.html</a><br>
---------end-of-message-------
-17:13:33 - wrote client 6
-17:13:33 - transforming from client_write 6
-17:13:33 - transformed into client_read 6
-17:13:34 - receiveMessage called socket 6
-17:13:34 - deleting receiver 6
-17:13:34 - deleted receiver 6
-17:13:34 - read client 6
--------begin-of-message------
-GET /html/folder HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/html
-Upgrade-Insecure-Requests: 1
-
-
---------end-of-message-------
-17:13:34 - transforming from client_read 6
-17:13:34 - transformed into client_write 6
-17:13:34 - writing client 6
-17:13:34 - resolving directory request
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving file request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
-content-length: 183
+content-length: 27
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 21:49:13 CET
+server: localhost:80
+
+
+--------end-of-message-------
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+-------begin-of-message------
+HTTP/1.1 404 not found
+connection: keep-alive
+content-length: 15
 content-type: text/html
-date: Wed, 04 Nov 2020 17:13:34 CET
-server: localhost:443
+date: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving directory request
 -------begin-of-message------
-<p><h1>Index of /html/folder</h1></p><a href="/html/folder/bla.pl">bla.pl</a><br><a href="/html/folder/subfolder">subfolder</a><br><a href="/html/folder/index.html">index.html</a><br>
---------end-of-message-------
-17:13:34 - wrote client 6
-17:13:34 - transforming from client_write 6
-17:13:34 - transformed into client_read 6
-17:13:35 - receiveMessage called socket 6
-17:13:35 - deleting receiver 6
-17:13:35 - deleted receiver 6
-17:13:35 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Referer: http://localhost:443/html/folder
-Upgrade-Insecure-Requests: 1
+HTTP/1.1 404 not found
+connection: keep-alive
+content-length: 15
+content-type: text/html
+date: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
-17:13:35 - transforming from client_read 6
-17:13:35 - transformed into client_write 6
-17:13:35 - writing client 6
-17:13:35 - resolving CGI request
-17:13:35 - entered parent process
-17:13:35 - writing to child now
-17:13:35 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:13:35 - child process exit status 0
--------begin-of-message------
-3b6
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:35 - wrote client 6
-17:13:35 - transforming from client_write 6
-17:13:35 - transformed into client_read 6
-17:13:46 - receiveMessage called socket 6
-17:13:46 - deleting receiver 6
-17:13:46 - deleted receiver 6
-17:13:46 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:46 - transforming from client_read 6
-17:13:46 - transformed into client_write 6
-17:13:46 - writing client 6
-17:13:46 - resolving CGI request
-17:13:46 - entered parent process
-17:13:46 - writing to child now
-17:13:46 - wrote input to child
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving file request
 -------begin-of-message------
 HTTP/1.1 200 OK
-transfer-encoding: chunked
+connection: keep-alive
+content-length: 40
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 28 Oct 2020 21:49:37 CET
+server: localhost:80
 
 
 --------end-of-message-------
-17:13:46 - child process signalled status 119
--------begin-of-message------
-3da
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:46 - wrote client 6
-17:13:46 - transforming from client_write 6
-17:13:46 - transformed into client_read 6
-17:13:47 - receiveMessage called socket 6
-17:13:47 - deleting receiver 6
-17:13:47 - deleted receiver 6
-17:13:47 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:47 - transforming from client_read 6
-17:13:47 - transformed into client_write 6
-17:13:47 - writing client 6
-17:13:47 - resolving CGI request
-17:13:47 - entered parent process
-17:13:47 - writing to child now
-17:13:47 - wrote input to child
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:55 - message is chunked
+20:48:55 - deleting receiver 5
+20:48:55 - deleted receiver 5
+20:48:55 - fully read client 5
+20:48:55 - transforming from client_read 5
+20:48:55 - transformed into client_write 5
+20:48:55 - writing client 5
+20:48:55 - resolving upload request
 -------begin-of-message------
 HTTP/1.1 200 OK
-transfer-encoding: chunked
+connection: keep-alive
+content-length: 1000
+content-location: /put_test/file_should_exist_after
+date: Wed, 04 Nov 2020 20:48:55 CET
+last-modified: Wed, 04 Nov 2020 20:48:55 CET
+server: localhost:80
 
 
 --------end-of-message-------
-17:13:47 - child process signalled status 119
--------begin-of-message------
-3da
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:47 - wrote client 6
-17:13:47 - transforming from client_write 6
-17:13:47 - transformed into client_read 6
-17:13:48 - receiveMessage called socket 6
-17:13:48 - deleting receiver 6
-17:13:48 - deleted receiver 6
-17:13:48 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:48 - transforming from client_read 6
-17:13:48 - transformed into client_write 6
-17:13:48 - writing client 6
-17:13:48 - resolving CGI request
-17:13:48 - entered parent process
-17:13:48 - writing to child now
-17:13:48 - wrote input to child
+20:48:55 - wrote client 5
+20:48:55 - transforming from client_write 5
+20:48:55 - transformed into client_read 5
+20:48:56 - message is chunked
+20:48:57 - deleting receiver 5
+20:48:57 - deleted receiver 5
+20:48:57 - fully read client 5
+20:48:57 - transforming from client_read 5
+20:48:57 - transformed into client_write 5
+20:48:57 - writing client 5
+20:48:57 - resolving upload request
 -------begin-of-message------
 HTTP/1.1 200 OK
-transfer-encoding: chunked
+connection: keep-alive
+content-length: 10000000
+content-location: /put_test/file_should_exist_after
+date: Wed, 04 Nov 2020 20:48:57 CET
+last-modified: Wed, 04 Nov 2020 20:48:57 CET
+server: localhost:80
 
 
 --------end-of-message-------
-17:13:48 - child process signalled status 119
--------begin-of-message------
-3da
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:48 - wrote client 6
-17:13:48 - transforming from client_write 6
-17:13:48 - transformed into client_read 6
-17:13:49 - receiveMessage called socket 6
-17:13:49 - deleting receiver 6
-17:13:49 - deleted receiver 6
-17:13:49 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:49 - transforming from client_read 6
-17:13:49 - transformed into client_write 6
-17:13:49 - writing client 6
-17:13:49 - resolving CGI request
-17:13:49 - entered parent process
-17:13:49 - writing to child now
-17:13:49 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:13:49 - child process exit status 0
--------begin-of-message------
-3da
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:49 - wrote client 6
-17:13:49 - transforming from client_write 6
-17:13:49 - transformed into client_read 6
-17:13:49 - receiveMessage called socket 6
-17:13:49 - deleting receiver 6
-17:13:49 - deleted receiver 6
-17:13:49 - read client 6
--------begin-of-message------
-GET /html/folder/bla.pl HTTP/1.1
-Host: localhost:443
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://localhost:443/html/folder
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-
---------end-of-message-------
-17:13:49 - transforming from client_read 6
-17:13:49 - transformed into client_write 6
-17:13:49 - writing client 6
-17:13:49 - resolving CGI request
-17:13:49 - entered parent process
-17:13:49 - writing to child now
-17:13:49 - wrote input to child
--------begin-of-message------
-HTTP/1.1 200 OK
-transfer-encoding: chunked
-
-
---------end-of-message-------
-17:13:49 - child process exit status 0
--------begin-of-message------
-3da
-<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
-<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
-<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
-<b>CACHE-CONTROL</b>: max-age=0<br>
-<b>CONNECTION</b>: keep-alive<br>
-<b>CONTENT_LENGTH</b>: 137<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost:443<br>
-<b>REFERER</b>: http://localhost:443/html/folder<br>
-<b>REQUEST_METHOD</b>: GET<br>
-<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
-<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: bigkahuna-latest<br>
-<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
-<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
-<h2>STDIN</h2><hr>
-
-
-testing cgi input
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx
-xxxxxxxxxxxx <br>
-
---------end-of-message-------
--------begin-of-message------
-0
-
-
---------end-of-message-------
-17:13:49 - wrote client 6
-17:13:49 - transforming from client_write 6
-17:13:49 - transformed into client_read 6
+20:48:57 - wrote client 5
+20:48:57 - transforming from client_write 5
+20:48:57 - transformed into client_read 5
+20:49:03 - message is chunked
+20:50:46 - deleting receiver 5
+20:50:46 - deleted receiver 5
+20:50:46 - fully read client 5
+20:50:47 - transforming from client_read 5
+20:50:47 - transformed into client_write 5
+20:50:47 - writing client 5
+20:50:47 - resolving CGI request
+20:50:47 - entered parent process
+20:50:47 - writing to child now

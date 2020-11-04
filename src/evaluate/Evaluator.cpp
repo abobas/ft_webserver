@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:15:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 20:38:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void Evaluator::evaluateRequest(Parser &parsed, Matcher &matched)
 	{
 		if (isProxy(matched))
 			resolveProxyRequest(matched, parsed);
-		else if (isCgi(matched))
+		else if (isCgi(matched, parsed))
 			resolveCgiRequest(matched, parsed);
 		else if (isUpload(parsed))
 			resolveUploadRequest(matched, parsed);
@@ -105,7 +105,7 @@ bool Evaluator::isProxy(Matcher &matched)
 	return false;
 }
 
-bool Evaluator::isCgi(Matcher &matched)
+bool Evaluator::isCgi(Matcher &matched, Parser &parsed)
 {
 	std::string extension;
 	size_t size;
@@ -117,7 +117,14 @@ bool Evaluator::isCgi(Matcher &matched)
 		if (size > extension.size())
 		{
 			if (matched.getPath().substr(size - extension.size()) == extension)
-				return true;
+			{
+				Json::object obj = file.second.object_items();
+				for (auto accepted : obj["accepted-methods"].array_items())
+				{
+					if (accepted.string_value() == parsed.getMethod())
+						return true;
+				}
+			}
 		}
 	}
 	return false;

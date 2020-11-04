@@ -1,14 +1,19 @@
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json)
+- CGI: optimization read / write
+- Receiver: module die message body ontvangt
+------- Chunked decoding
 
 #### BUGS ####
 --- route names ( /directory/ ) fixen, laatste slash
 
 ###### TESTER #######
---- CGI x POST ???
----------- request body schrijven naar pipe -> cin van CGI
---- route names ( /directory/ ) fixen, laatste slash
+--- CGI: env PATH_INFO not set
+--- CGI: env REQUEST_URI not same as PATH - QUERY.
+------ https://stackoverflow.com/questions/279966/php-self-vs-path-info-vs-script-name-vs-request-uri
+--- CGI: niet standaard chunked returnen ?
+------- output ubuntu_cgi_tester is al voorzien van CRLF
 
 ### EXTRA ####
 - Proxy: support toevoegen voor client body in request

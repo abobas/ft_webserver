@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:48 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/01 00:38:50 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 18:01:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ public:
 	void logEntry(std::string message);
 	void logEntry(std::string message, long number);
 	void logBlock(std::string message);
+	void logBlock(const char *message);
 	void logError(const char *error);
 
 private:

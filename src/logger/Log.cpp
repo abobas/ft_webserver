@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/28 16:29:45 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/02 01:47:55 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 18:01:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,13 @@ void Log::logEntry(std::string message, long number)
 }
 
 void Log::logBlock(std::string message)
+{
+	file << "-------begin-of-message------" << std::endl;
+	file << message << std::endl;
+	file << "--------end-of-message-------" << std::endl;
+}
+
+void Log::logBlock(const char *message)
 {
 	file << "-------begin-of-message------" << std::endl;
 	file << message << std::endl;

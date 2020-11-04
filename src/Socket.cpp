@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 11:29:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 20:47:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 
 void Socket::receiveMessage()
 {
-	log->logEntry("receiveMessage called socket", socket_fd);
+	//log->logEntry("receiveMessage called socket", socket_fd);
 	receiver = Receiver::getInstance(socket_fd);
 	receiver->receiveMessage();
 	received = receiver->isReady();

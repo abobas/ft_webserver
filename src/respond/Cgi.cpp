@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 17:11:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 21:01:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ void Cgi::parentProcess()
 		if (ret > 0)
 		{
 			buf[ret] = '\0';
+			log->logBlock(buf);
 			respond.sendChunk(buf, ret + 1);
 		}
 	}
@@ -125,26 +126,6 @@ bool Cgi::waitCheck()
 		return true;
 	}
 	return false;
-}
-
-void Cgi::writeOperation(int fd, const char *buffer, int size)
-{
-	int write_size;
-
-	while (size > 0)
-	{
-		write_size = (size >= IO_SIZE) ? IO_SIZE : size;
-		int ret = write(fd, buffer, write_size);
-		if (ret < 0)
-		{
-			closePipe(2);
-			kill(pid, SIGKILL);
-			throw "write()";
-		}
-		//log->logEntry("bytes written to child", ret);
-		size -= write_size;
-		buffer += write_size;
-	}
 }
 
 void Cgi::parentWritePipe()
@@ -172,6 +153,47 @@ void Cgi::parentWritePipe()
 	log->logEntry("writing to child now");
 	writeOperation(parent_output[1], cgi_input.c_str(), cgi_input.size());
 	closePipe(0);
+}
+
+void Cgi::writeOperation(int fd, const char *buffer, int size)
+{
+	int write_size;
+
+	while (size > 0)
+	{
+		write_size = (size >= IO_SIZE) ? IO_SIZE : size;
+		int ret = write(fd, buffer, write_size);
+		if (ret < 0)
+		{
+			closePipe(2);
+			kill(pid, SIGKILL);
+			throw "write()";
+		}
+		//log->logEntry("bytes written to child", ret);
+		size -= write_size;
+		buffer += write_size;
+	}
+}
+
+int Cgi::readOperation(int fd, std::string &buffer)
+{
+	char buf[IO_SIZE + 1];
+
+	while (1)
+	{
+		int ret = read(fd, buf, IO_SIZE);
+		if (ret < 0)
+		{
+			close(fd);
+			return -1;
+		}
+		buf[ret] = '\0';
+		buffer += buf;
+		if (ret < IO_SIZE)
+			break;
+	}
+	close(fd);
+	return 0;
 }
 
 void Cgi::closePipe(int mode)
@@ -243,7 +265,8 @@ void Cgi::setEnvironment()
 	setQueryEnv();
 	setServerNameEnv();
 	setServerPortEnv();
-	setPathEnv();
+	setScriptNameEnv();
+	setPathInfoEnv();
 	setHeadersEnv();
 	setContentLengthEnv();
 	env.push_back(NULL);
@@ -280,7 +303,7 @@ void Cgi::setHeadersEnv()
 void Cgi::setContentLengthEnv()
 {
 	if (post && !chunked)
-		return ;
+		return;
 	std::string length("CONTENT_LENGTH=");
 	if (chunked)
 		length += std::to_string(parsed.getBodySize());
@@ -332,7 +355,7 @@ void Cgi::setServerPortEnv()
 	env.push_back(memory.back().c_str());
 }
 
-void Cgi::setPathEnv()
+void Cgi::setScriptNameEnv()
 {
 	std::string script("SCRIPT_NAME=");
 	script += cgi_path;
@@ -340,23 +363,9 @@ void Cgi::setPathEnv()
 	env.push_back(memory.back().c_str());
 }
 
-int Cgi::readOperation(int fd, std::string &buffer)
+void Cgi::setPathInfoEnv()
 {
-	char buf[IO_SIZE + 1];
-
-	while (1)
-	{
-		int ret = read(fd, buf, IO_SIZE);
-		if (ret < 0)
-		{
-			close(fd);
-			return -1;
-		}
-		buf[ret] = '\0';
-		buffer += buf;
-		if (ret < IO_SIZE)
-			break;
-	}
-	close(fd);
-	return 0;
+	std::string path_info("PATH_INFO=");
+	memory.push_back(std::move(path_info));
+	env.push_back(memory.back().c_str());
 }

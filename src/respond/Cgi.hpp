@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 17:07:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 17:48:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ private:
 	void setContentLengthEnv();
 	void setServerNameEnv();
 	void setServerPortEnv();
-	void setPathEnv();
+	void setScriptNameEnv();
+	void setPathInfoEnv();
 };

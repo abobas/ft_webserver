@@ -43,7 +43,7 @@
 			},
 			"files": {
 				".bla": {
-					"path": "/home/abobas/webserver/test_bin/cgi_test",
+					"path": "/home/abobas/webserver/test_bin/ubuntu_cgi_tester",
 					"accepted-methods": ["POST"]
 				}
 			}

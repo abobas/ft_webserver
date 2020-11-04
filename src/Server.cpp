@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:24:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 20:47:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,12 +190,12 @@ void Server::readClient(Socket &client)
 	client.receiveMessage();
 	if (!client.isReady())
 	{
-		log->logEntry("client not fully read yet");
+		//log->logEntry("client not fully read yet");
 		return;
 	}
-	log->logEntry("read client", client.getSocket());
+	log->logEntry("fully read client", client.getSocket());
 	addMessage(client, client.getMessage());
-	log->logBlock(messages[client]);
+	//log->logBlock(messages[client]);
 	transformSocket(client);
 }
 
@@ -224,7 +224,7 @@ void Server::writeProxy(Socket &proxy)
 {
 	log->logEntry("writing proxy", proxy.getSocket());
 	Responder::getResponder(proxy.getSocket()).sendDataRaw(messages[proxy]);
-	log->logBlock(messages[proxy]);
+	//log->logBlock(messages[proxy]);
 	log->logEntry("wrote proxy", proxy.getSocket());
 	deleteMessage(proxy);
 	transformSocket(proxy);
@@ -236,7 +236,7 @@ void Server::readProxy(Socket &proxy)
 	if (!proxy.isReady())
 		return;
 	log->logEntry("fully read proxy", proxy.getSocket());
-	log->logBlock(proxy.getMessage());
+	//log->logBlock(proxy.getMessage());
 	addMessage(proxy, proxy.getMessage());
 	transformSocket(proxy);
 }

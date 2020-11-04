@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:43:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 20:48:21 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,7 @@ void Responder::transmitData(std::string &data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 void Responder::transmitData(std::string &&data)
@@ -225,7 +225,7 @@ void Responder::transmitData(std::string &&data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 void Responder::transmitHeaders()
