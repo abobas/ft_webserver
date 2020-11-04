@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 16:08:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:44:09 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,49 @@
 void Directory::resolveDirectoryRequest(int socket, const Matcher &matched, const Parser &parsed)
 {
 	Directory dir(socket, matched, parsed);
-
-	if (dir.isAutoIndex(matched))
-		dir.resolveDirListing(parsed);
-	else
-		dir.resolveDirIndex(matched);
 }
 
-Directory::Directory(int socket, const Matcher &matched, const Parser &parsed) : socket(socket)
+Directory::Directory(int socket, const Matcher &matched, const Parser &parsed)
+	: matched(matched), parsed(parsed), socket(socket)
+{
+	setPath();
+	if (isAutoIndex())
+		resolveDirListing();
+	else
+		resolveDirIndex();
+}
+
+void Directory::setPath()
 {
 	dir_path = matched.getPath();
 	if (dir_path[dir_path.size() - 1] != '/')
 		dir_path.append("/");
 }
 
-bool Directory::isAutoIndex(const Matcher &matched)
+bool Directory::isAutoIndex()
 {
 	return matched.getLocation()["autoindex"].bool_value();
 }
 
-void Directory::resolveDirListing(const Parser &parsed)
+void Directory::resolveDirListing()
 {
 	std::string raw;
 	DIR *dir;
 
-	writeDirTitle(raw, parsed);
+	writeDirTitle(raw);
 	dir = opendir(dir_path.c_str());
 	if (!dir)
 		throw "opendir()";
 	for (struct dirent *dirent = readdir(dir); dirent != NULL; dirent = readdir(dir))
 	{
 		if (std::string(dirent->d_name) != "." && std::string(dirent->d_name) != "..")
-			writeDirFile(raw, dirent->d_name, parsed);
+			writeDirFile(raw, dirent->d_name);
 	}
 	closedir(dir);
 	Responder::getResponder(socket).sendData(raw);
 }
 
-void Directory::resolveDirIndex(const Matcher &matched)
+void Directory::resolveDirIndex()
 {
 	DIR *dir;
 	std::string file;
@@ -75,14 +80,14 @@ void Directory::resolveDirIndex(const Matcher &matched)
 	Responder::getResponder(socket).sendNotFound();
 }
 
-void Directory::writeDirTitle(std::string &raw, const Parser &parsed)
+void Directory::writeDirTitle(std::string &raw)
 {
 	raw.append("<p><h1>Index of ");
 	raw.append(parsed.getPath());
 	raw.append("</h1></p>");
 }
 
-void Directory::writeDirFile(std::string &raw, std::string &&file, const Parser &parsed)
+void Directory::writeDirFile(std::string &raw, std::string &&file)
 {
 	raw.append("<a href=\"");
 	raw.append(parsed.getPath());

@@ -6,18 +6,24 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/01 21:33:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:44:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cgi.hpp"
 
-// read / write syscall of 1 MB
 #define IO_SIZE 1048576
 
-Cgi::Cgi(Data &data) : data(data)
+Log *Cgi::log = Log::getInstance();
+
+void Cgi::resolveCgiRequest(int socket, const Matcher &matched, const Parser &parsed)
 {
-	log = Log::getInstance();
+	Cgi(socket, matched, parsed);
+}
+
+Cgi::Cgi(int socket, const Matcher &matched, const Parser &parsed)
+	: matched(matched), parsed(parsed), socket(socket)
+{
 	if (!checkRequest())
 		return;
 	setPath();
@@ -75,8 +81,9 @@ void Cgi::parentProcess()
 	log->logEntry("entered parent process");
 	parentWritePipe();
 	log->logEntry("wrote input to child");
-	data.response.sendChunkHeader();
-	
+	Responder responder = Responder::getResponder(socket);
+
+	responder.sendChunkHeader();
 	char buf[IO_SIZE + 1];
 	bool ready = false;
 	while (true)
@@ -96,11 +103,11 @@ void Cgi::parentProcess()
 		if (ret > 0)
 		{
 			buf[ret] = '\0';
-			data.response.sendChunk(buf, ret + 1);
+			responder.sendChunk(buf, ret + 1);
 		}
 	}
 	closePipe(1);
-	data.response.sendChunkEnd();
+	responder.sendChunkEnd();
 }
 
 bool Cgi::waitCheck()
@@ -146,10 +153,10 @@ void Cgi::parentWritePipe()
 	std::string cgi_input;
 
 	if (post)
-		cgi_input = std::move(data.request.getBody());
+		cgi_input = std::move(parsed.getBody());
 	else
 	{
-		int fd = open(data.path.c_str(), O_RDONLY);
+		int fd = open(matched.getPath().c_str(), O_RDONLY);
 		if (fd < 0)
 		{
 			closePipe(2);
@@ -194,25 +201,29 @@ void Cgi::closePipe(int mode)
 
 bool Cgi::checkRequest()
 {
-	if (data.method == "GET")
+	if (parsed.getMethod() == "GET")
 	{
-		if (stat(data.path.c_str(), &file) < 0)
+		if (stat(matched.getPath().c_str(), &file) < 0)
 		{
-			data.response.sendNotFound();
+			Responder::getResponder(socket).sendNotFound();
 			return false;
 		}
 	}
-	if (data.method == "POST")
+	if (parsed.getMethod() == "POST")
 		post = true;
 	return true;
 }
 
 void Cgi::setPath()
 {
-	for (auto file : data.config["http"]["cgi"]["files"].object_items())
+	std::string extension;
+	size_t size;
+
+	for (auto file : matched.getConfig()["http"]["cgi"]["files"].object_items())
 	{
-		std::string format = file.first;
-		if (data.path.substr(data.path.size() - format.size()) == format)
+		extension = file.first;
+		size = matched.getPath().size();
+		if (matched.getPath().substr(size - extension.size()) == extension)
 		{
 			Json::object obj = file.second.object_items();
 			cgi_path = obj["path"].string_value();
@@ -236,7 +247,7 @@ void Cgi::setEnvironment()
 
 void Cgi::setConfigEnv()
 {
-	for (auto object : data.config["http"]["cgi"]["cgi_params"].object_items())
+	for (auto object : matched.getConfig()["http"]["cgi"]["cgi_params"].object_items())
 	{
 		std::string insert;
 		insert += object.first;
@@ -250,7 +261,7 @@ void Cgi::setConfigEnv()
 void Cgi::setMethodEnv()
 {
 	std::string method("REQUEST_METHOD=");
-	method += data.request.getMethod();
+	method += parsed.getMethod();
 	memory.push_back(std::move(method));
 	env.push_back(memory.back().c_str());
 }
@@ -258,17 +269,17 @@ void Cgi::setMethodEnv()
 void Cgi::setUriEnv()
 {
 	std::string uri("REQUEST_URI=");
-	uri += data.request.getPath();
+	uri += parsed.getPath();
 	memory.push_back(std::move(uri));
 	env.push_back(memory.back().c_str());
 }
 
 void Cgi::setQueryEnv()
 {
-	if (data.request.getQueryString().empty())
+	if (parsed.getQuery().empty())
 		return;
 	std::string query("QUERY_STRING=");
-	query += data.request.getQueryString();
+	query += parsed.getQuery();
 	memory.push_back(std::move(query));
 	env.push_back(memory.back().c_str());
 }
@@ -277,7 +288,7 @@ void Cgi::setLengthEnv()
 {
 	std::string length("CONTENT_LENGTH=");
 	if (post)
-		length += std::to_string(data.request.getBody().size());
+		length += std::to_string(parsed.getBodySize());
 	else
 		length += std::to_string(file.st_size);
 	memory.push_back(std::move(length));
@@ -287,7 +298,7 @@ void Cgi::setLengthEnv()
 void Cgi::setServerNameEnv()
 {
 	std::string name("SERVER_NAME=");
-	name += data.server["name"].string_value();
+	name += matched.getServer()["name"].string_value();
 	memory.push_back(std::move(name));
 	env.push_back(memory.back().c_str());
 }
@@ -295,7 +306,7 @@ void Cgi::setServerNameEnv()
 void Cgi::setServerPortEnv()
 {
 	std::string port("SERVER_PORT=");
-	port += std::to_string(static_cast<int>(data.server["listen"].number_value()));
+	port += std::to_string(static_cast<int>(matched.getServer()["listen"].number_value()));
 	memory.push_back(std::move(port));
 	env.push_back(memory.back().c_str());
 }

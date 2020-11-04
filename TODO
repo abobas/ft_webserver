@@ -1,4 +1,17 @@
-### REFACTORING ###
+### REFACTORING NIEUW ###
+--- responder request object problemen (uitgecomment) (NEED CONFIG)
+
+#### ALGEMEEN ####
+--- route names ( /directory/ ) fixen, laatste slash
+--- CGI environment (loop voor alle ontvangen headers in request)
+--- out of range in Validator::getMethod()
+--- dirlisting ook . && .. om te navigaten
+
+
+-----------------------------------------------------------
+
+
+### REFACTORING OUD ###
 --- error responses op server / io operations level
 --- http header parsing op io operations level
 --- serious refactoring. httpResponse / httpRequest / Parser uit elkaar trekken

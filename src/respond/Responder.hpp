@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 15:45:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:44:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,20 @@
 #include <string>
 #include <map>
 #include <sstream>
-
-// stat
 #include <sys/stat.h>
-
-// strftime
 #include <sys/time.h>
-
-// open / read
 #include <fcntl.h>
 #include <unistd.h>
-
-// send
 #include <sys/types.h>
 #include <sys/socket.h>
 
 class Responder
 {
 public:
+	/**
+	* @brief Returns a responder object, which allows for outgoing communication with a socket.
+	* @param socket Socket to communicate with.
+	*/
 	static Responder getResponder(int socket);
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
@@ -50,7 +46,7 @@ public:
 	void sendInternalError();
 	void sendNotImplemented();
 	void sendServiceUnavailable();
-	
+
 private:
 	static Log *log;
 	static std::string CRLF;
@@ -73,7 +69,7 @@ private:
 	int socket;
 	int status;
 	std::string status_message;
-	
+
 	Responder(int socket);
 	void transmitData(std::string &data);
 	void transmitData(std::string &&data);

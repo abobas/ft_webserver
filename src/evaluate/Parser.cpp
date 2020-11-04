@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:52 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 12:07:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:54:37 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 std::string Parser::CRLF = "\r\n";
 
-const Parser &Parser::getParsed(int socket, std::string &message)
+Parser Parser::getParsed(std::string &message)
 {
-	return Parser(socket, message);
+	return Parser(message);
 }
 
-Parser::Parser(int socket, std::string &message)
+Parser::Parser(std::string &message)
 {
 	auto it = message.begin();
 	auto line = toStringToken(it, message, CRLF);
@@ -31,6 +31,7 @@ Parser::Parser(int socket, std::string &message)
 		line = toStringToken(it, message, CRLF);
 	}
 	body = message.substr(std::distance(message.begin(), it));
+	body_size = body.size();
 }
 
 void Parser::parsePathLine(std::string line)
@@ -65,7 +66,7 @@ void Parser::parseHeader(std::string &line)
 }
 
 
-std::string toStringToken(std::string::iterator &it, std::string &str, std::string &token)
+std::string Parser::toStringToken(std::string::iterator &it, std::string &str, std::string &token)
 {
 	std::string ret;
 	std::string part;
@@ -97,7 +98,7 @@ std::string toStringToken(std::string::iterator &it, std::string &str, std::stri
 	return ret;
 }
 
-std::string toCharToken(std::string::iterator &it, std::string &str, char token)
+std::string Parser::toCharToken(std::string::iterator &it, std::string &str, char token)
 {
 	std::string ret;
 	for (; it != str.end(); ++it)
@@ -153,4 +154,14 @@ std::string Parser::getPath() const
 std::string Parser::getVersion() const
 {
 	return version;
+}
+
+size_t Parser::getBodySize() const
+{
+	return body_size;
+}
+
+bool Parser::hasBody() const
+{
+	return body.empty();
 }

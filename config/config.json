@@ -42,11 +42,6 @@
 				".pl": {
 					"path": "/home/abobas/webserver/data/cgi-bin/test.pl",
 					"accepted-methods": ["GET", "POST"]
-				},
-
-				".sh": {
-					"path": "/home/abobas/webserver/data/cgi-bin/test.sh",
-					"accepted-methods": ["GET", "POST"]
 				}
 			},
 			"cgi_params": {

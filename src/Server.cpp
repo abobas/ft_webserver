@@ -6,14 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 02:34:30 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 13:05:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 Log *Server::log = Log::getInstance();
-Json Server::config = Config::getConfig();
 timeval Server::tv
 {
 	tv.tv_sec = 0,
@@ -21,7 +20,7 @@ timeval Server::tv
 };
 
 
-Server::Server()
+Server::Server(Json &&config) : config(config)
 {
 	try
 	{
@@ -114,20 +113,27 @@ int Server::getSelectRange()
 
 void Server::handleOperations(int select)
 {
+	log->logEntry("select value", select);
+	std::vector<std::reference_wrapper<Socket>> tmp;
+	
 	for (auto &socket : sockets)
 	{
-		if (select < 1)
-			break;
 		if (FD_ISSET(socket.getSocket(), getSet(socket)))
 		{
-			executeOperation(socket);
+			tmp.push_back(socket);
 			select--;
+			if (select < 1)
+				break;
 		}
 	}
+	for (auto &socket : tmp)
+		executeOperation(socket);
 }
 
-fd_set *Server::getSet(Socket &socket)
+fd_set *Server::getSet(Socket socket)
 {
+	log->logEntry("socket type: " + socket.getType());
+	log->logEntry("socket fd", socket.getSocket());
 	if (socket.getType() == "listen")
 		return &read_set;
 	else if (socket.getType() == "client_read")
@@ -140,7 +146,8 @@ fd_set *Server::getSet(Socket &socket)
 		return &write_set;
 	else if (socket.getType() == "wait_client_write")
 		return &write_set;
-	return NULL;
+	else
+		return NULL;
 }
 
 void Server::executeOperation(Socket &socket)
@@ -185,7 +192,10 @@ void Server::readClient(Socket &client)
 	}
 	client.receiveMessage();
 	if (!client.isReady())
+	{
+		log->logEntry("client not fully read yet");
 		return;
+	}
 	log->logEntry("read client", client.getSocket());
 	addMessage(client, client.getMessage());
 	transformSocket(client);
@@ -193,14 +203,18 @@ void Server::readClient(Socket &client)
 
 void Server::writeClient(Socket &client)
 {
-	Response response(Data(client, config, messages[client]));
+	log->logEntry("writing client", client.getSocket());
+	Evaluator evaluated = Evaluator::getEvaluator(client.getSocket(),  messages[client], config);
 	deleteMessage(client);
-	if (response.getProxyValue())
+	if (evaluated.isProxyRequest())
 	{
-		addSocket(response.getProxySocket());
-		addMessage(response.getProxySocket(), response.getProxyRequest());
+		addSocket(evaluated.getProxySocket());
+		log->logEntry("added proxy");
+		addMessage(evaluated.getProxySocket(), evaluated.getProxyRequest());
+		log->logEntry("added proxy message");
 		addPair(client.getSocket(), sockets.back().getSocket());
-		log->logEntry("connected with proxy", response.getProxySocket().getSocket());
+		log->logEntry("added pair");
+		log->logEntry("connected with proxy", sockets.back().getSocket());
 		client.setType("wait_client_write");
 		log->logEntry("client is now waiting", client.getSocket());
 	}
@@ -213,7 +227,9 @@ void Server::writeClient(Socket &client)
 
 void Server::writeProxy(Socket &proxy)
 {
-	proxy.sendData(messages[proxy]);
+	log->logEntry("writing proxy", proxy.getSocket());
+	Responder::getResponder(proxy.getSocket()).sendData(messages[proxy]);
+	log->logBlock(messages[proxy]);
 	log->logEntry("wrote proxy", proxy.getSocket());
 	deleteMessage(proxy);
 	transformSocket(proxy);
@@ -245,7 +261,7 @@ void Server::writeWaitingClient(Socket &client)
 	Socket proxy = findPair(client);
 	if (proxy == client || proxy.getType() != "proxy_done")
 		return;
-	client.sendData(messages[proxy]);
+	Responder::getResponder(client.getSocket()).sendData(messages[proxy]);
 	log->logEntry("wrote client", client.getSocket());
 	deleteMessage(proxy);
 	disconnectSocket(proxy);
@@ -255,7 +271,7 @@ void Server::writeWaitingClient(Socket &client)
 
 void Server::transformSocket(Socket &socket)
 {
-	//log->logEntry("transforming from " + socket.getType(), socket.getSocket());
+	log->logEntry("transforming from " + socket.getType(), socket.getSocket());
 	if (socket.getType() == "client_read")
 		socket.setType("client_write");
 	else if (socket.getType() == "client_write")
@@ -266,7 +282,7 @@ void Server::transformSocket(Socket &socket)
 		socket.setType("proxy_read");
 	else if (socket.getType() == "proxy_read")
 		socket.setType("proxy_done");
-	//log->logEntry("transformed into " + socket.getType(), socket.getSocket());
+	log->logEntry("transformed into " + socket.getType(), socket.getSocket());
 }
 
 void Server::disconnectSocket(Socket &socket)

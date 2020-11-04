@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 11:44:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 11:29:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,6 @@ Socket::Socket()
 
 Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 {
-}
-
-void Socket::evaluateMessage()
-{
-	
-}
-
-void Socket::sendData(std::string &value)
-{
-	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
-		log->logError("send()");
-	//log->logBlock(value);
-}
-
-void Socket::sendData(std::string &&value)
-{
-	if (send(socket_fd, value.c_str(), value.size(), MSG_NOSIGNAL) < 0)
-		log->logError("send()");
-	//log->logBlock(value);
 }
 
 void Socket::receiveMessage()

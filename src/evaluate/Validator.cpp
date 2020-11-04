@@ -6,33 +6,37 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 13:45:56 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 11:27:13 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Validator.hpp"
 
 Log *Validator::log = Log::getInstance();
-Json Validator::config = Config::getConfig();
 
-const Validator &Validator::getValidated(int socket, const Parser &parsed, const Matcher &matched)
+Validator Validator::getValidated(int socket, const Parser &parsed, const Matcher &matched)
 {
 	return Validator(socket, parsed, matched);
 }
 
-Validator::Validator(int socket, const Parser &parsed, const Matcher &matched) : socket(socket)
+Validator::Validator(int socket, const Parser &parsed, const Matcher &matched)
+	: parsed(parsed), matched(matched), socket(socket)
 {
-	if (!checkEmpty(parsed))
+	if (!checkEmpty())
 		return;
-	if (!checkMatch(matched))
+	log->logEntry("not empty");
+	if (!checkMatch())
 		return;
-	if (!checkProtocol(parsed))
+	log->logEntry("is empty");
+	if (!checkProtocol())
 		return;
-	if (!checkMethod(parsed, matched))
+	log->logEntry("correct protocol");
+	if (!checkMethod())
 		return;
+	log->logEntry("methods OK");
 }
 
-bool Validator::checkEmpty(const Parser &parsed)
+bool Validator::checkEmpty()
 {
 	if (parsed.getMethod().empty() || parsed.getVersion().empty())
 	{
@@ -41,9 +45,10 @@ bool Validator::checkEmpty(const Parser &parsed)
 		log->logEntry("request is empty");
 		return false;
 	}
+	return true;
 }
 
-bool Validator::checkMatch(const Matcher &matched)
+bool Validator::checkMatch()
 {
 	if (!matched.isMatched())
 	{
@@ -55,7 +60,7 @@ bool Validator::checkMatch(const Matcher &matched)
 	return true;
 }
 
-bool Validator::checkProtocol(const Parser &parsed)
+bool Validator::checkProtocol()
 {
 	if (parsed.getVersion() != "HTTP/1.1")
 	{
@@ -67,54 +72,58 @@ bool Validator::checkProtocol(const Parser &parsed)
 	return true;
 }
 
-bool Validator::checkMethod(const Parser &parsed, const Matcher &matched)
+bool Validator::checkMethod()
 {
 	std::string methods;
 
-	if (checkCgiExtension(parsed))
+	if (checkCgiExtension())
 	{
-		if (checkCgiMethods(parsed))
+		if (checkCgiMethods())
 			return true;
 	}
+	log->logEntry("passed cgi check");
 	for (auto accepted : matched.getLocation()["accepted-methods"].array_items())
 	{
 		methods += accepted.string_value() + ", ";
 		if (accepted.string_value() == parsed.getMethod())
 			return true;
 	}
-	if (!methods.empty())
-		methods = methods.substr(0, methods.size() - 2);
+	// if (!methods.empty())
+	// 	methods = methods.substr(0, methods.size() - 2);
 	valid = false;
 	log->logEntry("request's method not accepted");
 	Responder::getResponder(socket).sendBadMethod(methods);
 	return false;
 }
 
-bool Validator::checkCgiExtension(const Parser &parsed)
+bool Validator::checkCgiExtension()
 {
 	std::string extension;
-	size_t size;
+	size_t size = 0;
 
-	for (auto file : config["http"]["cgi"]["files"].object_items())
+	for (auto file : matched.getConfig()["http"]["cgi"]["files"].object_items())
 	{
 		extension = file.first;
-		size = parsed.getPath().size();
-		if (parsed.getPath().substr(size - extension.size()) == extension)
-			return true;
+		size = matched.getPath().size();
+		if (size > extension.size())
+		{
+			if (matched.getPath().substr(size - extension.size()) == extension)
+				return true;
+		}
 	}
 	return false;
 }
 
-bool Validator::checkCgiMethods(const Parser &parsed)
+bool Validator::checkCgiMethods()
 {
 	std::string extension;
-	size_t size;
+	size_t size = 0;
 
-	for (auto file : config["http"]["cgi"]["files"].object_items())
+	for (auto file : matched.getConfig()["http"]["cgi"]["files"].object_items())
 	{
 		extension = file.first;
-		size = parsed.getPath().size();
-		if (parsed.getPath().substr(size - extension.size()) == extension)
+		size = matched.getPath().size();
+		if (matched.getPath().substr(size - extension.size()) == extension)
 		{
 			Json::object obj = file.second.object_items();
 			for (auto accepted : obj["accepted-methods"].array_items())
@@ -124,6 +133,7 @@ bool Validator::checkCgiMethods(const Parser &parsed)
 			}
 		}
 	}
+	return false;
 }
 
 bool Validator::isValid() const

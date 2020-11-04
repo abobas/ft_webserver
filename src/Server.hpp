@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 02:36:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 13:00:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 #include "Socket.hpp"
 #include "logger/Log.hpp"
-#include "config/Config.hpp"
 #include "config/Json.hpp"
-#include "response/Response.hpp"
-#include "response/Data.hpp"
+#include "evaluate/Evaluator.hpp"
+#include "respond/Responder.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -32,12 +31,12 @@ class Server
 {
 
 public:
-	Server();
+	Server(Json &&config);
 
 private:
 	static Log *log;
-	static Json config;
 	static timeval tv;
+	Json config;
 	std::vector<Socket> sockets;
 	std::map<int, int> pairs;
 	std::map<Socket, std::string> messages;
@@ -51,7 +50,7 @@ private:
 	void fillSelectSets();
 	int getSelectRange();
 	void handleOperations(int select);
-	fd_set *getSet(Socket &socket);
+	fd_set *getSet(Socket socket);
 	void executeOperation(Socket &socket);
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);

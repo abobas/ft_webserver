@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 15:46:00 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 01:26:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void Responder::sendData(std::string &data)
 void Responder::sendChunkHeader()
 {
 	addStatusHeader(OK, "OK");
-	addHeader("content-type", "text/html");
+	//addHeader("content-type", "text/html"); // CGI zelf laten schrijven?
 	addTransferEncodingHeader("chunked");
 	transmitHeaders();
 }
@@ -69,7 +69,7 @@ void Responder::sendChunkHeader()
 void Responder::sendChunk(const char *buffer, int size)
 {
 	std::stringstream stream;
-	
+
 	stream << std::hex << size;
 	transmitData(stream.str() + CRLF + buffer + CRLF);
 }
@@ -98,7 +98,7 @@ void Responder::sendFile(const std::string &path)
 void Responder::sendModified(const std::string &path, std::string uri)
 {
 	std::string buffer;
-	
+
 	if (readFile(path, buffer) < 0)
 	{
 		sendInternalError();
@@ -214,8 +214,9 @@ void Responder::transmitData(std::string &&data)
 void Responder::transmitHeaders()
 {
 	std::ostringstream oss;
-	
-	oss << "HTTP/1.1" << " " << status << " " << status_message << CRLF;
+
+	oss << "HTTP/1.1"
+		<< " " << status << " " << status_message << CRLF;
 	for (auto &header : response_headers)
 		oss << header.first.c_str() << ": " << header.second.c_str() << CRLF;
 	oss << CRLF;
@@ -226,7 +227,7 @@ int Responder::readFile(const std::string &path, std::string &buffer)
 {
 	char buf[IO_SIZE + 1];
 	int fd;
-	
+
 	fd = open(path.c_str(), O_RDONLY);
 	if (fd < 0)
 	{
@@ -291,7 +292,7 @@ void Responder::addFileHeaders(const std::string &path)
 void Responder::addFileLengthHeader(const std::string &path)
 {
 	struct stat file;
-	
+
 	if (stat(path.c_str(), &file) < 0)
 		return;
 	addHeader("content-length", std::to_string(file.st_size));
@@ -301,7 +302,7 @@ void Responder::addFileTypeHeader(const std::string &path)
 {
 	std::string type;
 	size_t pos;
-	
+
 	pos = path.find('.');
 	if (pos == std::string::npos)
 		return;
@@ -310,7 +311,7 @@ void Responder::addFileTypeHeader(const std::string &path)
 	else if (path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "png")
 		type = "image/";
 	else
-		return ;
+		return;
 	type.append(path.substr(pos + 1));
 	addHeader("content-type", type);
 }

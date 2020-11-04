@@ -6,25 +6,25 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 16:29:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 12:09:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Evaluator.hpp"
 
 Log *Evaluator::log = Log::getInstance();
-Json Evaluator::config = Config::getConfig();
 
-Evaluator Evaluator::getEvaluator(int socket, std::string &message)
+Evaluator Evaluator::getEvaluator(int socket, std::string &message, Json config)
 {
-	return Evaluator(socket, message);
+	return Evaluator(socket, message, config);
 }
 
-Evaluator::Evaluator(int socket, std::string &message) : socket(socket)
+Evaluator::Evaluator(int socket, std::string &message, Json config)
+	: socket(socket)
 {
-	const Parser &parsed = Parser::getParsed(socket, message);
-	const Matcher &matched = Matcher::getMatched(parsed);
-	const Validator &validated = Validator::getValidated(socket, parsed, matched);
+	Parser parsed = Parser::getParsed(message);
+	Matcher matched = Matcher::getMatched(parsed, config);
+	Validator validated = Validator::getValidated(socket, parsed, matched);
 	if (!validated.isValid())
 		return;
 	evaluateRequest(parsed, matched);
@@ -33,12 +33,12 @@ Evaluator::Evaluator(int socket, std::string &message) : socket(socket)
 void Evaluator::evaluateRequest(const Parser &parsed, const Matcher &matched)
 {
 	struct stat file;
-	
+
 	try
 	{
 		if (isProxy(matched))
-		// 	// handleProxy();
-		else if (isCgi(parsed))
+			resolveProxyRequest(matched, parsed);
+		else if (isCgi(matched))
 			resolveCgiRequest(matched, parsed);
 		else if (isUpload(parsed))
 			resolveUploadRequest(matched, parsed);
@@ -61,9 +61,18 @@ void Evaluator::evaluateRequest(const Parser &parsed, const Matcher &matched)
 	}
 }
 
+void Evaluator::resolveProxyRequest(const Matcher &matched, const Parser &parsed)
+{
+	log->logEntry("resolving proxy request");
+	Proxy proxy = Proxy::resolveProxyRequest(matched, parsed);
+	proxy_socket = proxy.getProxySocket();
+	proxy_request = proxy.getProxyRequest();
+	proxy_set = true;
+}
+
 void Evaluator::resolveCgiRequest(const Matcher &matched, const Parser &parsed)
 {
-	log->logEntry("resolving upload request");
+	log->logEntry("resolving CGI request");
 	Cgi::resolveCgiRequest(socket, matched, parsed);
 }
 
@@ -92,17 +101,20 @@ bool Evaluator::isProxy(const Matcher &matched)
 	return false;
 }
 
-bool Evaluator::isCgi(const Parser &parsed)
+bool Evaluator::isCgi(const Matcher &matched)
 {
 	std::string extension;
 	size_t size;
 
-	for (auto file : config["http"]["cgi"]["files"].object_items())
+	for (auto file : matched.getConfig()["http"]["cgi"]["files"].object_items())
 	{
 		extension = file.first;
-		size = parsed.getPath().size();
-		if (parsed.getPath().substr(size - extension.size()) == extension)
-			return true;
+		size = matched.getPath().size();
+		if (size > extension.size())
+		{
+			if (matched.getPath().substr(size - extension.size()) == extension)
+				return true;
+		}
 	}
 	return false;
 }
@@ -130,4 +142,19 @@ bool Evaluator::isDirectory(struct stat *file)
 bool Evaluator::isRegular(struct stat *file)
 {
 	return S_ISREG(file->st_mode);
+}
+
+Socket Evaluator::getProxySocket()
+{
+	return proxy_socket;
+}
+
+std::string Evaluator::getProxyRequest()
+{
+	return proxy_request;
+}
+
+bool Evaluator::isProxyRequest()
+{
+	return proxy_set;
 }

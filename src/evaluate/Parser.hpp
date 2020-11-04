@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:54 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 13:45:13 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:54:30 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,28 @@
 class Parser
 {
 public:
-	static const Parser &getParsed(int socket, std::string &message);
+	static Parser getParsed(std::string &message);
 	std::string getMethod() const;
 	std::string getPath() const; 
 	std::string getQuery() const;
 	std::string getVersion() const;
 	std::string getHeader(std::string header) const;
 	std::map<std::string, std::string> getHeaders() const;
+	bool hasBody() const;
 	std::string getBody() const;
+	size_t getBodySize() const;
 
 private:
 	static std::string CRLF;
-	int socket;
 	std::map<std::string, std::string> headers;
 	std::string method;
 	std::string path;
 	std::string query;
 	std::string version;
 	std::string body;
+	size_t body_size;
 
-	Parser(int socket, std::string &message);
+	Parser(std::string &message);
 	void parseRequestLine(std::string &line);
 	void parseStatusLine(std::string &line);
 	void parsePathLine(std::string line);

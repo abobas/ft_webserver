@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 02:31:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:55:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,7 @@ class Socket
 public:
 	Socket();
 	Socket(std::string type, int socket);
-
 	void receiveMessage();
-	void evaluateMessage();
-	void responseMessage();
-
-	void sendData(std::string &value);
-	void sendData(std::string &&value);
-
 	bool isReady();
 	bool isAlive();
 	void setType(std::string new_type);

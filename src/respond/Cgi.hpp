@@ -6,35 +6,34 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 02:35:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:38:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Data.hpp"
+#include "Responder.hpp"
 #include "../logger/Log.hpp"
+#include "../evaluate/Matcher.hpp"
+#include "../evaluate/Parser.hpp"
 #include <vector>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
 
-/**
-* @brief Executes CGI file and sends output to client.
-*/
 class Cgi
 {
 public:
-	Cgi(Data &data);
+	/**
+	* @brief Resolves CGI request and sends output to client.
+	*/
+	static void resolveCgiRequest(int socket, const Matcher &matched, const Parser &parsed);
 
 private:
-	Data data;
-	Log *log;
+	static Log *log;
+	const Matcher &matched;
+	const Parser &parsed;
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
 	std::string cgi_path;
@@ -43,31 +42,27 @@ private:
 	int parent_output[2];
 	int child_output[2];
 	pid_t pid;
-	
-	void createPipes();
-	int readOperation(int fd, std::string &buffer);
-	void writeOperation(int fd, const char *buffer, int size);
-	
-	bool waitCheck();
+	int socket;
 
+	Cgi(int socket, const Matcher &matched, const Parser &parsed);
 	void executeScript();
 	void parentProcess();
 	void parentWritePipe();
-	void closePipe(int mode);
-	void childClosePipe(int mode);
-	
 	void childProcess();
-	void setTmp();
-	void deleteTmp();
+	bool waitCheck();
+	void createPipes();
+	void closePipe(int mode);
+	int readOperation(int fd, std::string &buffer);
+	void writeOperation(int fd, const char *buffer, int size);
 	bool checkRequest();
 	void setPath();
 	void setEnvironment();
-	void setServerNameEnv();
-	void setServerPortEnv();
 	void setConfigEnv();
 	void setMethodEnv();
 	void setUriEnv();
 	void setQueryEnv();
-	void setLengthEnv();	
+	void setLengthEnv();
+	void setServerNameEnv();
+	void setServerPortEnv();
 	void setPathEnv();
 };

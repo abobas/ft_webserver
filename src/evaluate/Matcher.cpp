@@ -6,26 +6,24 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:15 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 15:19:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 01:03:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Matcher.hpp"
 
-Json Matcher::config = Config::getConfig();
-
-const Matcher &Matcher::getMatched(const Parser &parsed)
+Matcher Matcher::getMatched(const Parser &parsed, Json config)
 {
-	return Matcher(parsed);
+	return Matcher(parsed, config);
 }
 
-Matcher::Matcher(const Parser &parsed)
+Matcher::Matcher(const Parser &parsed, Json config): config(config), parsed(parsed)
 {
-	matchServer(parsed);
-	matchLocation(parsed);
+	matchServer();
+	matchLocation();
 }
 
-void Matcher::matchServer(const Parser &parsed)
+void Matcher::matchServer()
 {
 	size_t pos;
 	int port;
@@ -47,24 +45,22 @@ void Matcher::matchServer(const Parser &parsed)
 	}
 }
 
-void Matcher::matchLocation(const Parser &parsed)
+void Matcher::matchLocation()
 {
-	int path_length = 0;
+	size_t path_length = 0;
 	
 	matched_path = parsed.getPath();
 	for (auto loc : server["locations"].object_items())
 	{
 		if (matched_path.substr(0, loc.first.size()) == loc.first && loc.first.size() > path_length)
 		{
+			match = true;
 			location = loc.second.object_items();
 			path_length = loc.first.size();
 		}
 	}
 	if (path_length == 0)
-	{
-		no_match = true;
 		return ;
-	}
 	matched_path = location["root"].string_value();
 	if (path_length == 1)
 		matched_path += parsed.getPath();
@@ -74,10 +70,25 @@ void Matcher::matchLocation(const Parser &parsed)
 
 bool Matcher::isMatched() const
 {
-	return no_match;
+	return match;
+}
+
+Json Matcher::getConfig() const
+{
+	return config;
 }
 
 std::string Matcher::getPath() const
 {
 	return matched_path;
+}
+
+Json::object Matcher::getServer() const
+{
+	return server;
+}
+
+Json::object Matcher::getLocation() const
+{
+	return location;
 }

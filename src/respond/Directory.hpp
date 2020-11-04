@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 16:16:10 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 00:42:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,25 @@
 #include <string>
 #include <dirent.h>
 
-/**
-* @brief Resolves requests involving directory listings and index files.
-*/
 class Directory
 {
 public:
+	/**
+	* @brief Resolves requests involving directory listings and index files.
+	*/
 	static void resolveDirectoryRequest(int socket, const Matcher &matched, const Parser &parsed);
 
 private:
+	const Matcher &matched;
+	const Parser &parsed;
 	int socket;
 	std::string dir_path;
 
 	Directory(int socket, const Matcher &matched, const Parser &parsed);
-	bool isAutoIndex(const Matcher &matched);
-	void resolveDirListing(const Parser &parsed);
-	void resolveDirIndex(const Matcher &matched);
-	void writeDirTitle(std::string &data, const Parser &parsed);
-	void writeDirFile(std::string &data, std::string &&file, const Parser &parsed);
+	void setPath();
+	bool isAutoIndex();
+	void resolveDirListing();
+	void resolveDirIndex();
+	void writeDirTitle(std::string &data);
+	void writeDirFile(std::string &data, std::string &&file);
 };

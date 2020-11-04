@@ -6,26 +6,25 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/02 22:07:33 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/04 00:18:37 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = 			main.cpp \
-				Log.cpp \
 				Server.cpp \
 				Socket.cpp \
-				receiver/Receiver.cpp\
-				response/Response.cpp \
-				response/Data.cpp \
-				response/Resource.cpp \
-				response/Directory.cpp \
-				response/Proxy.cpp \
-				response/Cgi.cpp \
-				response/Upload.cpp \
-				json/Json.cpp \
-				http/HttpParser.cpp \
-				http/HttpRequest.cpp \
-				http/HttpResponse.cpp
+				logger/Log.cpp \
+				config/Json.cpp \
+				receive/Receiver.cpp \
+				evaluate/Evaluator.cpp \
+				evaluate/Parser.cpp \
+				evaluate/Matcher.cpp \
+				evaluate/Validator.cpp \
+				respond/Responder.cpp \
+				respond/Directory.cpp \
+				respond/Proxy.cpp \
+				respond/Cgi.cpp \
+				respond/Upload.cpp
 
 SRC_DIR	=		./src/
 

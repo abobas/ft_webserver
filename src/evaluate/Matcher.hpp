@@ -6,22 +6,21 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:13 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 15:18:54 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 01:03:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Parser.hpp"
-#include "../config/Config.hpp"
 #include "../config/Json.hpp"
 #include <string>
 
 class Matcher
 {
 public:
-
-	static const Matcher &getMatched(const Parser &parsed);
+	static Matcher getMatched(const Parser &parsed, Json config);
+	Json getConfig() const;
 	Json::object getServer() const;
 	Json::object getLocation() const;
 	std::string getPath() const;
@@ -31,10 +30,11 @@ private:
 	Json::object server;
 	Json::object location;
 	std::string matched_path;
-	static Json config;
-	bool no_match = false;
+	Json config;
+	const Parser &parsed;
+	bool match = false;
 
-	Matcher(const Parser &parsed);
-	void matchServer(const Parser &parsed);
-	void matchLocation(const Parser &parsed);
+	Matcher(const Parser &parsed, Json config);
+	void matchServer();
+	void matchLocation();
 };
