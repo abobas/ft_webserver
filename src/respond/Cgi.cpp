@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 21:01:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 21:46:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void Cgi::parentProcess()
 		if (ret > 0)
 		{
 			buf[ret] = '\0';
-			log->logBlock(buf);
+			//log->logBlock(buf);
 			respond.sendChunk(buf, ret + 1);
 		}
 	}

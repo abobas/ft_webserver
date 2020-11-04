@@ -1,6 +1,6 @@
 {
 	"http": {
-		"max_body": 10000,
+		"max_body": 10000000,
 		"servers": [
         {
             "name": "localhost",

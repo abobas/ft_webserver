@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 20:48:21 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 21:47:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,15 +233,15 @@ void Responder::transmitHeaders()
 	std::ostringstream oss;
 	std::string data;
 
-	oss << "HTTP/1.1"
-		<< " " << status << " " << status_message << CRLF;
+	oss << "HTTP/1.1";
+	oss << " " << status << " " << status_message << CRLF;
 	for (auto &header : response_headers)
 		oss << header.first.c_str() << ": " << header.second.c_str() << CRLF;
 	oss << CRLF;
 	data = oss.str();
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 int Responder::readFile(const std::string &path, std::string &buffer)

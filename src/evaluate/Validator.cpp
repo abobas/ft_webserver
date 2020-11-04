@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:22:50 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 21:45:39 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ Validator::Validator(int socket, Parser &parsed, Matcher &matched)
 	if (!checkProtocol())
 		return;
 	if (!checkMethod())
+		return;
+	if (!checkMaxBodyLimit())
 		return;
 }
 
@@ -89,6 +91,31 @@ bool Validator::checkMethod()
 	log->logEntry("request's method not accepted");
 	respond.sendBadMethod(methods);
 	return false;
+}
+
+bool Validator::checkMaxBodyLimit()
+{
+	if (matched.getConfig()["http"]["max_body"].number_value() != 0)
+	{
+		if (parsed.getBodySize() > matched.getConfig()["http"]["max_body"].number_value())
+		{
+			valid = false;
+			log->logEntry("max body size exceeded");
+			respond.sendForbidden();
+			return false;
+		}
+	}
+	if (matched.getLocation()["max_body"].number_value() != 0)
+	{
+		if (parsed.getBodySize() > matched.getLocation()["max_body"].number_value())
+		{
+			valid = false;
+			log->logEntry("max body size exceeded");
+			respond.sendForbidden();
+			return false;
+		}
+	}
+	return true;
 }
 
 bool Validator::checkCgiExtension()

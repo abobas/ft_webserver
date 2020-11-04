@@ -1,4 +1,12 @@
 
+### BODY RECEIVER ###
+--- readClient only accepts headers
+------- bytes read from body are stored
+---- read operation is always non blocking
+-------- meaning that body receiver keeps state, returns when reading not possible anymore
+-------- next select call continue reading body
+
+
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json)
 - CGI: optimization read / write
