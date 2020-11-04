@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 12:07:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:15:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,16 @@ private:
 	bool proxy_set = false;
 
 	Evaluator(int socket, std::string &message, Json config);
-	void evaluateRequest(const Parser &parsed, const Matcher &matched);
-	void resolveProxyRequest(const Matcher &matched, const Parser &parsed);
-	void resolveCgiRequest(const Matcher &matched, const Parser &parsed);
-	void resolveUploadRequest(const Matcher &matched, const Parser &parsed);
-	void resolveDirectoryRequest(const Matcher &matched, const Parser &parsed);
-	void resolveFileRequest(const Matcher &matched);
-	bool isProxy(const Matcher &matched);
-	bool isCgi(const Matcher &matched);
-	bool isUpload(const Parser &parsed);
-	bool isFile(const Matcher &matched, struct stat *file);
+	void evaluateRequest(Parser &parsed, Matcher &matched);
+	void resolveProxyRequest(Matcher &matched, Parser &parsed);
+	void resolveCgiRequest(Matcher &matched, Parser &parsed);
+	void resolveUploadRequest(Matcher &matched, Parser &parsed);
+	void resolveDirectoryRequest(Matcher &matched, Parser &parsed);
+	void resolveFileRequest(Matcher &matched, Responder &respond);
+	bool isProxy(Matcher &matched);
+	bool isCgi(Matcher &matched);
+	bool isUpload(Parser &parsed);
+	bool isFile(Matcher &matched, struct stat *file);
 	bool isRegular(struct stat *file);
 	bool isDirectory(struct stat *file);
 };

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 12:05:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:08:35 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,21 @@ public:
 	/**
 	* @brief Sets up connection with proxy server.
 	*/
-	static Proxy resolveProxyRequest(const Matcher &matched, const Parser &parsed);
+	static Proxy resolveProxyRequest(Matcher &matched, Parser &parsed);
 
 	Socket getProxySocket();
 	std::string getProxyRequest();
 
 private:
-	const Matcher &matched;
-	const Parser &parsed;
+	Matcher &matched;
+	Parser &parsed;
 	static std::string CRLF;
 	static Log *log;
 	std::string proxy_path;
 	Socket proxy_socket;
 	struct sockaddr_in proxy_addr;
 
-	Proxy(const Matcher &matched, const Parser &parsed);
+	Proxy(Matcher &matched, Parser &parsed);
 	void setPath();
 	void clearAddress();
 	void createProxySocket();

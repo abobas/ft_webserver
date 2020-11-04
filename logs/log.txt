@@ -1,182 +1,33 @@
-15:35:50 - created socket 4
-15:35:50 - created socket 5
-15:35:53 - select value 1
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - accepted client 6
-15:35:53 - select value 1
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: client_read
-15:35:53 - socket fd 6
-15:35:53 - receiveMessage called socket 6
-15:35:53 - deleting receiver 6
-15:35:53 - deleted receiver 6
-15:35:53 - read client 6
+16:44:06 - created socket 4
+16:44:06 - created socket 5
+16:44:08 - accepted client 6
+16:44:08 - receiveMessage called socket 6
+16:44:08 - deleting receiver 6
+16:44:08 - deleted receiver 6
+16:44:08 - read client 6
 -------begin-of-message------
-GET /proxy HTTP/1.1
+HEAD / HTTP/1.1
 Host: localhost
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
+User-Agent: curl/7.68.0
+Accept: */*
 
 
 --------end-of-message-------
-15:35:53 - transforming from client_read 6
-15:35:53 - transformed into client_write 6
-15:35:53 - select value 1
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: client_write
-15:35:53 - socket fd 6
-15:35:53 - writing client 6
-15:35:53 - not empty
-15:35:53 - is empty
-15:35:53 - correct protocol
-15:35:53 - passed cgi check
-15:35:53 - methods OK
-15:35:53 - resolving proxy request
-15:35:53 - proxy_path: /
-15:35:53 - matched_path : 
-15:35:53 - parsed path: /proxy
-15:35:53 - path set
-15:35:53 - socket created
-15:35:53 - address set
-15:35:53 - proxy connected
-15:35:53 - added proxy
-15:35:53 - added proxy message
-15:35:53 - added pair
-15:35:53 - connected with proxy 7
-15:35:53 - client is now waiting 6
-15:35:53 - select value 3
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - socket type: proxy_write
-15:35:53 - socket fd 7
-15:35:53 - accepted client 8
-15:35:53 - select value 2
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - socket type: proxy_write
-15:35:53 - socket fd 7
-15:35:53 - writing proxy 7
--------begin-of-message------
-GET / HTTP/1.1
-accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-accept-encoding: gzip, deflate
-accept-language: en-US,en;q=0.5
-cache-control: max-age=0
-upgrade-insecure-requests: 1
-user-agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-
-
---------end-of-message-------
-15:35:53 - wrote proxy 7
-15:35:53 - transforming from proxy_write 7
-15:35:53 - transformed into proxy_read 7
-15:35:53 - select value 2
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - socket type: proxy_read
-15:35:53 - socket fd 7
-15:35:53 - socket type: client_read
-15:35:53 - socket fd 8
-15:35:53 - receiveMessage called socket 8
-15:35:53 - deleting receiver 8
-15:35:53 - deleted receiver 8
-15:35:53 - read client 8
--------begin-of-message------
-GET / HTTP/1.1
-accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-accept-encoding: gzip, deflate
-accept-language: en-US,en;q=0.5
-cache-control: max-age=0
-upgrade-insecure-requests: 1
-user-agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
-
-
---------end-of-message-------
-15:35:53 - transforming from client_read 8
-15:35:53 - transformed into client_write 8
-15:35:53 - select value 2
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - socket type: proxy_read
-15:35:53 - socket fd 7
-15:35:53 - socket type: client_write
-15:35:53 - socket fd 8
-15:35:53 - writing client 8
-15:35:53 - not empty
-15:35:53 - is empty
-15:35:53 - correct protocol
-15:35:53 - passed cgi check
-15:35:53 - methods OK
-15:35:53 - resolving directory request
-15:35:53 - wrote client 8
-15:35:53 - transforming from client_write 8
-15:35:53 - transformed into client_read 8
-15:35:53 - select value 2
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - socket type: proxy_read
-15:35:53 - socket fd 7
-15:35:53 - receiveMessage called socket 7
-15:35:53 - message has content
-15:35:53 - deleting receiver 7
-15:35:53 - deleted receiver 7
-15:35:53 - fully read proxy 7
+16:44:08 - transforming from client_read 6
+16:44:08 - transformed into client_write 6
+16:44:08 - writing client 6
+16:44:08 - resolving directory request
 -------begin-of-message------
 HTTP/1.1 200 OK
 connection: keep-alive
 content-length: 153
-content-type: text/html
-date: Wed, 04 Nov 2020 15:35:53 CET
+date: Wed, 04 Nov 2020 16:44:08 CET
 last-modified: Sat, 31 Oct 2020 16:25:15 CET
+server: localhost
 
-  
-<center>
-    <img src="https://media.giphy.com/media/EBDzvfnJ9V3BGuOtKe/giphy.gif" width="500" height="500">
-    <p><h1>/index.html</h1></p>
-</center>
+
 --------end-of-message-------
-15:35:53 - transforming from proxy_read 7
-15:35:53 - transformed into proxy_done 7
-15:35:53 - select value 1
-15:35:53 - socket type: listen
-15:35:53 - socket fd 4
-15:35:53 - socket type: listen
-15:35:53 - socket fd 5
-15:35:53 - socket type: wait_client_write
-15:35:53 - socket fd 6
-15:35:53 - wrote client 6
-15:35:53 - disconnected socket 7
-15:35:53 - transforming from wait_client_write 6
-15:35:53 - transformed into client_read 6
+16:44:08 - wrote client 6
+16:44:08 - transforming from client_write 6
+16:44:08 - transformed into client_read 6
+16:44:08 - disconnected socket 6

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 13:11:08 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:08:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 std::string Proxy::CRLF = "\r\n";
 Log *Proxy::log = Log::getInstance();
 
-Proxy Proxy::resolveProxyRequest(const Matcher &matched, const Parser &parsed)
+Proxy Proxy::resolveProxyRequest(Matcher &matched, Parser &parsed)
 {
 	return Proxy(matched, parsed);
 }
 
-Proxy::Proxy(const Matcher &matched, const Parser &parsed)
+Proxy::Proxy(Matcher &matched, Parser &parsed)
 	: matched(matched), parsed(parsed)
 {
 	setPath();

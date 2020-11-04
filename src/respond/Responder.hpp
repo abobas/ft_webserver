@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 15:33:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:01:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "../logger/Log.hpp"
+#include "../evaluate/Parser.hpp"
 #include <string>
 #include <map>
 #include <sstream>
@@ -31,6 +32,7 @@ public:
 	* @param socket Socket to communicate with.
 	*/
 	static Responder getResponder(int socket);
+	Responder(int socket, Parser &parsed);
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
 	void sendDataRaw(std::string &data);
@@ -68,6 +70,7 @@ private:
 	static std::string ENCODING_TYPE;
 	std::map<std::string, std::string> response_headers;
 	int socket;
+	Parser *parsed;
 	int status;
 	std::string status_message;
 

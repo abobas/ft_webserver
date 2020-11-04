@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 15:35:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:24:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int Server::getSelectRange()
 
 void Server::handleOperations(int select)
 {
-	log->logEntry("select value", select);
 	std::vector<std::reference_wrapper<Socket>> tmp;
 	
 	for (auto &socket : sockets)
@@ -132,8 +131,6 @@ void Server::handleOperations(int select)
 
 fd_set *Server::getSet(Socket socket)
 {
-	log->logEntry("socket type: " + socket.getType());
-	log->logEntry("socket fd", socket.getSocket());
 	if (socket.getType() == "listen")
 		return &read_set;
 	else if (socket.getType() == "client_read")
@@ -210,11 +207,8 @@ void Server::writeClient(Socket &client)
 	if (evaluated.isProxyRequest())
 	{
 		addSocket(evaluated.getProxySocket());
-		log->logEntry("added proxy");
 		addMessage(evaluated.getProxySocket(), evaluated.getProxyRequest());
-		log->logEntry("added proxy message");
 		addPair(client.getSocket(), sockets.back().getSocket());
-		log->logEntry("added pair");
 		log->logEntry("connected with proxy", sockets.back().getSocket());
 		client.setType("wait_client_write");
 		log->logEntry("client is now waiting", client.getSocket());

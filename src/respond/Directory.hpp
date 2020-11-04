@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:42:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:07:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,16 @@ public:
 	/**
 	* @brief Resolves requests involving directory listings and index files.
 	*/
-	static void resolveDirectoryRequest(int socket, const Matcher &matched, const Parser &parsed);
+	static void resolveDirectoryRequest(int socket, Matcher &matched, Parser &parsed);
 
 private:
-	const Matcher &matched;
-	const Parser &parsed;
+	Matcher &matched;
+	Parser &parsed;
+	Responder respond;
 	int socket;
 	std::string dir_path;
 
-	Directory(int socket, const Matcher &matched, const Parser &parsed);
+	Directory(int socket, Matcher &matched, Parser &parsed);
 	void setPath();
 	bool isAutoIndex();
 	void resolveDirListing();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 15:33:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:43:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,13 @@ Responder Responder::getResponder(int socket)
 	return Responder(socket);
 }
 
-Responder::Responder(int socket) : socket(socket)
+Responder::Responder(int socket, Parser &parsed)
+	: socket(socket), parsed(&parsed)
+{
+}
+
+Responder::Responder(int socket)
+	: socket(socket), parsed(NULL)
 {
 }
 
@@ -200,32 +206,42 @@ void Responder::sendServiceUnavailable()
 
 void Responder::transmitData(std::string &data)
 {
-	// if (request.getMethod() == "HEAD")
-	// 	return ;
+	if (parsed != NULL)
+	{
+		if (parsed->getMethod() == "HEAD")
+			return;
+	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 void Responder::transmitData(std::string &&data)
 {
-	// if (request.getMethod() == "HEAD")
-	// 	return ;
+	if (parsed != NULL)
+	{
+		if (parsed->getMethod() == "HEAD")
+			return;
+	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 void Responder::transmitHeaders()
 {
 	std::ostringstream oss;
+	std::string data;
 
 	oss << "HTTP/1.1"
 		<< " " << status << " " << status_message << CRLF;
 	for (auto &header : response_headers)
 		oss << header.first.c_str() << ": " << header.second.c_str() << CRLF;
 	oss << CRLF;
-	transmitData(oss.str());
+	data = oss.str();
+	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
+		log->logError("send()");
+	log->logBlock(data);
 }
 
 int Responder::readFile(const std::string &path, std::string &buffer)
@@ -283,7 +299,8 @@ void Responder::addDataHeaders(std::string &&data)
 void Responder::addGeneralHeaders()
 {
 	addDateHeader();
-	// addServerHeader();
+	if (parsed != NULL)
+		addServerHeader();
 	addConnectionHeader(CONNECTION_TYPE);
 }
 
@@ -311,13 +328,15 @@ void Responder::addFileTypeHeader(const std::string &path)
 	pos = path.find('.');
 	if (pos == std::string::npos)
 		return;
-	if (path.substr(pos + 1) == "html" || path.substr(pos + 1) == "txt")
-		type = "text/";
-	else if (path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "png")
+	if (path.substr(pos + 1) == "txt")
+		type = "text/plain";
+	else if (path.substr(pos + 1) == "jpg" || path.substr(pos + 1) == "jpeg" || path.substr(pos + 1) == "png")
+	{
 		type = "image/";
+		type.append(path.substr(pos + 1));
+	}
 	else
 		return;
-	type.append(path.substr(pos + 1));
 	addHeader("content-type", type);
 }
 
@@ -334,11 +353,11 @@ void Responder::addLastModifiedHeader(const std::string &path)
 	addHeader("last-modified", string);
 }
 
-// void Responder::addServerHeader()
-// {
-// 	if (!request.getHeader("host").empty())
-// 		addHeader("server", request.getHeader("host"));
-// }
+void Responder::addServerHeader()
+{
+	if (!parsed->getHeader("host").empty())
+		addHeader("server", parsed->getHeader("host"));
+}
 
 void Responder::addDateHeader()
 {

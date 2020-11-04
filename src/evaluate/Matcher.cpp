@@ -6,18 +6,18 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:15 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 01:03:51 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 15:56:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Matcher.hpp"
 
-Matcher Matcher::getMatched(const Parser &parsed, Json config)
+Matcher Matcher::getMatched(Parser &parsed, Json config)
 {
 	return Matcher(parsed, config);
 }
 
-Matcher::Matcher(const Parser &parsed, Json config): config(config), parsed(parsed)
+Matcher::Matcher(Parser &parsed, Json config): config(config), parsed(parsed)
 {
 	matchServer();
 	matchLocation();

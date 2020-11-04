@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:13 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:30:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 15:59:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,18 @@
 class Validator
 {
 public:
-	static Validator getValidated(int socket, const Parser &parsed, const Matcher &matched);
+	static Validator getValidated(int socket, Parser &parsed, Matcher &matched);
 	bool isValid() const;
 
 private:
 	static Log *log;
-	const Parser &parsed;
-	const Matcher &matched;
+	Parser &parsed;
+	Matcher &matched;
+	Responder respond;
 	int socket;
 	bool valid = true;
 
-	Validator(int socket, const Parser &parsed, const Matcher &matched);
+	Validator(int socket, Parser &parsed, Matcher &matched);
 	bool checkEmpty();
 	bool checkMatch();
 	bool checkProtocol();

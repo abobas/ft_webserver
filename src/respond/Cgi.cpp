@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:44:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:10:45 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 
 Log *Cgi::log = Log::getInstance();
 
-void Cgi::resolveCgiRequest(int socket, const Matcher &matched, const Parser &parsed)
+void Cgi::resolveCgiRequest(int socket, Matcher &matched, Parser &parsed)
 {
 	Cgi(socket, matched, parsed);
 }
 
-Cgi::Cgi(int socket, const Matcher &matched, const Parser &parsed)
-	: matched(matched), parsed(parsed), socket(socket)
+Cgi::Cgi(int socket, Matcher &matched, Parser &parsed)
+	: matched(matched), parsed(parsed), respond(socket, parsed), socket(socket)
 {
 	if (!checkRequest())
 		return;
@@ -81,9 +81,8 @@ void Cgi::parentProcess()
 	log->logEntry("entered parent process");
 	parentWritePipe();
 	log->logEntry("wrote input to child");
-	Responder responder = Responder::getResponder(socket);
 
-	responder.sendChunkHeader();
+	respond.sendChunkHeader();
 	char buf[IO_SIZE + 1];
 	bool ready = false;
 	while (true)
@@ -103,11 +102,11 @@ void Cgi::parentProcess()
 		if (ret > 0)
 		{
 			buf[ret] = '\0';
-			responder.sendChunk(buf, ret + 1);
+			respond.sendChunk(buf, ret + 1);
 		}
 	}
 	closePipe(1);
-	responder.sendChunkEnd();
+	respond.sendChunkEnd();
 }
 
 bool Cgi::waitCheck()
@@ -205,7 +204,7 @@ bool Cgi::checkRequest()
 	{
 		if (stat(matched.getPath().c_str(), &file) < 0)
 		{
-			Responder::getResponder(socket).sendNotFound();
+			respond.sendNotFound();
 			return false;
 		}
 	}

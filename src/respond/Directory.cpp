@@ -6,19 +6,19 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:10 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:44:09 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 16:11:08 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Directory.hpp"
 
-void Directory::resolveDirectoryRequest(int socket, const Matcher &matched, const Parser &parsed)
+void Directory::resolveDirectoryRequest(int socket, Matcher &matched, Parser &parsed)
 {
 	Directory dir(socket, matched, parsed);
 }
 
-Directory::Directory(int socket, const Matcher &matched, const Parser &parsed)
-	: matched(matched), parsed(parsed), socket(socket)
+Directory::Directory(int socket, Matcher &matched, Parser &parsed)
+	: matched(matched), parsed(parsed), respond(socket, parsed), socket(socket)
 {
 	setPath();
 	if (isAutoIndex())
@@ -54,7 +54,7 @@ void Directory::resolveDirListing()
 			writeDirFile(raw, dirent->d_name);
 	}
 	closedir(dir);
-	Responder::getResponder(socket).sendData(raw);
+	respond.sendData(raw);
 }
 
 void Directory::resolveDirIndex()
@@ -72,12 +72,12 @@ void Directory::resolveDirIndex()
 		{
 			closedir(dir);
 			dir_path.append(file);
-			Responder::getResponder(socket).sendFile(dir_path);
+			respond.sendFile(dir_path);
 			return;
 		}
 	}
 	closedir(dir);
-	Responder::getResponder(socket).sendNotFound();
+	respond.sendNotFound();
 }
 
 void Directory::writeDirTitle(std::string &raw)
