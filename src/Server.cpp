@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 13:05:34 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 15:35:24 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,7 @@ void Server::readClient(Socket &client)
 	}
 	log->logEntry("read client", client.getSocket());
 	addMessage(client, client.getMessage());
+	log->logBlock(messages[client]);
 	transformSocket(client);
 }
 
@@ -228,7 +229,7 @@ void Server::writeClient(Socket &client)
 void Server::writeProxy(Socket &proxy)
 {
 	log->logEntry("writing proxy", proxy.getSocket());
-	Responder::getResponder(proxy.getSocket()).sendData(messages[proxy]);
+	Responder::getResponder(proxy.getSocket()).sendDataRaw(messages[proxy]);
 	log->logBlock(messages[proxy]);
 	log->logEntry("wrote proxy", proxy.getSocket());
 	deleteMessage(proxy);
@@ -261,7 +262,7 @@ void Server::writeWaitingClient(Socket &client)
 	Socket proxy = findPair(client);
 	if (proxy == client || proxy.getType() != "proxy_done")
 		return;
-	Responder::getResponder(client.getSocket()).sendData(messages[proxy]);
+	Responder::getResponder(client.getSocket()).sendDataRaw(messages[proxy]);
 	log->logEntry("wrote client", client.getSocket());
 	deleteMessage(proxy);
 	disconnectSocket(proxy);

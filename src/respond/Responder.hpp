@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:44:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 15:33:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ public:
 	static Responder getResponder(int socket);
 	void sendData(std::string &data);
 	void sendData(std::string &&data);
+	void sendDataRaw(std::string &data);
 	void sendChunkHeader();
 	void sendChunk(const char *buffer, int size);
 	void sendChunkEnd();

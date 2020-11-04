@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 01:26:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 15:33:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ void Responder::sendData(std::string &data)
 	addGeneralHeaders();
 	addDataHeaders(data);
 	transmitHeaders();
+	transmitData(data);
+}
+
+void Responder::sendDataRaw(std::string &data)
+{
 	transmitData(data);
 }
 
