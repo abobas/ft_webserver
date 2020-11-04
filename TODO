@@ -1,39 +1,16 @@
-### REFACTORING NIEUW ###
---- responder request object problemen (uitgecomment) (NEED CONFIG)
 
-#### ALGEMEEN ####
+### MUST HAVE FEATURES ###
+- Socket: timeout op Server level (configuren in config.json)
+
+#### BUGS ####
 --- route names ( /directory/ ) fixen, laatste slash
---- CGI environment (loop voor alle ontvangen headers in request)
---- out of range in Validator::getMethod()
---- dirlisting ook . && .. om te navigaten
-
-
------------------------------------------------------------
-
-
-### REFACTORING OUD ###
---- error responses op server / io operations level
---- http header parsing op io operations level
---- serious refactoring. httpResponse / httpRequest / Parser uit elkaar trekken
--------- SERVER /// SOCKET needs TRANSMIT && RECEIVE objects
--------- HTTP Request -->> Request Processing (Config x Message x MessageParser)
 
 ###### TESTER #######
 --- CGI x POST ???
 ---------- request body schrijven naar pipe -> cin van CGI
 --- route names ( /directory/ ) fixen, laatste slash
 
-
-
-### NEW FEATURES ####
-- CONFIG: default error pages: https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-to-use-custom-error-pages-on-ubuntu-14-04
-- timer toevoegen aan config
-- timer toevoegen aan socket state
-
-### PROXY ####
-- support toevoegen voor client body in request
-
-//////////////////////////////////////////////////////////////
-
-######## UBUNTU DINGEN #########
-- connect returned altijd 0 op Linux - (http://cr.yp.to/docs/connect.html)
+### EXTRA ####
+- Proxy: support toevoegen voor client body in request
+- Directory: DirListing met .. voor traversal
+- Config: default error pages

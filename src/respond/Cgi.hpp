@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:09:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 17:07:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,13 @@ private:
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
 	std::string cgi_path;
-	bool post = false;
 	struct stat file;
 	int parent_output[2];
 	int child_output[2];
 	pid_t pid;
 	int socket;
+	bool post = false;
+	bool chunked = false;
 
 	Cgi(int socket, Matcher &matched, Parser &parsed);
 	void executeScript();
@@ -62,7 +63,8 @@ private:
 	void setMethodEnv();
 	void setUriEnv();
 	void setQueryEnv();
-	void setLengthEnv();
+	void setHeadersEnv();
+	void setContentLengthEnv();
 	void setServerNameEnv();
 	void setServerPortEnv();
 	void setPathEnv();

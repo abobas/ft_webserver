@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:07:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 17:00:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "../evaluate/Matcher.hpp"
 #include <string>
 #include <dirent.h>
+#include <ctype.h>
 
 class Directory
 {

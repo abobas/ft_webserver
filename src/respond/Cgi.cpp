@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:10:45 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/04 17:11:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,11 @@ bool Cgi::checkRequest()
 		}
 	}
 	if (parsed.getMethod() == "POST")
+	{
 		post = true;
+		if (parsed.getHeader("content-length").empty())
+			chunked = true;
+	}
 	return true;
 }
 
@@ -237,10 +241,11 @@ void Cgi::setEnvironment()
 	setMethodEnv();
 	setUriEnv();
 	setQueryEnv();
-	setLengthEnv();
 	setServerNameEnv();
 	setServerPortEnv();
 	setPathEnv();
+	setHeadersEnv();
+	setContentLengthEnv();
 	env.push_back(NULL);
 }
 
@@ -255,6 +260,34 @@ void Cgi::setConfigEnv()
 		memory.push_back(std::move(insert));
 		env.push_back(memory.back().c_str());
 	}
+}
+
+void Cgi::setHeadersEnv()
+{
+	for (auto header : parsed.getHeaders())
+	{
+		std::string insert;
+		std::string copy(header.first);
+		for (auto &c : copy)
+			c = toupper(c);
+		insert.append(copy + "=");
+		insert.append(header.second);
+		memory.push_back(std::move(insert));
+		env.push_back(memory.back().c_str());
+	}
+}
+
+void Cgi::setContentLengthEnv()
+{
+	if (post && !chunked)
+		return ;
+	std::string length("CONTENT_LENGTH=");
+	if (chunked)
+		length += std::to_string(parsed.getBodySize());
+	else
+		length += std::to_string(file.st_size);
+	memory.push_back(std::move(length));
+	env.push_back(memory.back().c_str());
 }
 
 void Cgi::setMethodEnv()
@@ -280,17 +313,6 @@ void Cgi::setQueryEnv()
 	std::string query("QUERY_STRING=");
 	query += parsed.getQuery();
 	memory.push_back(std::move(query));
-	env.push_back(memory.back().c_str());
-}
-
-void Cgi::setLengthEnv()
-{
-	std::string length("CONTENT_LENGTH=");
-	if (post)
-		length += std::to_string(parsed.getBodySize());
-	else
-		length += std::to_string(file.st_size);
-	memory.push_back(std::move(length));
 	env.push_back(memory.back().c_str());
 }
 
