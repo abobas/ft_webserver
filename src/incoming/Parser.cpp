@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:52 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 00:54:37 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 12:43:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,38 @@
 
 std::string Parser::CRLF = "\r\n";
 
-Parser Parser::getParsed(std::string &message)
+Parser::Parser()
 {
-	return Parser(message);
 }
 
-Parser::Parser(std::string &message)
+Parser::Parser(std::string &headers)
 {
-	auto it = message.begin();
-	auto line = toStringToken(it, message, CRLF);
+	auto it = headers.begin();
+	auto line = toStringToken(it, headers, CRLF);
 	parseRequestLine(line);
-	line = toStringToken(it, message, CRLF);
+	line = toStringToken(it, headers, CRLF);
 	while (!line.empty())
 	{
 		parseHeader(line);
-		line = toStringToken(it, message, CRLF);
+		line = toStringToken(it, headers, CRLF);
 	}
-	body = message.substr(std::distance(message.begin(), it));
-	body_size = body.size();
+}
+
+void Parser::operator=(const Parser &other)
+{
+	headers = other.headers;
+	method = other.method;
+	uri = other.uri;
+	path = other.path;
+	query = other.query;
+	version = other.version;
 }
 
 void Parser::parsePathLine(std::string line)
 {
 	size_t pos;
 
+	uri = line;
 	pos = line.find('?');
 	if (pos != std::string::npos)
 	{
@@ -64,7 +72,6 @@ void Parser::parseHeader(std::string &line)
 	auto value = utils::trim(toStringToken(it, line, CRLF));
 	headers.insert({name, value});
 }
-
 
 std::string Parser::toStringToken(std::string::iterator &it, std::string &str, std::string &token)
 {
@@ -113,7 +120,7 @@ std::string Parser::toCharToken(std::string::iterator &it, std::string &str, cha
 	return ret;
 }
 
-std::string Parser::getHeader(std::string header) const
+std::string Parser::getHeader(std::string header)
 {
 	utils::toLower(header);
 	if (!hasHeader(header))
@@ -121,47 +128,47 @@ std::string Parser::getHeader(std::string header) const
 	return headers.at(header);
 }
 
-bool Parser::hasHeader(std::string header) const
+bool Parser::hasHeader(std::string header)
 {
-	return headers.find(utils::toLower(header)) != headers.end();
+	return (headers.find(utils::toLower(header)) != headers.end());
 }
 
-std::map<std::string, std::string> Parser::getHeaders() const
+bool Parser::isChunked()
+{
+	return (getHeader("transfer-encoding") == "chunked");
+}
+
+bool Parser::hasContent()
+{
+	return hasHeader("content-length");
+}
+
+std::map<std::string, std::string> Parser::getHeaders()
 {
 	return headers;
 }
 
-std::string Parser::getBody() const
-{
-	return body;
-}
-
-std::string Parser::getMethod() const
+std::string Parser::getMethod()
 {
 	return method;
 }
 
-std::string Parser::getQuery() const
+std::string Parser::getQuery()
 {
 	return query;
 }
 
-std::string Parser::getPath() const
+std::string Parser::getUri()
+{
+	return uri;
+}
+
+std::string Parser::getPath()
 {
 	return path;
 }
 
-std::string Parser::getVersion() const
+std::string Parser::getVersion()
 {
 	return version;
-}
-
-size_t Parser::getBodySize() const
-{
-	return body_size;
-}
-
-bool Parser::hasBody() const
-{
-	return body.empty();
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 20:29:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 12:55:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ public:
 	void sendBadRequest();
 	void sendForbidden();
 	void sendBadMethod(std::string allow);
+	void sendPayLoadTooLarge();
 	void sendInternalError();
 	void sendNotImplemented();
 	void sendServiceUnavailable();
@@ -63,6 +64,7 @@ private:
 	static int FORBIDDEN;
 	static int NOT_FOUND;
 	static int METHOD_NOT_ALLOWED;
+	static int PAYLOAD_TOO_LARGE;
 	static int INTERNAL_SERVER_ERROR;
 	static int NOT_IMPLEMENTED;
 	static int SERVICE_UNAVAILABLE;

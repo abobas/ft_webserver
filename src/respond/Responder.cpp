@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 21:47:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 12:56:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int Responder::UNAUTHORIZED = 401;
 int Responder::FORBIDDEN = 403;
 int Responder::NOT_FOUND = 404;
 int Responder::METHOD_NOT_ALLOWED = 405;
+int Responder::PAYLOAD_TOO_LARGE = 413;
 int Responder::INTERNAL_SERVER_ERROR = 500;
 int Responder::NOT_IMPLEMENTED = 501;
 int Responder::SERVICE_UNAVAILABLE = 503;
@@ -175,6 +176,15 @@ void Responder::sendBadMethod(std::string allow)
 	addDataHeaders("405: method not allowed\n");
 	transmitHeaders();
 	transmitData("405: method not allowed\n");
+}
+
+void Responder::sendPayLoadTooLarge()
+{
+	addStatusHeader(PAYLOAD_TOO_LARGE, "payload too large");
+	addGeneralHeaders();
+	addDataHeaders("413: payload too large\n");
+	transmitHeaders();
+	transmitData("413: payload too large\n");
 }
 
 void Responder::sendInternalError()

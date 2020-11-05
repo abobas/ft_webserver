@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/03 11:34:38 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 16:32:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "../logger/Log.hpp"
+#include "../config/Json.hpp"
 #include <string>
 #include <map>
 #include <algorithm>
@@ -26,28 +27,50 @@ class Receiver
 {
 public:
 	static Receiver *getInstance(int socket) noexcept;
-	void consumeInstance(std::string &buffer);
-	void receiveMessage();
-	bool isReady();
+	static void initializeReceiver(Json &config);
+	static void deleteInstance(int socket);
+	void receiveHeaders();
+	bool headersReceived();
+	std::string getHeaders();
+
+	void receiveBody();
+	const char *getBodyData();
+	size_t getBodyDataLength();
+
+	bool bodyInitialized();
+	bool bodyReceived();
+	void initializeBodyType(std::string type, size_t length);
+
+	
+	// void consumeInstance(std::string &buffer);
 
 private:
 	static Log *log;
 	static std::map<int, Receiver *> receivers;
+	static Json config;
 	std::string message;
+	std::string headers_part;
+	std::string body_part;
+	std::string body_data;
 	int socket;
-	size_t content_size;
-	bool ready = false;
+	bool headers_received = false;
+
+	bool body_initialized = false;
+	bool body_received = false;
 	bool content = false;
 	bool chunked = false;
-	bool headers_ready = false;
+	size_t content_length;
+	size_t content_received;
 
 	Receiver(int socket);
 	void readSocket(std::string &buffer);
-	void deleteInstance(int socket);
-	bool headersReceived();
-	void checkContent();
-	void checkContentReady();
-	void checkChunked();
-	void checkChunkedReady();
-	void decodeChunkedMessage();
+	bool checkHeadersReceived();
+	void splitMessage();
+	void evaluateBody();
+
+
+
+	// void checkContentReady();
+	// void checkChunkedReady();
+	// void decodeChunkedMessage();
 };

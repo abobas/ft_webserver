@@ -6,6 +6,9 @@
 -------- meaning that body receiver keeps state, returns when reading not possible anymore
 -------- next select call continue reading body
 
+### SOCKET ####
+---- static void setConfig(config) om statically config te zetten voor socket class
+
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json)
