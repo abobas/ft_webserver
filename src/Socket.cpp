@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:32:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 23:02:08 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,28 +38,18 @@ Socket::Socket(std::string type, int socket) : type(type), socket(socket)
 
 void Socket::handleIncoming()
 {
-	log->logEntry("handling incoming", socket);
 	receiver = Receiver::getInstance(socket);
 	if (!receiver->headersReceived())
-	{
-		log->logEntry("receiving headers socket", socket);
 		receiver->receiveHeaders();
-	}
 	if (receiver->headersReceived())
 	{
 		evaluator = Evaluator::getInstance(socket);
 		if (!evaluator->isEvaluated())
-		{
-			log->logEntry("evaluating socket", socket);
 			evaluator->evaluateHeaders(receiver->getHeaders());
-		}
 		if (evaluator->isEvaluated())
 		{
 			if (!evaluator->isProcessed())
-			{
-				log->logEntry("processing socket", socket);
 				evaluator->processRequest();
-			}
 			if (evaluator->isProcessed())
 			{
 				log->logEntry("processed socket", socket);

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 21:39:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:58:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void Upload::processUploadRequest()
 bool Upload::initializeUpload()
 {
 	setPath();
-	log->logEntry(upload_path);
 	if (isExistingFile())
 	{
 		log->logEntry("file exists");

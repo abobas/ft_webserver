@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:41:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:53:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ Log *Validator::log = Log::getInstance();
 
 Validator::Validator()
 {
-	valid = true;
 }
 
 Validator::Validator(int socket, Parser &parsed, Matcher &matched)
 	: parsed(parsed), matched(matched), socket(socket)
 {
 	error = 0;
+	valid = true;
 	if (!checkEmpty())
 		return;
 	if (!checkMatch())

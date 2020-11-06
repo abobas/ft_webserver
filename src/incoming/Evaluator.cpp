@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:42:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:51:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 	if (!validated.isValid())
 	{
 		error = validated.getError();
+		log->logEntry("error value", error);
 		evaluated = true;
 		processed = true;
 		return;
@@ -79,7 +80,7 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 
 void Evaluator::processRequest()
 {
-	processor = Processor::getInstance(socket, parsed, matched, request_type, error);
+	processor = Processor::getInstance(socket, parsed, matched, request_type);
 	if (!processor->isProcessed())
 	{
 		processor->processRequest();
