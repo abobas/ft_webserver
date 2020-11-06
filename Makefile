@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/06 01:54:20 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/06 14:35:49 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ SRC = 			main.cpp \
 				incoming/Parser.cpp \
 				incoming/Matcher.cpp \
 				incoming/Validator.cpp \
-				incoming/Processor.cpp \
+				incoming/processor/Processor.cpp \
+				incoming/processor/Upload.cpp \
 				outgoing/Responder.cpp \
 				outgoing/Directory.cpp
 				# outgoing/Proxy.cpp \

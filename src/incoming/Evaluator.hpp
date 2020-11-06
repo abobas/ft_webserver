@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:40:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 14:03:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Parser.hpp"
 #include "Matcher.hpp"
 #include "Validator.hpp"
-#include "Processor.hpp"
+#include "processor/Processor.hpp"
 #include "../logger/Log.hpp"
 #include "../config/Json.hpp"
 #include <string>

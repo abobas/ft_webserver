@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:43:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 13:04:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void Evaluator::deleteInstance(int socket)
 		delete evaluators[socket];
 		evaluators[socket] = NULL;
 		log->logEntry("deleted evaluator", socket);
+		Processor::deleteInstance(socket);
 	}
 }
 

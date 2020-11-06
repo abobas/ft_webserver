@@ -1,61 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Processor.hpp                                      :+:    :+:            */
+/*   Upload.hpp                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/11/05 13:13:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:40:23 by abobas        ########   odam.nl         */
+/*   Created: 2020/11/06 14:09:12 by abobas        #+#    #+#                 */
+/*   Updated: 2020/11/06 14:29:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Parser.hpp"
-#include "Matcher.hpp"
-#include "Receiver.hpp"
-#include "../logger/Log.hpp"
+#include "../Parser.hpp"
+#include "../Matcher.hpp"
+#include "../Receiver.hpp"
+#include "../../logger/Log.hpp"
 #include <string>
 #include <map>
 #include <unistd.h>
 #include <fcntl.h>
 
-class Processor
+class Upload
 {
 public:
-	static Processor *getInstance(int socket, Parser &parsed, Matcher &matched, std::string type);
+	static Upload *getInstance(int socket, Parser &parsed, Matcher &matched);
 	static void deleteInstance(int socket);
-	void processRequest();
+	void processUploadRequest();
+
 	bool isProcessed();
-	int getUploadStatus();
 	int getError();
+	int getStatus();
 
 private:
 	static Log *log;
-	static std::map<int, Processor *> processors;
+	static std::map<int, Upload *> uploads;
 	Parser parsed;
 	Matcher matched;
 	Receiver *receiver;
-	std::string request_type;
 	int file;
 	int socket;
-	int upload_status;
+	int status;
 	int error;
+	bool processed;
+	bool initialized;
 
-	bool initialized = false;
-	bool processed = false;
-
-	Processor(int socket, Parser &parsed, Matcher &matched, std::string type);
+	Upload(int socket, Parser &parsed, Matcher &matched);
 	void processUpload();
 	bool uploadBody(const char *body, size_t bytes);
+	std::string getBodyType();
+	size_t getBodySize();
 	bool initializeUpload();
 	bool isExistingFile();
 	bool deleteFile();
 	bool createFile();
-
-	std::string getBodyType();
-	size_t getBodySize();
-
-	// void processCgi();
 };

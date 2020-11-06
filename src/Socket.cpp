@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:43:22 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 14:42:37 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void Socket::handleOutgoing()
 		responseControl(evaluator->getMatched(), evaluator->getParsed());
 	setType("client_read");
 	Evaluator::deleteInstance(socket);
-	Processor::deleteInstance(socket);
 }
 
 void Socket::responseControl(Matcher &matched, Parser &parsed)
@@ -154,7 +153,7 @@ bool Socket::isAlive()
 void Socket::resolveUploadRequest(Matcher &matched, Parser &parsed)
 {
 	Responder respond(socket, parsed);
-
+	log->logEntry("resolving upload request");
 	if (evaluator->getUploadStatus() == CREATED)
 		respond.sendCreated(matched.getPath(), parsed.getPath());
 	else

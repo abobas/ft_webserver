@@ -1,14 +1,14 @@
 
 
 ### INSTANCE REFACTORING ###
+--- RECEIVER 
+------ chunked decoder omschrijven
 --- CGI
 ------ Processor:: child process forken && pipes storen
------- Receiver:: decoder omschrijven
---- PROCESSOR
------- Upload && CGI splitten?
+------ Resolver child output pipe uitlezen en socket schrijven (chunked)
 
 ### MUST HAVE FEATURES ###
-- Socket: timeout op Server level (configuren in config.json)
+- Socket: timeout op Server level (configuren in config.json) (killen instances Receiver & Evaluator)
 
 #### BUGS ####
 --- route names ( /directory/ ) fixen, laatste slash
