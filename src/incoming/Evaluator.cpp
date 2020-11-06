@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 15:40:02 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:46:32 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 Log *Evaluator::log = Log::getInstance();
 Json Evaluator::config = Json();
-std::map<int, Evaluator* > Evaluator::evaluators;
+std::map<int, Evaluator*> Evaluator::evaluators;
 
 void Evaluator::initializeEvaluator(Json &config)
 {
@@ -34,7 +34,7 @@ Evaluator *Evaluator::getInstance(int socket)
 	if (!evaluators[socket])
 	{
 		evaluators[socket] = new Evaluator(socket);
-		log->logEntry("created evaluator, socket");
+		log->logEntry("created evaluator", socket);
 	}
 	return evaluators[socket];
 }
@@ -47,31 +47,6 @@ void Evaluator::deleteInstance(int socket)
 		evaluators[socket] = NULL;
 		log->logEntry("deleted evaluator", socket);
 	}
-}
-
-bool Evaluator::isEvaluated()
-{
-	return evaluated;
-}
-
-bool Evaluator::isProcessed()
-{
-	return processed;
-}
-
-bool Evaluator::isError()
-{
-	return error;
-}
-
-int Evaluator::getError()
-{
-	return error;
-}
-
-std::string Evaluator::getType()
-{
-	return request_type;
 }
 
 void Evaluator::evaluateHeaders(std::string &&headers)
@@ -88,12 +63,12 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 	}
 	evaluateRequest();
 	evaluated = true;
-	if (isError())
+	if (getError())
 	{
 		processed = true;
 		return;
 	}
-	log->logEntry("request type is: " + request_type);
+	log->logEntry("request type is " + request_type);
 	evaluated = true;
 	if (request_type != "upload" && request_type != "cgi")
 		processed = true;
@@ -108,7 +83,7 @@ void Evaluator::processRequest()
 		processed = processor->isProcessed();
 	}
 	if (processor->isProcessed())
-		error = processor->getStatus();
+		error = processor->getError();
 }
 
 void Evaluator::evaluateRequest()
@@ -192,4 +167,39 @@ bool Evaluator::isDirectory(struct stat *file)
 bool Evaluator::isRegular(struct stat *file)
 {
 	return S_ISREG(file->st_mode);
+}
+
+Parser &Evaluator::getParsed()
+{
+	return parsed;
+}
+
+Matcher &Evaluator::getMatched()
+{
+	return matched;
+}
+
+bool Evaluator::isEvaluated()
+{
+	return evaluated;
+}
+
+bool Evaluator::isProcessed()
+{
+	return processed;
+}
+
+int Evaluator::getError()
+{
+	return error;
+}
+
+std::string Evaluator::getType()
+{
+	return request_type;
+}
+
+int Evaluator::getStatus()
+{
+	return processor->getStatus();
 }

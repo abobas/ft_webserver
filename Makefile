@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/04 00:18:37 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/05 23:30:24 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,16 +15,16 @@ SRC = 			main.cpp \
 				Socket.cpp \
 				logger/Log.cpp \
 				config/Json.cpp \
-				receive/Receiver.cpp \
-				evaluate/Evaluator.cpp \
-				evaluate/Parser.cpp \
-				evaluate/Matcher.cpp \
-				evaluate/Validator.cpp \
-				respond/Responder.cpp \
-				respond/Directory.cpp \
-				respond/Proxy.cpp \
-				respond/Cgi.cpp \
-				respond/Upload.cpp
+				incoming/Receiver.cpp \
+				incoming/Evaluator.cpp \
+				incoming/Parser.cpp \
+				incoming/Matcher.cpp \
+				incoming/Validator.cpp \
+				incoming/Processor.cpp \
+				outgoing/Responder.cpp \
+				outgoing/Directory.cpp
+				# outgoing/Proxy.cpp \
+				# outgoing/Cgi.cpp
 
 SRC_DIR	=		./src/
 

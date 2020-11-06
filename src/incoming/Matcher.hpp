@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:13 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 00:49:09 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:24:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ class Matcher
 public:
 	Matcher();
 	Matcher(Parser &parsed, Json &config);
-	void operator=(const Matcher &other);
+	Matcher(const Matcher &rhs);
+	Matcher &operator=(const Matcher &rhs);
 	Json getConfig();
 	Json::object getServer();
 	Json::object getLocation();
@@ -32,8 +33,8 @@ private:
 	Json::object server;
 	Json::object location;
 	std::string matched_path;
-	Json &config;
-	Parser &parsed;
+	Json config;
+	Parser parsed;
 	bool match = false;
 
 	void matchServer();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 16:32:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:32:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@
 class Processor
 {
 public:
-	static Processor *getInstance(int socket, Parser &parsed, Matcher &matched, std::string type) noexcept;
+	static Processor *getInstance(int socket, Parser &parsed, Matcher &matched, std::string type);
 	static void deleteInstance(int socket);
 	void processRequest();
 	bool isProcessed();
 	int getStatus();
+	int getError();
 
 private:
 	static Log *log;
@@ -40,6 +41,7 @@ private:
 	int file;
 	int socket;
 	int status;
+	int error;
 
 	bool initialized = false;
 	bool processed = false;
@@ -51,7 +53,9 @@ private:
 	bool isExistingFile();
 	bool deleteFile();
 	bool createFile();
-	void processCgi();
+
 	std::string getBodyType();
 	size_t getBodySize();
-}
+
+	// void processCgi();
+};

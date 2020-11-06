@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:15 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 00:49:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:22:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,20 @@ Matcher::Matcher(Parser &parsed, Json &config) : config(config), parsed(parsed)
 	matchLocation();
 }
 
-void Matcher::operator=(const Matcher &other)
+Matcher::Matcher(const Matcher &rhs)
 {
-	server = other.server;
-	location = other.location;
-	matched_path = other.matched_path;
-	config = other.config;
-	parsed = other.parsed;
-	match = other.match;
+	*this = rhs;
+}
+
+Matcher& Matcher::operator=(const Matcher &rhs)
+{
+	server = rhs.server;
+	location = rhs.location;
+	matched_path = rhs.matched_path;
+	config = rhs.config;
+	parsed = rhs.parsed;
+	match = rhs.match;
+	return *this;
 }
 
 void Matcher::matchServer()

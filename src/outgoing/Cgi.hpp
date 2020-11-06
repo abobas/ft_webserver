@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 17:48:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 17:12:01 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 #include "Responder.hpp"
 #include "../logger/Log.hpp"
-#include "../evaluate/Matcher.hpp"
-#include "../evaluate/Parser.hpp"
+#include "../incoming/Matcher.hpp"
+#include "../incoming/Parser.hpp"
 #include <vector>
 #include <unistd.h>
 #include <fcntl.h>

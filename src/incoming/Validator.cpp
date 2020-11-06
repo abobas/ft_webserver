@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 12:58:24 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:23:44 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,18 @@ Validator::Validator(int socket, Parser &parsed, Matcher &matched)
 		return;
 }
 
-void Validator::operator=(const Validator &other)
+Validator::Validator(const Validator &rhs)
 {
-	parsed = other.parsed;
-	matched = other.matched;
-	socket = other.socket;
-	valid = other.valid;
+	*this = rhs;
+}
+
+Validator &Validator::operator=(const Validator &rhs)
+{
+	parsed = rhs.parsed;
+	matched = rhs.matched;
+	socket = rhs.socket;
+	valid = rhs.valid;
+	return *this;
 }
 
 bool Validator::checkEmpty()

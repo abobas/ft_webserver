@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:13 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 12:51:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:22:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ class Validator
 public:
 	Validator();
 	Validator(int socket, Parser &parsed, Matcher &matched);
-	void operator=(const Validator &other);
+	Validator(const Validator &rhs);
+	Validator &operator=(const Validator &rhs);
 	bool isValid();
 	int getError();
 

@@ -1,20 +1,17 @@
 
-### BODY RECEIVER ###
---- readClient only accepts headers
-------- bytes read from body are stored
----- read operation is always non blocking
--------- meaning that body receiver keeps state, returns when reading not possible anymore
--------- next select call continue reading body
 
-### SOCKET ####
----- static void setConfig(config) om statically config te zetten voor socket class
-
+### INSTANCE REFACTORING ###
+--- BODY
+-------	Receiver:: read max bytes header 2x size chrome header
+------- Evaluator:: disconnect client if larger (error)
+--- CGI
+------ Receiver:: decoder omschrijven
+------ Processor:: child process forken && pipes storen
+--- PROCESSOR
+------ Upload && CGI splitten?
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json)
-- CGI: optimization read / write
-- Receiver: module die message body ontvangt
-------- Chunked decoding
 
 #### BUGS ####
 --- route names ( /directory/ ) fixen, laatste slash

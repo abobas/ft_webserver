@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:52 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 12:43:50 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:20:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,20 @@ Parser::Parser(std::string &headers)
 	}
 }
 
-void Parser::operator=(const Parser &other)
+Parser::Parser(const Parser &rhs)
 {
-	headers = other.headers;
-	method = other.method;
-	uri = other.uri;
-	path = other.path;
-	query = other.query;
-	version = other.version;
+	*this = rhs;
+}
+
+Parser &Parser::operator=(const Parser &rhs)
+{
+	headers = rhs.headers;
+	method = rhs.method;
+	uri = rhs.uri;
+	path = rhs.path;
+	query = rhs.query;
+	version = rhs.version;
+	return *this;
 }
 
 void Parser::parsePathLine(std::string line)

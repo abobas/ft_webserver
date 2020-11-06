@@ -6,15 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/28 20:37:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 17:00:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 17:11:55 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Responder.hpp"
-#include "../evaluate/Parser.hpp"
-#include "../evaluate/Matcher.hpp"
+#include "../incoming/Parser.hpp"
+#include "../incoming/Matcher.hpp"
 #include <string>
 #include <dirent.h>
 #include <ctype.h>

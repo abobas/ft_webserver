@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:54 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 12:43:45 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:18:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ class Parser
 public:
 	Parser();
 	Parser(std::string &headers);
-	void operator=(const Parser &other);
+	Parser(const Parser &rhs);
+	Parser &operator=(const Parser &rhs);
 	std::string getMethod();
 	std::string getUri();
 	std::string getPath();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 16:32:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:43:56 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,28 @@
 #include <string>
 #include <map>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 class Evaluator
 {
 public:
-	static Evaluator *getInstance(int socket) noexcept;
+	static Evaluator *getInstance(int socket);
 	static void initializeEvaluator(Json &config);
 	static void deleteInstance(int socket);
 	void evaluateHeaders(std::string &&headers);
 	void processRequest();
-	
+	Parser &getParsed();
+	Matcher &getMatched();
 	bool isEvaluated();
 	bool isProcessed();
-	bool isError();
-
 	int getError();
+	int getStatus();
 	std::string getType();
 
 private:
 	static Log *log;
-	static std::map<int, Evaluator *> evaluators;
+	static std::map<int, Evaluator*> evaluators;
 	static Json config;
 	Parser parsed;
 	Matcher matched;

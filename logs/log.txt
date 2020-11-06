@@ -1,4 +1,104 @@
-22:01:11 - created socket 4
-22:01:11 - created socket 5
-22:01:34 - accepted client 6
-22:01:34 - message is chunked
+01:24:24 - created socket 4
+01:24:24 - created socket 5
+01:24:25 - select value 1
+01:24:25 - accepted client 6
+01:24:25 - select value 1
+01:24:25 - created receiver 6
+01:24:25 - receiving headers socket 6
+-------begin-of-message------
+PUT /text.txt HTTP/1.1
+Host: localhost
+content-length: 105000000
+User-Agent: Webserv_client 1.1
+
+
+--------end-of-message-------
+01:24:25 - created evaluator 6
+01:24:25 - evaluating socket 6
+01:24:25 - max body size exceeded
+01:24:25 - processed socket 6
+01:24:25 - deleted receiver 6
+01:24:25 - select value 1
+01:24:25 - error response 2103508992
+01:24:25 - deleted evaluator 6
+01:24:25 - select value 1
+01:24:25 - created receiver 6
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:25 - select value 1
+01:24:25 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6
+01:24:26 - select value 1
+01:24:26 - receiving headers socket 6

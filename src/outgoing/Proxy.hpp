@@ -6,14 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 16:08:35 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 17:11:33 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../evaluate/Parser.hpp"
-#include "../evaluate/Matcher.hpp"
+#include "../incoming/Parser.hpp"
+#include "../incoming/Matcher.hpp"
 #include "../logger/Log.hpp"
 #include "../Socket.hpp"
 #include <sstream>

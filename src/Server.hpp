@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/04 13:00:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/05 23:39:59 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,15 @@
 #include "Socket.hpp"
 #include "logger/Log.hpp"
 #include "config/Json.hpp"
-#include "evaluate/Evaluator.hpp"
-#include "respond/Responder.hpp"
+#include "outgoing/Responder.hpp"
 #include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
 #include <sys/time.h>
 #include <sys/select.h>
+#include <arpa/inet.h>
+#include <string.h>
 
 /**
 * @brief Core object that handles all incoming connections.
@@ -42,7 +43,7 @@ private:
 	std::map<Socket, std::string> messages;
 	fd_set read_set;
 	fd_set write_set;
-	
+
 	void createListenSockets();
 	int getListenSocket(int port);
 	void mainLoop();
@@ -50,23 +51,28 @@ private:
 	void fillSelectSets();
 	int getSelectRange();
 	void handleOperations(int select);
-	fd_set *getSet(Socket socket);
+	fd_set *getSet(Socket &socket);
 	void executeOperation(Socket &socket);
+	
 	void acceptClient(Socket &listen);
 	void readClient(Socket &client);
 	void writeClient(Socket &client);
-	void writeWaitingClient(Socket &client);
-	void readProxy(Socket &proxy);
-	void writeProxy(Socket &proxy);
+
 	void addSocket(Socket &insert);
 	void addSocket(Socket &&insert);
 	void deleteSocket(Socket &erase);
-	void transformSocket(Socket &socket);
 	void disconnectSocket(Socket &socket);
-	Socket &findPair(Socket &client);
-	void addPair(int key, int value);
-	void deletePair(int key);
-	void addMessage(Socket &socket, std::string &&message);
-	void addMessage(Socket &&socket, std::string &&message);
-	void deleteMessage(Socket &socket);
+
+	// void transformSocket(Socket &socket);
+
+	// void writeWaitingClient(Socket &client);
+	// void readProxy(Socket &proxy);
+	// void writeProxy(Socket &proxy);
+	
+	// Socket &findPair(Socket &client);
+	// void addPair(int key, int value);
+	// void deletePair(int key);
+	// void addMessage(Socket &socket, std::string &&message);
+	// void addMessage(Socket &&socket, std::string &&message);
+	// void deleteMessage(Socket &socket);
 };

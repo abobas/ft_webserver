@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 16:21:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 00:56:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,12 @@ void Receiver::receiveBody()
 	{
 		body_data = std::move(body_part);
 		content_received += body_data.size();
+		log->logEntry("content received", content_received);
 		if (content_received == content_length)
+		{
+			log->logEntry("body content fully received");
 			body_received = true;
+		}
 	}
 	else if (chunked)
 	{
@@ -96,6 +100,7 @@ void Receiver::initializeBodyType(std::string type, size_t length)
 	{
 		content = true;
 		content_length = length;
+		log->logEntry("content length is", content_length);
 	}
 	body_initialized = true;
 }
@@ -106,7 +111,7 @@ void Receiver::readSocket(std::string &buffer)
 
 	while (true)
 	{
-		int ret = recv(socket, buf, IO_SIZE, 0);
+		int ret = recv(socket, buf, IO_SIZE, MSG_DONTWAIT);
 		if (ret < 0)
 		{
 			log->logError("recv()");
@@ -132,6 +137,8 @@ void Receiver::receiveHeaders()
 	{
 		headers_received = true;
 		splitMessage();
+		log->logBlock(headers_part);
+		// log->logBlock(body_part);
 	}
 }
 
@@ -210,14 +217,14 @@ std::string Receiver::getHeaders()
 // }
 
 
-void Receiver::checkContentReady()
-{
-	std::string header_part;
-	std::string body_part;
+// void Receiver::checkContentReady()
+// {
+// 	std::string header_part;
+// 	std::string body_part;
 
-	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
-	body_part = message.substr(header_part.size());
-	if (body_part.size() == content_size)
-		ready = true;
-}
+// 	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
+// 	body_part = message.substr(header_part.size());
+// 	if (body_part.size() == content_size)
+// 		ready = true;
+// }
 

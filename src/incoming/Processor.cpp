@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 16:24:17 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 00:09:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@
 #define INTERNAL_ERROR 500
 
 Log *Processor::log = Log::getInstance();
+std::map<int, Processor *> Processor::processors;
 
 Processor::Processor(int socket, Parser &parsed, Matcher &matched, std::string type)
 	: parsed(parsed), matched(matched), request_type(type), socket(socket)
 {
-	status = 0;
+	error = 0;
+	status = CREATED;
 	file = 0;
 }
 
@@ -30,7 +32,7 @@ Processor *Processor::getInstance(int socket, Parser &parsed, Matcher &matched, 
 	if (!processors[socket])
 	{
 		processors[socket] = new Processor(socket, parsed, matched, type);
-		log->logEntry("created processor, socket");
+		log->logEntry("created processor", socket);
 	}
 	return processors[socket];
 }
@@ -43,16 +45,6 @@ void Processor::deleteInstance(int socket)
 		processors[socket] = NULL;
 		log->logEntry("deleted processor", socket);
 	}
-}
-
-bool Processor::isProcessed()
-{
-	return processed;
-}
-
-int Processor::getStatus()
-{
-	return status;
 }
 
 void Processor::processRequest()
@@ -70,8 +62,8 @@ void Processor::processRequest()
 		}
 		processUpload();
 	}
-	if (request_type == "cgi")
-		processCgi();
+	// if (request_type == "cgi")
+	// 	processCgi();
 }
 
 void Processor::processUpload()
@@ -104,7 +96,7 @@ bool Processor::uploadBody(const char *body, size_t bytes)
 	int ret = write(file, body, bytes);
 	if (ret < 0)
 	{
-		status = INTERNAL_ERROR;
+		error = INTERNAL_ERROR;
 		return false;
 	}
 	return true;
@@ -114,9 +106,10 @@ bool Processor::initializeUpload()
 {
 	if (isExistingFile())
 	{
+		log->logEntry("file exists");
 		if (!deleteFile())
 			return false;
-		status = 200;
+		status = MODIFIED;
 	}
 	if (!createFile())
 	{
@@ -128,7 +121,7 @@ bool Processor::initializeUpload()
 
 bool Processor::createFile()
 {
-	file = open(matched.getPath().c_str(), O_WRONLY);
+	file = open(matched.getPath().c_str(), O_WRONLY | O_CREAT, 0777);
 	if (file < 0)
 	{
 		log->logError("open()");
@@ -168,6 +161,8 @@ std::string Processor::getBodyType()
 		return "content";
 	else if (parsed.isChunked())
 		return "chunked";
+	else
+		return "";
 }
 
 size_t Processor::getBodySize()
@@ -175,5 +170,20 @@ size_t Processor::getBodySize()
 	if (parsed.hasContent())
 		return stoi(parsed.getHeader("content-length"));
 	else
-		return 0;	
+		return 0;
+}
+
+bool Processor::isProcessed()
+{
+	return processed;
+}
+
+int Processor::getStatus()
+{
+	return status;
+}
+
+int Processor::getError()
+{
+	return error;
 }
