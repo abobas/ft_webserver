@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:44:07 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 17:33:16 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void Server::handleOperations(int select)
 {
 	std::vector<std::reference_wrapper<Socket>> tmp;
 
-	log->logEntry("select value", select);
+	//log->logEntry("select value", select);
 	for (auto &socket : sockets)
 	{
 		if (FD_ISSET(socket.getSocket(), getSet(socket)))

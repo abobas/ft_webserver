@@ -1,8 +1,6 @@
 
 
 ### INSTANCE REFACTORING ###
---- RECEIVER 
------- chunked decoder omschrijven
 --- CGI
 ------ Processor:: child process forken && pipes storen
 ------ Resolver child output pipe uitlezen en socket schrijven (chunked)

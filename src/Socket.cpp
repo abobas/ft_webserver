@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:42:37 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 17:36:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void Socket::handleIncoming()
 		{
 			if (!evaluator->isProcessed())
 			{
-				log->logEntry("processing socket", socket);
+				//log->logEntry("processing socket", socket);
 				evaluator->processRequest();
 			}
 			if (evaluator->isProcessed())

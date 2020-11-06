@@ -6,13 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 16:56:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 17:37:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Receiver.hpp"
 
-#define IO_SIZE 1048576
+#define IO_SIZE 4096
 
 std::map<int, Receiver *> Receiver::receivers;
 Log *Receiver::log = Log::getInstance();
@@ -52,6 +52,7 @@ void Receiver::receiveBody()
 {
 	std::string buffer;
 
+	buffer.reserve(IO_SIZE + 1);
 	readSocket(buffer);
 	body_part.append(buffer);
 	if (body_part.empty())
@@ -77,12 +78,12 @@ void Receiver::receiveBody()
 			return;
 		}
 		splitChunked();
-		log->logEntry("split received chunks");
-		log->logEntry("body_data size", body_data.size());
-		log->logEntry("body_part size", body_part.size());
-		//log->logBlock(body_data);
+		// log->logEntry("split received chunks");
+		// log->logEntry("body_data size", body_data.size());
+		// log->logEntry("body_part size", body_part.size());
+		// log->logBlock(body_data);
 		decodeChunkedBody();
-		//log->logBlock(body_data);
+		// log->logBlock(body_data);
 		return;
 	}
 }
@@ -185,10 +186,10 @@ void Receiver::readSocket(std::string &buffer)
 	int ret = recv(socket, buf, IO_SIZE, MSG_DONTWAIT);
 	if (ret < 0)
 		log->logError("recv()");
-	if (ret > 0)
+	if (ret >= 0)
 	{
 		buf[ret] = '\0';
-		buffer += buf;
+		buffer = std::move(buf);
 	}
 }
 
