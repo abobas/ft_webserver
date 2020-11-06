@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 00:56:28 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 16:56:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,12 @@ void Receiver::receiveBody()
 
 	readSocket(buffer);
 	body_part.append(buffer);
+	if (body_part.empty())
+		return;
 	if (content)
 	{
 		body_data = std::move(body_part);
 		content_received += body_data.size();
-		log->logEntry("content received", content_received);
 		if (content_received == content_length)
 		{
 			log->logEntry("body content fully received");
@@ -67,9 +68,81 @@ void Receiver::receiveBody()
 	}
 	else if (chunked)
 	{
-		// decode stuff
-		return ;
+		if (chunkedEnd())
+		{
+			log->logEntry("full chunked body received");
+			body_data = std::move(body_part);
+			decodeChunkedBody();
+			body_received = true;
+			return;
+		}
+		splitChunked();
+		log->logEntry("split received chunks");
+		log->logEntry("body_data size", body_data.size());
+		log->logEntry("body_part size", body_part.size());
+		//log->logBlock(body_data);
+		decodeChunkedBody();
+		//log->logBlock(body_data);
+		return;
 	}
+}
+
+void Receiver::decodeChunkedBody()
+{
+	std::string decoded;
+	std::string chunk;
+	size_t pos_start;
+	size_t pos_end;
+
+	decoded.reserve(body_data.size());
+	while (body_data.find("\r\n") != std::string::npos)
+	{
+		pos_start = body_data.find("\r\n");
+		pos_end = body_data.find("\r\n", pos_start + 1);
+		chunk = std::move(body_data.substr(pos_start + 2, pos_end - (pos_start + 2)));
+		decoded += chunk;
+		body_data.erase(0, pos_end + 2);
+	}
+	body_data = std::move(decoded);
+}
+
+void Receiver::splitChunked()
+{
+	size_t pos = 0;
+	size_t ret = 0;
+	int count = 0;
+
+	while (ret != std::string::npos)
+	{
+		ret = body_part.find("\r\n", ret);
+		if (ret != std::string::npos)
+		{
+			count++;
+			ret++;
+		}
+		if (count % 2 == 0)
+		{
+			count = 0;
+			pos = ret + 1;
+		}
+	}
+	if (pos == 0)
+		return;
+	std::string tmp = std::move(body_part.substr(pos));
+	body_data = std::move(body_part.erase(pos));
+	body_part = std::move(tmp);
+}
+
+bool Receiver::chunkedEnd()
+{
+	std::string end;
+
+	if (body_part.size() < 5)
+		return false;
+	end = body_part.substr(body_part.size() - 5);
+	if (end.find("0\r\n\r\n") != std::string::npos)
+		return true;
+	return false;
 }
 
 const char *Receiver::getBodyData()
@@ -109,21 +182,13 @@ void Receiver::readSocket(std::string &buffer)
 {
 	char buf[IO_SIZE + 1];
 
-	while (true)
+	int ret = recv(socket, buf, IO_SIZE, MSG_DONTWAIT);
+	if (ret < 0)
+		log->logError("recv()");
+	if (ret > 0)
 	{
-		int ret = recv(socket, buf, IO_SIZE, MSG_DONTWAIT);
-		if (ret < 0)
-		{
-			log->logError("recv()");
-			break;
-		}
-		if (ret > 0)
-		{
-			buf[ret] = '\0';
-			buffer += buf;
-		}
-		if (ret < IO_SIZE)
-			break;
+		buf[ret] = '\0';
+		buffer += buf;
 	}
 }
 
@@ -164,67 +229,3 @@ std::string Receiver::getHeaders()
 {
 	return headers_part;
 }
-
-
-
-// /**
-// * @brief Moves the received message into the buffer and deletes the receiver instance.
-// * @param buffer reference to string which the message will be moved into.
-// */
-// void Receiver::consumeInstance(std::string &buffer)
-// {
-// 	buffer = std::move(message);
-// 	deleteInstance(socket);
-// }
-
-
-
-
-// void Receiver::decodeChunkedMessage()
-// {
-// 	std::string header_part;
-// 	std::string body_part;
-// 	std::string decoded;
-// 	std::string chunk;
-// 	size_t pos_start;
-// 	size_t pos_end;
-
-// 	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
-// 	body_part = message.substr(header_part.size());
-// 	while (body_part.find("\r\n") != std::string::npos)
-// 	{
-// 		pos_start = body_part.find("\r\n");
-// 		pos_end = body_part.find("\r\n", pos_start + 1);
-// 		chunk = body_part.substr(pos_start + 2, pos_end - (pos_start + 2));
-// 		decoded += chunk;
-// 		body_part = body_part.substr(pos_end + 2);
-// 	}
-// 	message.clear();
-// 	message.append(header_part);
-// 	message.append(decoded);
-// }
-
-// void Receiver::checkChunkedReady()
-// {
-// 	std::string end;
-
-// 	end = message.substr(message.size() - 7);
-// 	if (end.find("0\r\n\r\n") != std::string::npos)
-// 	{
-// 		ready = true;
-// 		decodeChunkedMessage();
-// 	}
-// }
-
-
-// void Receiver::checkContentReady()
-// {
-// 	std::string header_part;
-// 	std::string body_part;
-
-// 	header_part = message.substr(0, message.find("\r\n\r\n") + 4);
-// 	body_part = message.substr(header_part.size());
-// 	if (body_part.size() == content_size)
-// 		ready = true;
-// }
-

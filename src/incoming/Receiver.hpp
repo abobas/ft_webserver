@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 16:32:22 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 16:30:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-/**
- * @brief Stateful object that reads from a socket until the message is completely received.
- */
 class Receiver
 {
 public:
@@ -32,17 +29,12 @@ public:
 	void receiveHeaders();
 	bool headersReceived();
 	std::string getHeaders();
-
 	void receiveBody();
 	const char *getBodyData();
 	size_t getBodyDataLength();
-
 	bool bodyInitialized();
 	bool bodyReceived();
 	void initializeBodyType(std::string type, size_t length);
-
-	
-	// void consumeInstance(std::string &buffer);
 
 private:
 	static Log *log;
@@ -54,7 +46,6 @@ private:
 	std::string body_data;
 	int socket;
 	bool headers_received = false;
-
 	bool body_initialized = false;
 	bool body_received = false;
 	bool content = false;
@@ -67,10 +58,7 @@ private:
 	bool checkHeadersReceived();
 	void splitMessage();
 	void evaluateBody();
-
-
-
-	// void checkContentReady();
-	// void checkChunkedReady();
-	// void decodeChunkedMessage();
+	void splitChunked();
+	bool chunkedEnd();
+	void decodeChunkedBody();
 };

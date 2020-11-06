@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 13:04:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 15:58:44 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 #define BAD_REQUEST 400
 #define NOT_FOUND 404
+#define METHOD_NOT_ALLOWED 405
 #define PAYLOAD_TOO_LARGE 413
 #define NOT_IMPLEMENTED 501
 
 Log *Evaluator::log = Log::getInstance();
 Json Evaluator::config = Json();
-std::map<int, Evaluator*> Evaluator::evaluators;
+std::map<int, Evaluator *> Evaluator::evaluators;
 
 void Evaluator::initializeEvaluator(Json &config)
 {
@@ -175,7 +176,7 @@ bool Evaluator::isRegular(struct stat *file)
 
 bool Evaluator::mustBounce()
 {
-	return (error == BAD_REQUEST || error == PAYLOAD_TOO_LARGE);
+	return (error == BAD_REQUEST || error == PAYLOAD_TOO_LARGE || error == METHOD_NOT_ALLOWED);
 }
 
 Parser &Evaluator::getParsed()
