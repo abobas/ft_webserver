@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:51:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:17:44 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,10 +157,7 @@ void Responder::sendBadRequest()
 	std::string message("400: bad request\n");
 
 	addStatusHeader(BAD_REQUEST, "bad request");
-	addDateHeader();
-	if (parsed != NULL)
-		addServerHeader();
-	addConnectionHeader("close");
+	addGeneralHeaders();
 	addDataHeaders(message);
 	transmitHeaders();
 	transmitData(message);
@@ -194,10 +191,7 @@ void Responder::sendPayLoadTooLarge()
 	std::string message("413: payload too large\n");
 
 	addStatusHeader(PAYLOAD_TOO_LARGE, "payload too large");
-	addDateHeader();
-	if (parsed != NULL)
-		addServerHeader();
-	addConnectionHeader("close");
+	addGeneralHeaders();
 	addDataHeaders(message);
 	transmitHeaders();
 	transmitData(message);
@@ -245,7 +239,7 @@ void Responder::transmitData(std::string &data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 void Responder::transmitData(std::string &&data)
@@ -257,7 +251,7 @@ void Responder::transmitData(std::string &&data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 void Responder::transmitHeaders()

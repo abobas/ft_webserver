@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 17:37:58 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:40:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ void Receiver::initializeReceiver(Json &config)
 Receiver::Receiver(int socket) : socket(socket)
 {
 	content_received = 0;
+	content_length = 0;
+	headers_received = false;
+	body_initialized = false;
+	body_received = false;
+	chunked = false;
+	content = false;
 }
 
 Receiver *Receiver::getInstance(int socket) noexcept
@@ -48,6 +54,19 @@ void Receiver::deleteInstance(int socket)
 	}
 }
 
+void Receiver::receiveHeaders()
+{
+	std::string buffer;
+
+	readSocket(buffer);
+	message.append(buffer);
+	if (checkHeadersReceived())
+	{
+		headers_received = true;
+		splitMessage();
+	}
+}
+
 void Receiver::receiveBody()
 {
 	std::string buffer;
@@ -63,27 +82,22 @@ void Receiver::receiveBody()
 		content_received += body_data.size();
 		if (content_received == content_length)
 		{
-			log->logEntry("body content fully received");
 			body_received = true;
+			log->logEntry("all content received");
 		}
 	}
 	else if (chunked)
 	{
 		if (chunkedEnd())
 		{
-			log->logEntry("full chunked body received");
+			log->logEntry("all chunks received");
 			body_data = std::move(body_part);
 			decodeChunkedBody();
 			body_received = true;
 			return;
 		}
 		splitChunked();
-		// log->logEntry("split received chunks");
-		// log->logEntry("body_data size", body_data.size());
-		// log->logEntry("body_part size", body_part.size());
-		// log->logBlock(body_data);
 		decodeChunkedBody();
-		// log->logBlock(body_data);
 		return;
 	}
 }
@@ -169,12 +183,15 @@ bool Receiver::bodyReceived()
 void Receiver::initializeBodyType(std::string type, size_t length)
 {
 	if (type == "chunked")
+	{
 		chunked = true;
+		log->logEntry("chunked request");
+	}
 	else if (type == "content")
 	{
 		content = true;
 		content_length = length;
-		log->logEntry("content length is", content_length);
+		log->logEntry("request with content size", content_length);
 	}
 	body_initialized = true;
 }
@@ -190,21 +207,6 @@ void Receiver::readSocket(std::string &buffer)
 	{
 		buf[ret] = '\0';
 		buffer = std::move(buf);
-	}
-}
-
-void Receiver::receiveHeaders()
-{
-	std::string buffer;
-
-	readSocket(buffer);
-	message.append(buffer);
-	if (checkHeadersReceived())
-	{
-		headers_received = true;
-		splitMessage();
-		log->logBlock(headers_part);
-		// log->logBlock(body_part);
 	}
 }
 

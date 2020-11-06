@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:13 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:24:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:41:38 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ private:
 	std::string matched_path;
 	Json config;
 	Parser parsed;
-	bool match = false;
+	bool match;
 
 	void matchServer();
 	void matchLocation();

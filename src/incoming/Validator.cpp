@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:20:51 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:41:03 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Log *Validator::log = Log::getInstance();
 
 Validator::Validator()
 {
+	valid = true;
 }
 
 Validator::Validator(int socket, Parser &parsed, Matcher &matched)
@@ -92,8 +93,6 @@ bool Validator::checkProtocol()
 
 bool Validator::checkMethod()
 {
-	std::string methods;
-
 	if (checkCgiExtension())
 	{
 		if (checkCgiMethods())
@@ -191,4 +190,9 @@ int Validator::getError()
 bool Validator::isValid()
 {
 	return valid;
+}
+
+std::string Validator::getMethods()
+{
+	return methods;
 }

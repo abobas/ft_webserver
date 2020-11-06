@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 12:40:53 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:15:56 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ public:
 	void handleIncoming();
 	void handleOutgoing();
 	bool isAlive();
-	bool mustBounce();
 
 	int getSocket() const;
 	std::string getType() const;
@@ -54,7 +53,7 @@ private:
 	void errorResponse(int error, Parser &parsed);
 	// void resolveProxyRequest(Matcher &matched, Parser &parsed);
 	// void resolveCgiRequest(Matcher &matched, Parser &parsed);
-	void resolveUploadRequest(Matcher &matched, Parser &parsed);
+	void resolveUploadRequest(Parser &parsed);
 	void resolveDirectoryRequest(Matcher &matched, Parser &parsed);
 	void resolveFileRequest(Matcher &matched, Responder &respond);
 	

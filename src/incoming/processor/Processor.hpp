@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:39:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:35:36 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Upload.hpp"
 #include "../Parser.hpp"
 #include "../Matcher.hpp"
+#include "../Receiver.hpp"
 #include "../../logger/Log.hpp"
 #include <string>
 #include <map>
@@ -27,6 +28,7 @@ public:
 	void processRequest();
 	bool isProcessed();
 	int getUploadStatus();
+	std::string getUploadPath();
 	int getError();
 
 private:

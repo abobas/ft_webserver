@@ -6,16 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 15:58:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:42:15 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Evaluator.hpp"
 
-#define BAD_REQUEST 400
 #define NOT_FOUND 404
-#define METHOD_NOT_ALLOWED 405
-#define PAYLOAD_TOO_LARGE 413
 #define NOT_IMPLEMENTED 501
 
 Log *Evaluator::log = Log::getInstance();
@@ -30,6 +27,8 @@ void Evaluator::initializeEvaluator(Json &config)
 Evaluator::Evaluator(int socket) : socket(socket)
 {
 	error = 0;
+	evaluated = false;
+	processed = false;
 }
 
 Evaluator *Evaluator::getInstance(int socket)
@@ -61,7 +60,6 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 	if (!validated.isValid())
 	{
 		error = validated.getError();
-		log->logEntry("error value", error);
 		evaluated = true;
 		processed = true;
 		return;
@@ -81,14 +79,17 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 
 void Evaluator::processRequest()
 {
-	processor = Processor::getInstance(socket, parsed, matched, request_type);
+	processor = Processor::getInstance(socket, parsed, matched, request_type, error);
 	if (!processor->isProcessed())
 	{
 		processor->processRequest();
 		processed = processor->isProcessed();
 	}
 	if (processor->isProcessed())
+	{
+		log->logEntry("done processing");
 		error = processor->getError();
+	}
 }
 
 void Evaluator::evaluateRequest()
@@ -174,11 +175,6 @@ bool Evaluator::isRegular(struct stat *file)
 	return S_ISREG(file->st_mode);
 }
 
-bool Evaluator::mustBounce()
-{
-	return (error == BAD_REQUEST || error == PAYLOAD_TOO_LARGE || error == METHOD_NOT_ALLOWED);
-}
-
 Parser &Evaluator::getParsed()
 {
 	return parsed;
@@ -212,4 +208,14 @@ std::string Evaluator::getType()
 int Evaluator::getUploadStatus()
 {
 	return processor->getUploadStatus();
+}
+
+std::string Evaluator::getUploadPath()
+{
+	return processor->getUploadPath();
+}
+
+std::string Evaluator::getValidMethods()
+{
+	return validated.getMethods();
 }

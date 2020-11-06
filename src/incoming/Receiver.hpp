@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 16:30:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:39:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ private:
 	std::string body_part;
 	std::string body_data;
 	int socket;
-	bool headers_received = false;
-	bool body_initialized = false;
-	bool body_received = false;
-	bool content = false;
-	bool chunked = false;
+	bool headers_received;
+	bool body_initialized;
+	bool body_received;
+	bool content;
+	bool chunked;
 	size_t content_length;
 	size_t content_received;
 

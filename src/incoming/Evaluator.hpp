@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:03:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:43:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,15 @@ public:
 	Matcher &getMatched();
 	bool isEvaluated();
 	bool isProcessed();
-	bool mustBounce();
 	int getError();
 	int getUploadStatus();
+	std::string getUploadPath();
 	std::string getType();
+	std::string getValidMethods();
 
 private:
 	static Log *log;
-	static std::map<int, Evaluator*> evaluators;
+	static std::map<int, Evaluator *> evaluators;
 	static Json config;
 	Parser parsed;
 	Matcher matched;
@@ -53,8 +54,8 @@ private:
 	int socket;
 	int error;
 	std::string request_type;
-	bool evaluated = false;
-	bool processed = false;
+	bool evaluated;
+	bool processed;
 
 	Evaluator(int socket);
 	void evaluateRequest();
@@ -64,11 +65,4 @@ private:
 	bool isFile(struct stat *file);
 	bool isRegular(struct stat *file);
 	bool isDirectory(struct stat *file);
-
-	// void evaluateRequest(Parser &parsed, Matcher &matched);
-	// void resolveProxyRequest(Matcher &matched, Parser &parsed);
-	// void resolveCgiRequest(Matcher &matched, Parser &parsed);
-	// void resolveUploadRequest(Matcher &matched, Parser &parsed);
-	// void resolveDirectoryRequest(Matcher &matched, Parser &parsed);
-	// void resolveFileRequest(Matcher &matched, Responder &respond);
 };

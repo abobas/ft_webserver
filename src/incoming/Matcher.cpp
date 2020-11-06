@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 01:06:15 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:22:27 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:41:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Matcher::Matcher()
 
 Matcher::Matcher(Parser &parsed, Json &config) : config(config), parsed(parsed)
 {
+	match = false;
 	matchServer();
 	matchLocation();
 }

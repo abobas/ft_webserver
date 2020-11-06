@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:40:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:36:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,12 @@ Processor::Processor(int socket, Parser &parsed, Matcher &matched, std::string t
 	processed = false;
 }
 
-Processor *Processor::getInstance(int socket, Parser &parsed, Matcher &matched, std::string type)
+Processor *Processor::getInstance(int socket, Parser &parsed, Matcher &matched, std::string type) if (!processors[socket])
 {
-	if (!processors[socket])
-	{
-		processors[socket] = new Processor(socket, parsed, matched, type);
-		log->logEntry("created processor", socket);
-	}
-	return processors[socket];
+	processors[socket] = new Processor(socket, parsed, matched, type);
+	log->logEntry("created processor", socket);
+}
+return processors[socket];
 }
 
 void Processor::deleteInstance(int socket)
@@ -73,5 +71,10 @@ int Processor::getError()
 	if (request_type == "upload")
 		return upload->getError();
 	else
-		return upload->getError();
+		return 0; // cgi
+}
+
+std::string Processor::getUploadPath()
+{
+	return upload->getPath();
 }

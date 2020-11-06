@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:29:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 21:39:47 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void Upload::processUploadRequest()
 
 bool Upload::initializeUpload()
 {
+	setPath();
+	log->logEntry(upload_path);
 	if (isExistingFile())
 	{
 		log->logEntry("file exists");
@@ -77,11 +79,18 @@ bool Upload::initializeUpload()
 	return true;
 }
 
+void Upload::setPath()
+{
+	upload_path = matched.getPath();
+	if (upload_path[upload_path.size() - 1] == '/')
+		upload_path += "upload";
+}
+
 bool Upload::isExistingFile()
 {
 	int fd;
 
-	fd = open(matched.getPath().c_str(), O_RDONLY);
+	fd = open(upload_path.c_str(), O_RDONLY);
 	if (fd < 0)
 	{
 		status = CREATED;
@@ -96,7 +105,7 @@ bool Upload::isExistingFile()
 
 bool Upload::deleteFile()
 {
-	if (remove(matched.getPath().c_str()) < 0)
+	if (remove(upload_path.c_str()) < 0)
 	{
 		log->logError("remove()");
 		error = INTERNAL_ERROR;
@@ -107,7 +116,7 @@ bool Upload::deleteFile()
 
 bool Upload::createFile()
 {
-	file = open(matched.getPath().c_str(), O_WRONLY | O_CREAT, 0777);
+	file = open(upload_path.c_str(), O_WRONLY | O_CREAT, 0777);
 	if (file < 0)
 	{
 		log->logError("open()");
@@ -169,6 +178,11 @@ size_t Upload::getBodySize()
 		return stoi(parsed.getHeader("content-length"));
 	else
 		return 0;
+}
+
+std::string Upload::getPath()
+{
+	return upload_path;
 }
 
 bool Upload::isProcessed()

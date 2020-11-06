@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 14:29:22 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 21:33:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ public:
 	bool isProcessed();
 	int getError();
 	int getStatus();
+	std::string getPath();
 
 private:
 	static Log *log;
@@ -38,6 +39,7 @@ private:
 	Parser parsed;
 	Matcher matched;
 	Receiver *receiver;
+	std::string upload_path;
 	int file;
 	int socket;
 	int status;
@@ -54,4 +56,5 @@ private:
 	bool isExistingFile();
 	bool deleteFile();
 	bool createFile();
+	void setPath();
 };

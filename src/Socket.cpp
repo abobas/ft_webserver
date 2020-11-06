@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 17:36:07 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 22:32:59 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #define CREATED 201
 #define NOT_FOUND 404
+#define METHOD_NOT_ALLOWED 405
 #define PAYLOAD_TOO_LARGE 413
 #define INTERNAL_ERROR 500
 #define NOT_IMPLEMENTED 501
@@ -37,6 +38,7 @@ Socket::Socket(std::string type, int socket) : type(type), socket(socket)
 
 void Socket::handleIncoming()
 {
+	log->logEntry("handling incoming", socket);
 	receiver = Receiver::getInstance(socket);
 	if (!receiver->headersReceived())
 	{
@@ -55,7 +57,7 @@ void Socket::handleIncoming()
 		{
 			if (!evaluator->isProcessed())
 			{
-				//log->logEntry("processing socket", socket);
+				log->logEntry("processing socket", socket);
 				evaluator->processRequest();
 			}
 			if (evaluator->isProcessed())
@@ -90,7 +92,7 @@ void Socket::responseControl(Matcher &matched, Parser &parsed)
 		else if (evaluator->getType() == "dir")
 			resolveDirectoryRequest(matched, parsed);
 		else if (evaluator->getType() == "upload")
-			resolveUploadRequest(matched, parsed);
+			resolveUploadRequest(parsed);
 		else
 			respond.sendNotImplemented();
 		// else if (evaluator->getType() == "proxy")
@@ -117,11 +119,8 @@ void Socket::errorResponse(int error, Parser &parsed)
 		respond.sendNotImplemented();
 	else if (error == PAYLOAD_TOO_LARGE)
 		respond.sendPayLoadTooLarge();
-}
-
-bool Socket::mustBounce()
-{
-	return evaluator->mustBounce();
+	else if (error == METHOD_NOT_ALLOWED)
+		respond.sendBadMethod(evaluator->getValidMethods());
 }
 
 bool Socket::isAlive()
@@ -150,14 +149,14 @@ bool Socket::isAlive()
 // 	Cgi::resolveCgiRequest(socket, matched, parsed);
 // }
 
-void Socket::resolveUploadRequest(Matcher &matched, Parser &parsed)
+void Socket::resolveUploadRequest(Parser &parsed)
 {
 	Responder respond(socket, parsed);
 	log->logEntry("resolving upload request");
 	if (evaluator->getUploadStatus() == CREATED)
-		respond.sendCreated(matched.getPath(), parsed.getPath());
+		respond.sendCreated(evaluator->getUploadPath(), parsed.getPath());
 	else
-		respond.sendModified(matched.getPath(), parsed.getPath());
+		respond.sendModified(evaluator->getUploadPath(), parsed.getPath());
 }
 
 void Socket::resolveDirectoryRequest(Matcher &matched, Parser &parsed)
