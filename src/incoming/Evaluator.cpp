@@ -6,13 +6,15 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:46:32 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:43:04 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Evaluator.hpp"
 
+#define BAD_REQUEST 400
 #define NOT_FOUND 404
+#define PAYLOAD_TOO_LARGE 413
 #define NOT_IMPLEMENTED 501
 
 Log *Evaluator::log = Log::getInstance();
@@ -57,6 +59,7 @@ void Evaluator::evaluateHeaders(std::string &&headers)
 	if (!validated.isValid())
 	{
 		error = validated.getError();
+		log->logEntry("error value", error);
 		evaluated = true;
 		processed = true;
 		return;
@@ -169,6 +172,11 @@ bool Evaluator::isRegular(struct stat *file)
 	return S_ISREG(file->st_mode);
 }
 
+bool Evaluator::mustBounce()
+{
+	return (error == BAD_REQUEST || error == PAYLOAD_TOO_LARGE);
+}
+
 Parser &Evaluator::getParsed()
 {
 	return parsed;
@@ -199,7 +207,7 @@ std::string Evaluator::getType()
 	return request_type;
 }
 
-int Evaluator::getStatus()
+int Evaluator::getUploadStatus()
 {
-	return processor->getStatus();
+	return processor->getUploadStatus();
 }

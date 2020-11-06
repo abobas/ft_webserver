@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:43:56 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:40:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ public:
 	Matcher &getMatched();
 	bool isEvaluated();
 	bool isProcessed();
+	bool mustBounce();
 	int getError();
-	int getStatus();
+	int getUploadStatus();
 	std::string getType();
 
 private:

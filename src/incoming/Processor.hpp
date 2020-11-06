@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:32:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:40:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ public:
 	static void deleteInstance(int socket);
 	void processRequest();
 	bool isProcessed();
-	int getStatus();
+	int getUploadStatus();
 	int getError();
 
 private:
@@ -40,7 +40,7 @@ private:
 	std::string request_type;
 	int file;
 	int socket;
-	int status;
+	int upload_status;
 	int error;
 
 	bool initialized = false;

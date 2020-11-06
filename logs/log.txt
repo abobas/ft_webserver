@@ -1,104 +1,25 @@
-01:24:24 - created socket 4
-01:24:24 - created socket 5
-01:24:25 - select value 1
-01:24:25 - accepted client 6
-01:24:25 - select value 1
-01:24:25 - created receiver 6
-01:24:25 - receiving headers socket 6
+12:53:15 - created socket 4
+12:53:15 - created socket 5
+12:53:28 - select value 1
+12:53:28 - accepted client 6
+12:53:28 - select value 1
+12:53:28 - created receiver 6
+12:53:28 - receiving headers socket 6
 -------begin-of-message------
 PUT /text.txt HTTP/1.1
 Host: localhost
-content-length: 105000000
+Content-Length: 105000000
 User-Agent: Webserv_client 1.1
 
 
 --------end-of-message-------
-01:24:25 - created evaluator 6
-01:24:25 - evaluating socket 6
-01:24:25 - max body size exceeded
-01:24:25 - processed socket 6
-01:24:25 - deleted receiver 6
-01:24:25 - select value 1
-01:24:25 - error response 2103508992
-01:24:25 - deleted evaluator 6
-01:24:25 - select value 1
-01:24:25 - created receiver 6
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:25 - select value 1
-01:24:25 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
-01:24:26 - select value 1
-01:24:26 - receiving headers socket 6
+12:53:28 - created evaluator 6
+12:53:28 - evaluating socket 6
+12:53:28 - max body size exceeded
+12:53:28 - error value 413
+12:53:28 - processed socket 6
+12:53:28 - deleted receiver 6
+12:53:28 - select value 1
+12:53:28 - error response 413
+12:53:28 - deleted evaluator 6
+12:53:28 - disconnected socket 6

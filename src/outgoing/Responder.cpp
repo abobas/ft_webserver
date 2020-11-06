@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 12:56:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:51:58 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,75 +143,97 @@ void Responder::sendCreated(const std::string &path, std::string uri)
 
 void Responder::sendNotFound()
 {
+	std::string message("404: not found\n");
+
 	addStatusHeader(NOT_FOUND, "not found");
 	addGeneralHeaders();
-	addDataHeaders("404: not found\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("404: not found\n");
+	transmitData(message);
 }
 
 void Responder::sendBadRequest()
 {
+	std::string message("400: bad request\n");
+
 	addStatusHeader(BAD_REQUEST, "bad request");
-	addGeneralHeaders();
-	addDataHeaders("400: bad request\n");
+	addDateHeader();
+	if (parsed != NULL)
+		addServerHeader();
+	addConnectionHeader("close");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("400: bad request\n");
+	transmitData(message);
 }
 
 void Responder::sendForbidden()
 {
+	std::string message("403: forbidden\n");
+
 	addStatusHeader(FORBIDDEN, "forbidden");
 	addGeneralHeaders();
-	addDataHeaders("403: forbidden\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("403: forbidden\n");
+	transmitData(message);
 }
 
 void Responder::sendBadMethod(std::string allow)
 {
+	std::string message("405: method not allowed\n");
+
 	addStatusHeader(METHOD_NOT_ALLOWED, "method not allowed");
 	addHeader("allow", allow);
 	addGeneralHeaders();
-	addDataHeaders("405: method not allowed\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("405: method not allowed\n");
+	transmitData(message);
 }
 
 void Responder::sendPayLoadTooLarge()
 {
+	std::string message("413: payload too large\n");
+
 	addStatusHeader(PAYLOAD_TOO_LARGE, "payload too large");
-	addGeneralHeaders();
-	addDataHeaders("413: payload too large\n");
+	addDateHeader();
+	if (parsed != NULL)
+		addServerHeader();
+	addConnectionHeader("close");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("413: payload too large\n");
+	transmitData(message);
 }
 
 void Responder::sendInternalError()
 {
+	std::string message("500: internal server error\n");
+
 	addStatusHeader(INTERNAL_SERVER_ERROR, "internal server error");
 	addGeneralHeaders();
-	addDataHeaders("500: internal server error\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("500: internal server error\n");
+	transmitData(message);
 }
 
 void Responder::sendNotImplemented()
 {
+	std::string message("501: not implemented\n");
+
 	addStatusHeader(NOT_IMPLEMENTED, "not implemented");
 	addGeneralHeaders();
-	addDataHeaders("501: not implemented\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("501: not implemented\n");
+	transmitData(message);
 }
 
 void Responder::sendServiceUnavailable()
 {
+	std::string message("503: service unavailable\n");
+
 	addStatusHeader(SERVICE_UNAVAILABLE, "service unavailable");
 	addGeneralHeaders();
-	addDataHeaders("503: service unavailable\n");
+	addDataHeaders(message);
 	transmitHeaders();
-	transmitData("503: service unavailable\n");
+	transmitData(message);
 }
 
 void Responder::transmitData(std::string &data)

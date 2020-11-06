@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 00:09:11 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:38:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Processor::Processor(int socket, Parser &parsed, Matcher &matched, std::string t
 	: parsed(parsed), matched(matched), request_type(type), socket(socket)
 {
 	error = 0;
-	status = CREATED;
+	upload_status = CREATED;
 	file = 0;
 }
 
@@ -109,11 +109,11 @@ bool Processor::initializeUpload()
 		log->logEntry("file exists");
 		if (!deleteFile())
 			return false;
-		status = MODIFIED;
+		upload_status = MODIFIED;
 	}
 	if (!createFile())
 	{
-		status = INTERNAL_ERROR;
+		error = INTERNAL_ERROR;
 		return false;
 	}
 	return true;
@@ -149,7 +149,7 @@ bool Processor::deleteFile()
 	if (remove(matched.getPath().c_str()) < 0)
 	{
 		log->logError("remove()");
-		status = INTERNAL_ERROR;
+		upload_status = INTERNAL_ERROR;
 		return false;
 	}
 	return true;
@@ -178,9 +178,9 @@ bool Processor::isProcessed()
 	return processed;
 }
 
-int Processor::getStatus()
+int Processor::getUploadStatus()
 {
-	return status;
+	return upload_status;
 }
 
 int Processor::getError()

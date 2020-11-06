@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:23:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:20:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ Validator::Validator()
 Validator::Validator(int socket, Parser &parsed, Matcher &matched)
 	: parsed(parsed), matched(matched), socket(socket)
 {
+	error = 0;
 	if (!checkEmpty())
 		return;
 	if (!checkMatch())
@@ -49,6 +50,7 @@ Validator &Validator::operator=(const Validator &rhs)
 	matched = rhs.matched;
 	socket = rhs.socket;
 	valid = rhs.valid;
+	error = rhs.error;
 	return *this;
 }
 

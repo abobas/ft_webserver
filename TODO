@@ -1,12 +1,9 @@
 
 
 ### INSTANCE REFACTORING ###
---- BODY
--------	Receiver:: read max bytes header 2x size chrome header
-------- Evaluator:: disconnect client if larger (error)
 --- CGI
------- Receiver:: decoder omschrijven
 ------ Processor:: child process forken && pipes storen
+------ Receiver:: decoder omschrijven
 --- PROCESSOR
 ------ Upload && CGI splitten?
 

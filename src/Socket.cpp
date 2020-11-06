@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:57:51 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:43:22 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #define CREATED 201
 #define NOT_FOUND 404
+#define PAYLOAD_TOO_LARGE 413
 #define INTERNAL_ERROR 500
 #define NOT_IMPLEMENTED 501
 
@@ -115,6 +116,13 @@ void Socket::errorResponse(int error, Parser &parsed)
 		respond.sendInternalError();
 	else if (error == NOT_IMPLEMENTED)
 		respond.sendNotImplemented();
+	else if (error == PAYLOAD_TOO_LARGE)
+		respond.sendPayLoadTooLarge();
+}
+
+bool Socket::mustBounce()
+{
+	return evaluator->mustBounce();
 }
 
 bool Socket::isAlive()
@@ -147,7 +155,7 @@ void Socket::resolveUploadRequest(Matcher &matched, Parser &parsed)
 {
 	Responder respond(socket, parsed);
 
-	if (evaluator->getStatus() == CREATED)
+	if (evaluator->getUploadStatus() == CREATED)
 		respond.sendCreated(matched.getPath(), parsed.getPath());
 	else
 		respond.sendModified(matched.getPath(), parsed.getPath());

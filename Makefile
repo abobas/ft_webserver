@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/05 23:30:24 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/06 01:54:20 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,8 +36,6 @@ NAME = 			webserv
 
 FLAGS =			-Wall -Werror -Wextra -std=c++17
 
-C =				gcc
-
 all: 			$(NAME)
 
 $(NAME):		$(SRC)
@@ -50,9 +48,6 @@ tester:
 				sudo ./webserv --config test_bin/test.json
 
 clean:
-				rm -rf *.o
-
-fclean:			clean
 				rm -rf $(NAME)
 
-re:				fclean all
+re:				clean all

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 00:29:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/06 12:44:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,12 @@ void Server::readClient(Socket &client)
 
 void Server::writeClient(Socket &client)
 {
+	bool bounce;
+	
+	bounce = client.mustBounce();
 	client.handleOutgoing();
+	if (bounce)
+		disconnectSocket(client);
 }
 
 // void Server::writeClient(Socket &client)
