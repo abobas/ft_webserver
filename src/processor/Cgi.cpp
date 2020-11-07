@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 21:51:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:08:29 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Cgi::deleteInstance(int socket)
 	if (cgis[socket])
 	{
 		delete cgis[socket];
-		cgis[socket] = NULL;
+		cgis.erase(socket);
 		log->logEntry("deleted CGI", socket);
 	}
 }

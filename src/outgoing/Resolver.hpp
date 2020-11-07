@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/07 11:46:44 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 12:27:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:03:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ private:
 	Resolver(int socket, Evaluator *Evaluated);
 	void resolveError(int error, Parser &parsed);
 	void resolveResponse(Matcher &matched, Parser &parsed);
+	// void resolveProxyRequest(Matcher &matched, Parser &parsed);
 	void resolveCgiRequest(Matcher &matched, Parser &parsed);
 	void resolveUploadRequest(Parser &parsed);
 	void resolveDirectoryRequest(Matcher &matched, Parser &parsed);

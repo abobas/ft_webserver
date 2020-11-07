@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 23:02:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:19:26 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 class Socket
 {
+	friend class Proxy;
 
 public:
 	static void initializeSocket(Json &config);
@@ -37,7 +38,6 @@ public:
 
 	int getSocket() const;
 	std::string getType();
-	void setType(std::string new_type);
 
 private:
 	static Log *log;
@@ -48,6 +48,7 @@ private:
 	Resolver *resolver;
 	std::string type;
 	int socket_fd;
+	int proxy_pair;
 
 	Socket(std::string type, int socket);
 
@@ -56,6 +57,9 @@ private:
 	void handleProcessing();
 	bool isAlive();
 	void deleteSocket();
+	
+	void setType(std::string new_type);
+	void setPair(int socket);
 };
 
 inline bool operator==(const Socket &lhs, const Socket &rhs)

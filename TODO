@@ -2,7 +2,15 @@
 
 ### INSTANCE REFACTORING ###
 ---- PROXY 
-------- implementen
+------- FIRST THING TO DO: uit resolver weghalen en in processor plaatsen
+------- proxy request body naar tmp file schrijven (tmp client)
+------- proxy writen met body uit tmp file (tmp client)
+------- proxy readen, response body naar tmp file schrijvne (tmp proxy)
+------- client writen met body uit tmp file (tmp proxy)
+------- Socket::handleProxy method called processor / resolver instance met paired_socket
+------- aparte Proxy methods voor proxy client / Socket
+------- WaitingClient blijft gewoon client_write maar wacht totdat proxy client in Proxy instance bool op true zet
+
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json) (killen instances Receiver & Evaluator)

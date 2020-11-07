@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/07 11:46:41 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 12:30:17 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:07:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void Resolver::deleteInstance(int socket)
 	if (resolvers[socket])
 	{
 		delete resolvers[socket];
-		resolvers[socket] = NULL;
+		resolvers.erase(socket);
 		log->logEntry("deleted resolver", socket);
 		Evaluator::deleteInstance(socket);
 	}
@@ -74,6 +74,8 @@ void Resolver::resolveResponse(Matcher &matched, Parser &parsed)
 			resolveUploadRequest(parsed);
 		else if (evaluated->getType() == "cgi")
 			resolveCgiRequest(matched, parsed);
+		// else if (evaluated->getType() == "proxy")
+		// 	resolveProxyRequest(matched, parsed);
 		else
 		{
 			respond.sendNotImplemented();
@@ -103,6 +105,11 @@ void Resolver::resolveError(int error, Parser &parsed)
 	else if (error == METHOD_NOT_ALLOWED)
 		respond.sendBadMethod(evaluated->getValidMethods());
 }
+
+// void Resolver::resolveProxyRequest(Matcher &matched, Parser &parsed)
+// {
+// 	return;
+// }
 
 void Resolver::resolveCgiRequest(Matcher &matched, Parser &parsed)
 {

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 22:57:21 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:20:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,4 +161,9 @@ void Socket::setType(std::string new_type)
 int Socket::getSocket() const
 {
 	return socket_fd;
+}
+
+void Socket::setPair(int socket)
+{
+	proxy_pair = socket;
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 21:15:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:08:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void Processor::deleteInstance(int socket)
 	if (processors[socket])
 	{
 		delete processors[socket];
-		processors[socket] = NULL;
+		processors.erase(socket);
 		log->logEntry("deleted processor", socket);
 		Upload::deleteInstance(socket);
 		Cgi::deleteInstance(socket);

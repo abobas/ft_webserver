@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 19:49:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:08:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Receiver::deleteInstance(int socket)
 	if (receivers[socket])
 	{
 		delete receivers[socket];
-		receivers[socket] = NULL;
+		receivers.erase(socket);
 		log->logEntry("deleted receiver", socket);
 	}
 }

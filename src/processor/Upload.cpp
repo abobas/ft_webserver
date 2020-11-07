@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:58:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/08 00:09:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void Upload::deleteInstance(int socket)
 	if (uploads[socket])
 	{
 		delete uploads[socket];
-		uploads[socket] = NULL;
+		uploads.erase(socket);
 		log->logEntry("deleted upload", socket);
 	}
 }
