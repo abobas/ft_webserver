@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 13:22:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 22:54:04 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 #include "incoming/Evaluator.hpp"
 #include "outgoing/Resolver.hpp"
 #include <string>
+#include <map>
+#include <algorithm>
+#include <string.h>
+#include <arpa/inet.h>
 
 /**
 * @brief Handles socket operations.
@@ -26,14 +30,14 @@ class Socket
 {
 
 public:
-	Socket();
-	Socket(std::string type, int socket);
 	static void initializeSocket(Json &config);
+	static std::map<int, Socket *> &getSockets();
+	static void createListenSockets();
 	
+	void acceptConnection();
 	void handleIncoming();
 	void handleOutgoing();
-	bool isAlive();
-
+	
 	int getSocket() const;
 	std::string getType();
 	void setType(std::string new_type);
@@ -41,11 +45,20 @@ public:
 private:
 	static Log *log;
 	static Json config;
+	static std::map<int, Socket *> sockets;
 	Receiver *receiver;
 	Evaluator *evaluator;
 	Resolver *resolver;
 	std::string type;
-	int socket;
+	int socket_fd;
+
+	Socket(std::string type, int socket);
+	
+	void handleReceiving();
+	void handleEvaluating();
+	void handleProcessing();
+	bool isAlive();
+	void deleteSocket();
 };
 
 inline bool operator==(const Socket &lhs, const Socket &rhs)

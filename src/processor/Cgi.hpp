@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 16:17:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 21:51:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,43 +67,25 @@ private:
 	bool chunked;
 
 	Cgi(int socket, Parser &parsed, Matcher &matched);
-	
-	// RESOLVING //
-
 	void readPipe(char *buf, int &bytes_read);
 	void writeChunk(char *buf, int bytes_read);
 	bool checkWait();
-	
-	// PROCESSING CHUNKED //
-
 	void processChunked();
 	void setTmp();
 	void deleteTmp();
-	
-	// PROCESSING CONTENT //
-
 	void processContent();
-
-	// PROCESSING POST //
-	
 	std::string getBodyType();
 	size_t getBodySize();
-
-	// PROCESSING GET //
-	
 	bool initializeCgi();
 	void processCgi();
 	bool forkProcess();
 	void childProcess();
-
 	void writePipeFromFile(int fd);
 	bool openFile(int &fd, std::string path);
 	bool readFile(int fd, char *buf, int &bytes_read);
 	bool writeFile(int fd, const char *buf, int bytes_read);
-	
 	bool createPipes();
 	void closePipe(int mode);
-
 	bool checkRequest();
 	void setPath();
 	void setEnvironment();

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 21:46:37 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 21:51:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,6 @@ bool Cgi::writeFile(int fd, const char *buf, int bytes_read)
 		return false;
 	}
 	log->logEntry("bytes written", ret);
-	//log->logBlock(buf);
 	return true;
 }
 
@@ -316,13 +315,12 @@ bool Cgi::readFile(int fd, char *buf, int &bytes_read)
 	}
 	buf[bytes_read] = '\0';
 	log->logEntry("bytes read", bytes_read);
-	//log->logBlock(buf);
 	return true;
 }
 
 bool Cgi::openFile(int &fd, std::string path)
 {
-	fd = open(path.c_str(),  O_RDWR | O_CREAT, 0777);
+	fd = open(path.c_str(), O_RDWR | O_CREAT, 0777);
 	if (fd < 0)
 	{
 		closePipe(2);
@@ -426,13 +424,6 @@ bool Cgi::createPipes()
 		error = INTERNAL_ERROR;
 		return false;
 	}
-	// if (fcntl(child_output[0], F_SETFL, O_NONBLOCK) < 0)
-	// {
-	// 	closePipe(2);
-	// 	log->logError("fcntl()");
-	// 	error = INTERNAL_ERROR;
-	// 	return false;
-	// }
 	return true;
 }
 
