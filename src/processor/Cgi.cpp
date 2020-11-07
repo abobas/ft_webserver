@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 16:17:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 19:58:41 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ Cgi::Cgi(int socket, Parser &parsed, Matcher &matched)
 	error = 0;
 	tmp_fd = 0;
 	get_fd = 0;
+	pid = 0;
 }
 
 Cgi *Cgi::getInstance(int socket, Parser &parsed, Matcher &matched)
@@ -126,6 +127,7 @@ void Cgi::processCgi()
 {
 	if (!post)
 	{
+		log->logEntry("processing GET cgi");
 		if (!openFile(get_fd, matched.getPath()))
 		{
 			processed = true;
@@ -136,11 +138,12 @@ void Cgi::processCgi()
 	}
 	else if (post)
 	{
+		log->logEntry("processing POST cgi");
 		receiver = Receiver::getInstance(socket);
 		if (!receiver->bodyInitialized())
 		{
 			receiver->initializeBodyType(getBodyType(), getBodySize());
-			log->logEntry("initialized bodyreceiver socket", socket);
+			log->logEntry("initialized body receiver socket", socket);
 		}
 		if (!chunked)
 			processContent();
@@ -164,7 +167,6 @@ void Cgi::processContent()
 	{
 		processed = true;
 		closePipe(0);
-		log->logEntry("processed cgi post (content)", socket);
 	}
 }
 
@@ -182,13 +184,20 @@ void Cgi::processChunked()
 	if (receiver->bodyReceived())
 	{
 		processed = true;
+		if (stat(tmp_path.c_str(), &tmp_file) < 0)
+		{
+			log->logError("stat()");
+			return;
+		}
 		setEnvironment();
 		if (!forkProcess())
 			return;
+		if (close(tmp_fd) < 0)
+			log->logError("close()");
+		if (!openFile(tmp_fd, tmp_path))
+			return;
 		writePipeFromFile(tmp_fd);
 		deleteTmp();
-		closePipe(0);
-		log->logEntry("processed cgi content (chunked)", socket);
 	}
 }
 
@@ -257,7 +266,7 @@ void Cgi::writePipeFromFile(int fd)
 	{
 		if (!readFile(fd, buf, bytes_read))
 			return;
-		if (!writeFile(parent_output[1], buf, bytes_read + 1))
+		if (!writeFile(parent_output[1], buf, bytes_read))
 		{
 			close(fd);
 			return;
@@ -305,13 +314,13 @@ bool Cgi::readFile(int fd, char *buf, int &bytes_read)
 	}
 	buf[bytes_read] = '\0';
 	log->logEntry("bytes read", bytes_read);
-	log->logBlock(buf);
+	//log->logBlock(buf);
 	return true;
 }
 
 bool Cgi::openFile(int &fd, std::string path)
 {
-	fd = open(path.c_str(), O_RDONLY);
+	fd = open(path.c_str(),  O_RDWR | O_CREAT, 0777);
 	if (fd < 0)
 	{
 		closePipe(2);
@@ -451,6 +460,9 @@ void Cgi::setHeadersEnv()
 	{
 		std::string insert;
 		std::string copy(header.first);
+		size_t pos = copy.find("-");
+		if (pos != std::string::npos)
+			copy[pos] = '_';
 		for (auto &c : copy)
 			c = toupper(c);
 		insert.append(copy + "=");

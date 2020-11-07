@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 13:33:52 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 19:49:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ void Receiver::receiveBody()
 	readSocket(buffer);
 	body_part.append(buffer);
 	if (body_part.empty())
+	{
+		log->logEntry("no body content received");
 		return;
+	}
 	if (content)
 	{
 		body_data = std::move(body_part);

@@ -2,8 +2,7 @@
 
 ### INSTANCE REFACTORING ###
 --- CGI
------- Processor:: child process forken && pipes storen
------- Resolver child output pipe uitlezen en socket schrijven (chunked)
+------- PATH_INFO metavariable fixen (tester)
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json) (killen instances Receiver & Evaluator)
