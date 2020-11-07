@@ -7,7 +7,7 @@
             "listen": 80,
             "locations": {
                 "/": {
-                    "root": "/home/abobas/webserver/data",
+                    "root": "./data",
                     "index": "index.html",
                     "accepted-methods": ["GET", "HEAD", "POST", "PUT"],
                     "autoindex": false
@@ -24,7 +24,7 @@
             "listen": 443,
             "locations": {
                 "/": {
-                    "root": "/home/abobas/webserver/data",
+                    "root": "./data",
 					"index": "index.html",
 					"accepted-methods": ["GET", "HEAD", "POST", "PUT"],
                     "autoindex": true
@@ -35,12 +35,12 @@
 		"cgi": {
 			"files": {
 				".php": {
-					"path": "/home/abobas/webserver/data/cgi-bin/test.php",
+					"path": "./data/cgi-bin/test.php",
 					"accepted-methods": ["GET", "POST"]
 				},
 
 				".pl": {
-					"path": "/home/abobas/webserver/data/cgi-bin/test.pl",
+					"path": "./data/cgi-bin/test.pl",
 					"accepted-methods": ["GET", "POST"]
 				}
 			},

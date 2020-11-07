@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 13:36:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 16:17:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,18 @@ private:
 	static std::map<int, Cgi *> cgis;
 	Parser parsed;
 	Matcher matched;
+	Receiver *receiver;
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
 	std::string cgi_path;
+	std::string tmp_path;
 	pid_t pid;
-	struct stat file;
+	struct stat get_file;
+	struct stat tmp_file;
 	int parent_output[2];
 	int child_output[2];
+	int tmp_fd;
+	int get_fd;
 	int socket;
 	int error;
 	bool initialized;
@@ -58,8 +63,6 @@ private:
 	bool resolved;
 	bool headers_sent;
 	bool child_ready;
-
-	// Receiver *receiver;
 	bool post;
 	bool chunked;
 
@@ -71,17 +74,32 @@ private:
 	void writeChunk(char *buf, int bytes_read);
 	bool checkWait();
 	
-	// PROCESSING //
+	// PROCESSING CHUNKED //
+
+	void processChunked();
+	void setTmp();
+	void deleteTmp();
+	
+	// PROCESSING CONTENT //
+
+	void processContent();
+
+	// PROCESSING POST //
+	
+	std::string getBodyType();
+	size_t getBodySize();
+
+	// PROCESSING GET //
 	
 	bool initializeCgi();
 	void processCgi();
 	bool forkProcess();
 	void childProcess();
 
-	void readFileWritePipe();
-	bool openFile(int &fd);
+	void writePipeFromFile(int fd);
+	bool openFile(int &fd, std::string path);
 	bool readFile(int fd, char *buf, int &bytes_read);
-	bool writePipe(char *buf, int bytes_read);
+	bool writeFile(int fd, const char *buf, int bytes_read);
 	
 	bool createPipes();
 	void closePipe(int mode);

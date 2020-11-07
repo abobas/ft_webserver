@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 13:47:48 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 16:17:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ Cgi::Cgi(int socket, Parser &parsed, Matcher &matched)
 	post = false;
 	chunked = false;
 	error = 0;
+	tmp_fd = 0;
+	get_fd = 0;
 }
 
 Cgi *Cgi::getInstance(int socket, Parser &parsed, Matcher &matched)
@@ -116,7 +118,6 @@ void Cgi::processCgiRequest()
 			processed = true;
 			return;
 		}
-		initialized = true;
 	}
 	processCgi();
 }
@@ -125,86 +126,70 @@ void Cgi::processCgi()
 {
 	if (!post)
 	{
-		readFileWritePipe();
+		if (!openFile(get_fd, matched.getPath()))
+		{
+			processed = true;
+			return;
+		}
+		writePipeFromFile(get_fd);
 		processed = true;
 	}
-	/// post logic toevoegen
+	else if (post)
+	{
+		receiver = Receiver::getInstance(socket);
+		if (!receiver->bodyInitialized())
+		{
+			receiver->initializeBodyType(getBodyType(), getBodySize());
+			log->logEntry("initialized bodyreceiver socket", socket);
+		}
+		if (!chunked)
+			processContent();
+		else if (chunked)
+			processChunked();
+	}
 }
 
-void Cgi::readFileWritePipe()
+void Cgi::processContent()
 {
-	char buf[IO_SIZE + 1];
-	int fd;
-	int bytes_read;
-
-	if (!openFile(fd))
-		return;
-	while (true)
+	if (!receiver->bodyReceived())
 	{
-		if (!readFile(fd, buf, bytes_read))
-			return;
-		if (!writePipe(buf, bytes_read))
+		receiver->receiveBody();
+		if (!writeFile(parent_output[1], receiver->getBodyData(), receiver->getBodyDataLength()))
 		{
-			close(fd);
+			processed = true;
 			return;
 		}
-		if (bytes_read < IO_SIZE)
+	}
+	if (receiver->bodyReceived())
+	{
+		processed = true;
+		closePipe(0);
+		log->logEntry("processed cgi post (content)", socket);
+	}
+}
+
+void Cgi::processChunked()
+{
+	if (!receiver->bodyReceived())
+	{
+		receiver->receiveBody();
+		if (!writeFile(tmp_fd, receiver->getBodyData(), receiver->getBodyDataLength()))
 		{
-			close(fd);
-			closePipe(0);
+			processed = true;
 			return;
 		}
 	}
-}
-
-bool Cgi::writePipe(char *buf, int bytes_read)
-{
-	int ret;
-
-	ret = write(parent_output[1], buf, bytes_read + 1);
-	if (ret < 0)
+	if (receiver->bodyReceived())
 	{
-		closePipe(2);
-		kill(pid, SIGKILL);
-		log->logError("write()");
-		error = INTERNAL_ERROR;
-		return false;
+		processed = true;
+		setEnvironment();
+		if (!forkProcess())
+			return;
+		writePipeFromFile(tmp_fd);
+		deleteTmp();
+		closePipe(0);
+		log->logEntry("processed cgi content (chunked)", socket);
 	}
-	log->logEntry("bytes written", ret);
-	log->logBlock(buf);
-	return true;
-}
-
-bool Cgi::readFile(int fd, char *buf, int &bytes_read)
-{
-	bytes_read = read(fd, buf, IO_SIZE);
-	if (bytes_read < 0)
-	{
-		close(fd);
-		closePipe(2);
-		kill(pid, SIGKILL);
-		log->logError("read()");
-		error = INTERNAL_ERROR;
-		return false;
-	}
-	buf[bytes_read] = '\0';
-	log->logEntry("bytes read", bytes_read);
-	log->logBlock(buf);
-	return true;
-}
-
-bool Cgi::openFile(int &fd)
-{
-	fd = open(matched.getPath().c_str(), O_RDONLY);
-	if (fd < 0)
-	{
-		closePipe(2);
-		kill(pid, SIGKILL);
-		log->logError("open()");
-		error = INTERNAL_ERROR;
-		return false;
-	}
-	return true;
 }
 
 bool Cgi::initializeCgi()
@@ -212,11 +197,21 @@ bool Cgi::initializeCgi()
 	if (!checkRequest())
 		return false;
 	setPath();
-	setEnvironment();
 	if (!createPipes())
 		return false;
-	if (!forkProcess())
-		return false;
+	if (!chunked)
+	{
+		setEnvironment();
+		if (!forkProcess())
+			return false;
+	}
+	else
+	{
+		setTmp();
+		if (!openFile(tmp_fd, tmp_path))
+			return false;
+	}
+	initialized = true;
 	return true;
 }
 
@@ -253,6 +248,82 @@ void Cgi::childProcess()
 		exit(1);
 }
 
+void Cgi::writePipeFromFile(int fd)
+{
+	char buf[IO_SIZE + 1];
+	int bytes_read;
+
+	while (true)
+	{
+		if (!readFile(fd, buf, bytes_read))
+			return;
+		if (!writeFile(parent_output[1], buf, bytes_read + 1))
+		{
+			close(fd);
+			return;
+		}
+		if (bytes_read < IO_SIZE)
+		{
+			close(fd);
+			closePipe(0);
+			return;
+		}
+	}
+}
+
+bool Cgi::writeFile(int fd, const char *buf, int bytes_read)
+{
+	int ret;
+
+	ret = write(fd, buf, bytes_read);
+	if (ret < 0)
+	{
+		closePipe(2);
+		if (kill(pid, SIGKILL) < 0)
+			log->logError("kill()");
+		log->logError("write()");
+		error = INTERNAL_ERROR;
+		return false;
+	}
+	log->logEntry("bytes written", ret);
+	//log->logBlock(buf);
+	return true;
+}
+
+bool Cgi::readFile(int fd, char *buf, int &bytes_read)
+{
+	bytes_read = read(fd, buf, IO_SIZE);
+	if (bytes_read < 0)
+	{
+		close(fd);
+		closePipe(2);
+		if (kill(pid, SIGKILL) < 0)
+			log->logError("kill()");
+		log->logError("read()");
+		error = INTERNAL_ERROR;
+		return false;
+	}
+	buf[bytes_read] = '\0';
+	log->logEntry("bytes read", bytes_read);
+	log->logBlock(buf);
+	return true;
+}
+
+bool Cgi::openFile(int &fd, std::string path)
+{
+	fd = open(path.c_str(), O_RDONLY);
+	if (fd < 0)
+	{
+		closePipe(2);
+		if (kill(pid, SIGKILL) < 0)
+			log->logError("kill()");
+		log->logError("open()");
+		error = INTERNAL_ERROR;
+		return false;
+	}
+	return true;
+}
+
 void Cgi::closePipe(int mode)
 {
 	if (mode == 0 || mode == 2 || mode == 4)
@@ -277,11 +348,22 @@ void Cgi::closePipe(int mode)
 	}
 }
 
+void Cgi::setTmp()
+{
+	tmp_path = "./tmp/" + std::to_string(rand());
+}
+
+void Cgi::deleteTmp()
+{
+	if (remove(tmp_path.c_str()) < 0)
+		log->logError("remove()");
+}
+
 bool Cgi::checkRequest()
 {
 	if (parsed.getMethod() == "GET")
 	{
-		if (stat(matched.getPath().c_str(), &file) < 0)
+		if (stat(matched.getPath().c_str(), &get_file) < 0)
 		{
 			error = NOT_FOUND;
 			return false;
@@ -313,6 +395,7 @@ void Cgi::setPath()
 			}
 		}
 	}
+	log->logEntry("Error: CGI script not properly configured");
 }
 
 bool Cgi::createPipes()
@@ -384,16 +467,11 @@ void Cgi::setContentLengthEnv()
 	if (post && !chunked)
 		return;
 	else if (post && chunked)
-	{
-		// wtf ?
-		return;
-	}
+		length += std::to_string(tmp_file.st_size);
 	else if (!post)
-	{
-		length += std::to_string(file.st_size);
-		memory.push_back(std::move(length));
-		env.push_back(memory.back().c_str());
-	}
+		length += std::to_string(get_file.st_size);
+	memory.push_back(std::move(length));
+	env.push_back(memory.back().c_str());
 }
 
 void Cgi::setMethodEnv()
@@ -451,6 +529,24 @@ void Cgi::setPathInfoEnv()
 	std::string path_info("PATH_INFO=");
 	memory.push_back(std::move(path_info));
 	env.push_back(memory.back().c_str());
+}
+
+std::string Cgi::getBodyType()
+{
+	if (parsed.hasContent())
+		return "content";
+	else if (parsed.isChunked())
+		return "chunked";
+	else
+		return "";
+}
+
+size_t Cgi::getBodySize()
+{
+	if (parsed.hasContent())
+		return stoi(parsed.getHeader("content-length"));
+	else
+		return 0;
 }
 
 bool Cgi::isProcessed()
