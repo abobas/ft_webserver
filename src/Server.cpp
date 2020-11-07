@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:16:14 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 12:14:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,29 @@ void Server::writeClient(Socket &client)
 	client.handleOutgoing();
 }
 
+void Server::disconnectSocket(Socket &socket)
+{
+	if (close(socket.getSocket() < 0))
+		log->logError("close()");
+	deleteSocket(socket);
+	log->logEntry("disconnected socket", socket.getSocket());
+}
+
+void Server::addSocket(Socket &insert)
+{
+	sockets.push_back(insert);
+}
+
+void Server::addSocket(Socket &&insert)
+{
+	sockets.push_back(insert);
+}
+
+void Server::deleteSocket(Socket &erase)
+{
+	sockets.erase(std::find(sockets.begin(), sockets.end(), erase));
+}
+
 // void Server::writeClient(Socket &client)
 // {
 // 	log->logEntry("writing client", client.getSocket());
@@ -262,45 +285,6 @@ void Server::writeClient(Socket &client)
 // 	transformSocket(client);
 // }
 
-// void Server::transformSocket(Socket &socket)
-// {
-// 	log->logEntry("transforming from " + socket.getType(), socket.getSocket());
-// 	if (socket.getType() == "client_read")
-// 		socket.setType("client_write");
-// 	else if (socket.getType() == "client_write")
-// 		socket.setType("client_read");
-// 	else if (socket.getType() == "wait_client_write")
-// 		socket.setType("client_read");
-// 	else if (socket.getType() == "proxy_write")
-// 		socket.setType("proxy_read");
-// 	else if (socket.getType() == "proxy_read")
-// 		socket.setType("proxy_done");
-// 	log->logEntry("transformed into " + socket.getType(), socket.getSocket());
-// }
-
-void Server::disconnectSocket(Socket &socket)
-{
-	if (close(socket.getSocket() < 0))
-		log->logError("close()");
-	deleteSocket(socket);
-	log->logEntry("disconnected socket", socket.getSocket());
-}
-
-void Server::addSocket(Socket &insert)
-{
-	sockets.push_back(insert);
-}
-
-void Server::addSocket(Socket &&insert)
-{
-	sockets.push_back(insert);
-}
-
-void Server::deleteSocket(Socket &erase)
-{
-	sockets.erase(std::find(sockets.begin(), sockets.end(), erase));
-}
-
 // void Server::addPair(int key, int value)
 // {
 // 	pairs.insert({key, value});
@@ -309,19 +293,4 @@ void Server::deleteSocket(Socket &erase)
 // void Server::deletePair(int key)
 // {
 // 	pairs.erase(key);
-// }
-
-// void Server::addMessage(Socket &socket, std::string &&message)
-// {
-// 	messages.insert({socket, message});
-// }
-
-// void Server::addMessage(Socket &&socket, std::string &&message)
-// {
-// 	messages.insert({socket, message});
-// }
-
-// void Server::deleteMessage(Socket &socket)
-// {
-// 	messages.erase(socket);
 // }

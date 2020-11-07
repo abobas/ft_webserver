@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 00:54:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:51:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:14:06 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,7 @@ void Evaluator::processRequest()
 		processed = processor->isProcessed();
 	}
 	if (processor->isProcessed())
-	{
-		log->logEntry("done processing");
 		error = processor->getError();
-	}
 }
 
 void Evaluator::evaluateRequest()

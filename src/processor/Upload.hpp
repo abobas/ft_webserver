@@ -6,16 +6,16 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 21:33:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 12:19:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../Parser.hpp"
-#include "../Matcher.hpp"
-#include "../Receiver.hpp"
-#include "../../logger/Log.hpp"
+#include "../incoming/Parser.hpp"
+#include "../incoming/Matcher.hpp"
+#include "../incoming/Receiver.hpp"
+#include "../logger/Log.hpp"
 #include <string>
 #include <map>
 #include <unistd.h>

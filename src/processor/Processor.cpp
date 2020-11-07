@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 23:01:06 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:02:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void Processor::deleteInstance(int socket)
 		processors[socket] = NULL;
 		log->logEntry("deleted processor", socket);
 		Upload::deleteInstance(socket);
+		Cgi::deleteInstance(socket);
 	}
 }
 
@@ -54,30 +55,38 @@ void Processor::processRequest()
 		upload = Upload::getInstance(socket, parsed, matched);
 		upload->processUploadRequest();
 	}
+	else if (request_type == "cgi")
+	{
+		cgi = Cgi::getInstance(socket, parsed, matched);
+		cgi->processCgiRequest();
+	}
 }
 
 bool Processor::isProcessed()
 {
-	if (request_type == "upload" && upload)
+	if (request_type == "upload" && upload != NULL)
 		return upload->isProcessed();
+	else if (request_type == "cgi" && cgi != NULL)
+		return cgi->isProcessed();
 	else
 		return processed;
-}
-
-int Processor::getUploadStatus()
-{
-	return upload->getStatus();
 }
 
 int Processor::getError()
 {
 	if (request_type == "upload")
 		return upload->getError();
-	else
-		return 0; // cgi
+	else if (request_type == "cgi")
+		return cgi->getError();
+	return 0;
 }
 
 std::string Processor::getUploadPath()
 {
 	return upload->getPath();
+}
+
+int Processor::getUploadStatus()
+{
+	return upload->getStatus();
 }

@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:17:44 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:13:09 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void Responder::sendDataRaw(std::string &data)
 void Responder::sendChunkHeader()
 {
 	addStatusHeader(OK, "OK");
-	//addHeader("content-type", "text/html"); // CGI zelf laten schrijven?
+	addHeader("content-type", "text/html"); // CGI zelf laten schrijven?
 	addTransferEncodingHeader("chunked");
 	transmitHeaders();
 }
@@ -267,7 +267,7 @@ void Responder::transmitHeaders()
 	data = oss.str();
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 int Responder::readFile(const std::string &path, std::string &buffer)

@@ -6,17 +6,18 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:08 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:35:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 12:19:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Upload.hpp"
-#include "../Parser.hpp"
-#include "../Matcher.hpp"
-#include "../Receiver.hpp"
-#include "../../logger/Log.hpp"
+#include "Cgi.hpp"
+#include "../incoming/Parser.hpp"
+#include "../incoming/Matcher.hpp"
+#include "../incoming/Receiver.hpp"
+#include "../logger/Log.hpp"
 #include <string>
 #include <map>
 
@@ -37,6 +38,7 @@ private:
 	Parser parsed;
 	Matcher matched;
 	Upload *upload;
+	Cgi *cgi;
 	std::string request_type;
 	int socket;
 	bool processed;

@@ -47,7 +47,7 @@
 			"cgi_params": {
 				"GATEWAY_INTERFACE": "CGI/1.1",
 				"SERVER_PROTOCOL": "HTTP/1.1",
-				"SERVER_SOFTWARE": "bigkahuna-latest"
+				"SERVER_SOFTWARE": "Webserv-latest"
 			}
 			
 		}

@@ -1,451 +1,111 @@
-22:34:21 - created socket 4
-22:34:24 - accepted client 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 93
-22:34:24 - body size 0
+13:48:15 - created socket 4
+13:48:15 - created socket 5
+13:48:17 - accepted client 6
+13:48:17 - created receiver 6
 -------begin-of-message------
-GET / HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+GET /html/folder/bla.pl HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://localhost:443/html/folder
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
 
 
 --------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is dir
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving directory request
+13:48:17 - created evaluator 6
+13:48:17 - request type is cgi
+13:48:17 - created processor 6
+13:48:17 - created CGI 6
+13:48:17 - bytes read 137
 -------begin-of-message------
-YoupiBanane/index.html
+
+
+
+testing cgi input
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+--------end-of-message-------
+13:48:17 - bytes written 138
+-------begin-of-message------
+
+
+
+testing cgi input
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+--------end-of-message-------
+13:48:17 - processed socket 6
+13:48:17 - deleted receiver 6
+13:48:17 - created resolver 6
+13:48:17 - resolving CGI request
+-------begin-of-message------
+HTTP/1.1 200 OK
+content-type: text/html
+transfer-encoding: chunked
+
 
 --------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 147
-22:34:24 - body size 0
+13:48:17 - child process exit status 86
 -------begin-of-message------
-POST / HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Content-Type: test/file
-Accept-Encoding: gzip
+3d8
+<h1>Environment</h1><hr><b>ACCEPT</b>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8<br>
+<b>ACCEPT-ENCODING</b>: gzip, deflate<br>
+<b>ACCEPT-LANGUAGE</b>: en-US,en;q=0.5<br>
+<b>CACHE-CONTROL</b>: max-age=0<br>
+<b>CONNECTION</b>: keep-alive<br>
+<b>CONTENT_LENGTH</b>: 137<br>
+<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
+<b>HOST</b>: localhost:443<br>
+<b>REFERER</b>: http://localhost:443/html/folder<br>
+<b>REQUEST_METHOD</b>: GET<br>
+<b>REQUEST_URI</b>: /html/folder/bla.pl<br>
+<b>SCRIPT_NAME</b>: /home/abobas/webserver/data/cgi-bin/test.pl<br>
+<b>SERVER_NAME</b>: localhost<br>
+<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
+<b>SERVER_SOFTWARE</b>: Webserv-latest<br>
+<b>UPGRADE-INSECURE-REQUESTS</b>: 1<br>
+<b>USER-AGENT</b>: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0<br>
+<h2>STDIN</h2><hr>
 
+
+testing cgi input
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx
+xxxxxxxxxxxx <br>
 
 --------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request's method not accepted
-22:34:24 - error value 405
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - error response 405
--------begin-of-message------
-405: method not allowed
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 5
-22:34:24 - body size 0
+13:48:17 - child output completely read
 -------begin-of-message------
 0
 
 
 --------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request is empty
-22:34:24 - error value 400
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - error response 400
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 71
-22:34:24 - body size 0
--------begin-of-message------
-HEAD / HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request's method not accepted
-22:34:24 - error value 405
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - error response 405
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 102
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is dir
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving directory request
--------begin-of-message------
-YoupiBanane/youpi.bad_extension
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 122
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/youpi.bad_extension HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is file
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving file request
--------begin-of-message------
-YoupiBanane/youpi.bad_extension
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 112
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/youpi.bla HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is file
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving file request
--------begin-of-message------
-blablablabla
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 111
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/oulalala HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - error response 404
--------begin-of-message------
-404: not found
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 106
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/nop HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is dir
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving directory request
--------begin-of-message------
-YoupiBanane/nop/youpi.bad_extension
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 107
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/nop/ HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is dir
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving directory request
--------begin-of-message------
-YoupiBanane/nop/youpi.bad_extension
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 118
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/nop/other.pouic HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is file
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving file request
--------begin-of-message------
-YoupiBanane/nop/other.pouic
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 118
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/nop/other.pouac HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - error response 404
--------begin-of-message------
-404: not found
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 107
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/Yeah HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is dir
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving directory request
--------begin-of-message------
-404: not found
-
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - handling incoming 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 131
-22:34:24 - body size 0
--------begin-of-message------
-GET /directory/Yeah/not_happy.bad_extension HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is file
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving file request
--------begin-of-message------
-YoupiBanane/Yeah/not_happy.bad_extension
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - handling incoming 5
-22:34:24 - created receiver 5
-22:34:24 - receiving headers socket 5
-22:34:24 - headers size 153
-22:34:24 - body size 838
--------begin-of-message------
-PUT /put_test/file_should_exist_after HTTP/1.1
-Host: localhost:80
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Accept-Encoding: gzip
-
-
---------end-of-message-------
-22:34:24 - created evaluator 5
-22:34:24 - evaluating socket 5
-22:34:24 - request type is upload
-22:34:24 - processing socket 5
-22:34:24 - created processor 5
-22:34:24 - created upload 5
-22:34:24 - /home/abobas/webserver/test_data/YoupiBanane/file_should_exist_after
-22:34:24 - chunked request
-22:34:24 - initialized bodyreceiver socket 5
-22:34:24 - handling incoming 5
-22:34:24 - processing socket 5
-22:34:24 - handling incoming 5
-22:34:24 - processing socket 5
-22:34:24 - full chunked body received
-22:34:24 - processed upload request 5
-22:34:24 - done processing
-22:34:24 - processed socket 5
-22:34:24 - deleted receiver 5
-22:34:24 - resolving upload request
--------begin-of-message------
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
---------end-of-message-------
-22:34:24 - deleted evaluator 5
-22:34:24 - deleted processor 5
-22:34:24 - deleted upload 5
-22:34:29 - client died 5
-22:34:29 - disconnected socket 5
+13:48:17 - resolved client 6
+13:48:17 - deleted resolver 6
+13:48:17 - deleted evaluator 6
+13:48:17 - deleted processor 6
+13:48:17 - deleted CGI 6

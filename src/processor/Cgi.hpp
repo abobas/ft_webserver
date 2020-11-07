@@ -6,56 +6,86 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 17:12:01 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:36:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Responder.hpp"
-#include "../logger/Log.hpp"
-#include "../incoming/Matcher.hpp"
 #include "../incoming/Parser.hpp"
+#include "../incoming/Matcher.hpp"
+#include "../incoming/Receiver.hpp"
+#include "../outgoing/Responder.hpp"
+#include "../logger/Log.hpp"
+#include <string>
+#include <map>
 #include <vector>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 class Cgi
 {
 public:
-	/**
-	* @brief Resolves CGI request and sends output to client.
-	*/
-	static void resolveCgiRequest(int socket, Matcher &matched, Parser &parsed);
+	static Cgi *getInstance(int socket, Parser &parsed, Matcher &matched);
+	static void deleteInstance(int socket);
+
+	void processCgiRequest();
+	void resolveCgiRequest();
+
+	bool isResolved();
+	bool isProcessed();
+	int getError();
 
 private:
 	static Log *log;
-	Matcher &matched;
-	Parser &parsed;
-	Responder respond;
+	static std::map<int, Cgi *> cgis;
+	Parser parsed;
+	Matcher matched;
 	std::vector<const char *> env;
 	std::vector<std::string> memory;
 	std::string cgi_path;
+	pid_t pid;
 	struct stat file;
 	int parent_output[2];
 	int child_output[2];
-	pid_t pid;
 	int socket;
-	bool post = false;
-	bool chunked = false;
+	int error;
+	bool initialized;
+	bool processed;
+	bool resolved;
+	bool headers_sent;
+	bool child_ready;
 
-	Cgi(int socket, Matcher &matched, Parser &parsed);
-	void executeScript();
-	void parentProcess();
-	void parentWritePipe();
+	// Receiver *receiver;
+	bool post;
+	bool chunked;
+
+	Cgi(int socket, Parser &parsed, Matcher &matched);
+	
+	// RESOLVING //
+
+	void readPipe(char *buf, int &bytes_read);
+	void writeChunk(char *buf, int bytes_read);
+	bool checkWait();
+	
+	// PROCESSING //
+	
+	bool initializeCgi();
+	void processCgi();
+	bool forkProcess();
 	void childProcess();
-	bool waitCheck();
-	void createPipes();
+
+	void readFileWritePipe();
+	bool openFile(int &fd);
+	bool readFile(int fd, char *buf, int &bytes_read);
+	bool writePipe(char *buf, int bytes_read);
+	
+	bool createPipes();
 	void closePipe(int mode);
-	int readOperation(int fd, std::string &buffer);
-	void writeOperation(int fd, const char *buffer, int size);
+
 	bool checkRequest();
 	void setPath();
 	void setEnvironment();
@@ -64,9 +94,9 @@ private:
 	void setUriEnv();
 	void setQueryEnv();
 	void setHeadersEnv();
-	void setContentLengthEnv();
 	void setServerNameEnv();
 	void setServerPortEnv();
 	void setScriptNameEnv();
 	void setPathInfoEnv();
+	void setContentLengthEnv();
 };

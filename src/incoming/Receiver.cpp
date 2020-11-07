@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:40:07 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:33:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void Receiver::receiveHeaders()
 	{
 		headers_received = true;
 		splitMessage();
+		log->logBlock(headers_part);
 	}
 }
 

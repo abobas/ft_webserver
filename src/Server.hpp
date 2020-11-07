@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:39:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 12:13:40 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,10 @@ private:
 	void deleteSocket(Socket &erase);
 	void disconnectSocket(Socket &socket);
 
-	// void transformSocket(Socket &socket);
-
 	// void writeWaitingClient(Socket &client);
 	// void readProxy(Socket &proxy);
 	// void writeProxy(Socket &proxy);
-	
 	// Socket &findPair(Socket &client);
 	// void addPair(int key, int value);
 	// void deletePair(int key);
-	// void addMessage(Socket &socket, std::string &&message);
-	// void addMessage(Socket &&socket, std::string &&message);
-	// void deleteMessage(Socket &socket);
 };

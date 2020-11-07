@@ -6,18 +6,11 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 23:02:08 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 13:22:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-
-#define CREATED 201
-#define NOT_FOUND 404
-#define METHOD_NOT_ALLOWED 405
-#define PAYLOAD_TOO_LARGE 413
-#define INTERNAL_ERROR 500
-#define NOT_IMPLEMENTED 501
 
 Log *Socket::log = Log::getInstance();
 Json Socket::config = Json();
@@ -63,54 +56,15 @@ void Socket::handleIncoming()
 
 void Socket::handleOutgoing()
 {
-	if (evaluator->getError())
-		errorResponse(evaluator->getError(), evaluator->getParsed());
-	else
-		responseControl(evaluator->getMatched(), evaluator->getParsed());
-	setType("client_read");
-	Evaluator::deleteInstance(socket);
-}
-
-void Socket::responseControl(Matcher &matched, Parser &parsed)
-{
-	Responder respond(socket, parsed);
-
-	try
+	resolver = Resolver::getInstance(socket, evaluator);
+	if (!resolver->isResolved())
+		resolver->resolveRequest();
+	if (resolver->isResolved())
 	{
-		if (evaluator->getType() == "file")
-			resolveFileRequest(matched, respond);
-		else if (evaluator->getType() == "dir")
-			resolveDirectoryRequest(matched, parsed);
-		else if (evaluator->getType() == "upload")
-			resolveUploadRequest(parsed);
-		else
-			respond.sendNotImplemented();
-		// else if (evaluator->getType() == "proxy")
-		// 	Directory::resolveDirectoryRequest(socket, matched, parsed);
-		// else if (evaluator->getType() == "cgi")
-		// 	resolveCgiRequest(matched, parsed);
+		log->logEntry("resolved client", socket);
+		Resolver::deleteInstance(socket);
+		setType("client_read");
 	}
-	catch (const char *e)
-	{
-		log->logError(e);
-		respond.sendInternalError();
-	}
-}
-
-void Socket::errorResponse(int error, Parser &parsed)
-{
-	Responder respond(socket, parsed);
-	log->logEntry("error response", error);
-	if (error == NOT_FOUND)
-		respond.sendNotFound();
-	else if (error == INTERNAL_ERROR)
-		respond.sendInternalError();
-	else if (error == NOT_IMPLEMENTED)
-		respond.sendNotImplemented();
-	else if (error == PAYLOAD_TOO_LARGE)
-		respond.sendPayLoadTooLarge();
-	else if (error == METHOD_NOT_ALLOWED)
-		respond.sendBadMethod(evaluator->getValidMethods());
 }
 
 bool Socket::isAlive()
@@ -124,44 +78,7 @@ bool Socket::isAlive()
 	return false;
 }
 
-// void Socket::resolveProxyRequest(Matcher &matched, Parser &parsed)
-// {
-// 	log->logEntry("resolving proxy request");
-// 	Proxy proxy = Proxy::resolveProxyRequest(matched, parsed);
-// 	proxy_socket = proxy.getProxySocket();
-// 	proxy_request = proxy.getProxyRequest();
-// 	proxy_set = true;
-// }
-
-// void Socket::resolveCgiRequest(Matcher &matched, Parser &parsed)
-// {
-// 	log->logEntry("resolving CGI request");
-// 	Cgi::resolveCgiRequest(socket, matched, parsed);
-// }
-
-void Socket::resolveUploadRequest(Parser &parsed)
-{
-	Responder respond(socket, parsed);
-	log->logEntry("resolving upload request");
-	if (evaluator->getUploadStatus() == CREATED)
-		respond.sendCreated(evaluator->getUploadPath(), parsed.getPath());
-	else
-		respond.sendModified(evaluator->getUploadPath(), parsed.getPath());
-}
-
-void Socket::resolveDirectoryRequest(Matcher &matched, Parser &parsed)
-{
-	log->logEntry("resolving directory request");
-	Directory::resolveDirectoryRequest(socket, matched, parsed);
-}
-
-void Socket::resolveFileRequest(Matcher &matched, Responder &respond)
-{
-	log->logEntry("resolving file request");
-	respond.sendFile(matched.getPath());
-}
-
-std::string Socket::getType() const
+std::string Socket::getType()
 {
 	return type;
 }
