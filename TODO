@@ -1,8 +1,10 @@
 
 
 ### INSTANCE REFACTORING ###
---- CGI
-------- PATH_INFO metavariable fixen (tester)
+---- SERVER
+------- Socket collection in static Socket map ipv Server vector
+---- PROXY 
+------- implementen
 
 ### MUST HAVE FEATURES ###
 - Socket: timeout op Server level (configuren in config.json) (killen instances Receiver & Evaluator)

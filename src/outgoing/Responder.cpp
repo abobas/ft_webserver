@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 19:51:26 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 21:20:42 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ void Responder::transmitData(std::string &data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 void Responder::transmitData(std::string &&data)
@@ -251,7 +251,7 @@ void Responder::transmitData(std::string &&data)
 	}
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 void Responder::transmitHeaders()
@@ -267,7 +267,7 @@ void Responder::transmitHeaders()
 	data = oss.str();
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	log->logBlock(data);
+	//log->logBlock(data);
 }
 
 int Responder::readFile(const std::string &path, std::string &buffer)

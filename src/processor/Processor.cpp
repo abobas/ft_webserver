@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/05 13:13:06 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 13:02:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 21:15:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Processor::Processor(int socket, Parser &parsed, Matcher &matched, std::string t
 {
 	processed = false;
 	upload = NULL;
+	cgi = NULL;
 }
 
 Processor *Processor::getInstance(int socket, Parser &parsed, Matcher &matched, std::string type)

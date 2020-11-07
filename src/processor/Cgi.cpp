@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 19:58:41 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 21:46:37 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ Cgi::Cgi(int socket, Parser &parsed, Matcher &matched)
 	error = 0;
 	tmp_fd = 0;
 	get_fd = 0;
-	pid = 0;
 }
 
 Cgi *Cgi::getInstance(int socket, Parser &parsed, Matcher &matched)
@@ -69,7 +68,7 @@ void Cgi::resolveCgiRequest()
 	if (!child_ready)
 		child_ready = checkWait();
 	readPipe(buf, bytes_read);
-	respond.sendChunk(buf, bytes_read + 1);
+	respond.sendChunk(buf, bytes_read);
 	if (child_ready && bytes_read < IO_SIZE)
 	{
 		log->logEntry("child output completely read");
@@ -119,6 +118,8 @@ void Cgi::processCgiRequest()
 			processed = true;
 			return;
 		}
+		initialized = true;
+		log->logEntry("initialized CGI processor");
 	}
 	processCgi();
 }
@@ -127,7 +128,7 @@ void Cgi::processCgi()
 {
 	if (!post)
 	{
-		log->logEntry("processing GET cgi");
+		log->logEntry("processing GET cgi request");
 		if (!openFile(get_fd, matched.getPath()))
 		{
 			processed = true;
@@ -138,7 +139,7 @@ void Cgi::processCgi()
 	}
 	else if (post)
 	{
-		log->logEntry("processing POST cgi");
+		log->logEntry("processing POST cgi request");
 		receiver = Receiver::getInstance(socket);
 		if (!receiver->bodyInitialized())
 		{
@@ -220,7 +221,6 @@ bool Cgi::initializeCgi()
 		if (!openFile(tmp_fd, tmp_path))
 			return false;
 	}
-	initialized = true;
 	return true;
 }
 
@@ -284,6 +284,8 @@ bool Cgi::writeFile(int fd, const char *buf, int bytes_read)
 {
 	int ret;
 
+	if (bytes_read == 0)
+		return true;
 	ret = write(fd, buf, bytes_read);
 	if (ret < 0)
 	{
@@ -359,6 +361,7 @@ void Cgi::closePipe(int mode)
 
 void Cgi::setTmp()
 {
+	srand(time(0));
 	tmp_path = "./tmp/" + std::to_string(rand());
 }
 
@@ -423,6 +426,13 @@ bool Cgi::createPipes()
 		error = INTERNAL_ERROR;
 		return false;
 	}
+	// if (fcntl(child_output[0], F_SETFL, O_NONBLOCK) < 0)
+	// {
+	// 	closePipe(2);
+	// 	log->logError("fcntl()");
+	// 	error = INTERNAL_ERROR;
+	// 	return false;
+	// }
 	return true;
 }
 
