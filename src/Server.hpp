@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/19 21:16:59 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 22:50:19 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 23:02:34 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 #include <sys/time.h>
 #include <sys/select.h>
 
-/**
-* @brief Core object that handles all incoming connections.
-*/
 class Server
 {
 

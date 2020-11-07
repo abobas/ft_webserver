@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 12:04:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 23:03:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,6 @@
 class Responder
 {
 public:
-	/**
-	* @brief Returns a responder object, which allows for outgoing communication with a socket.
-	* @param socket Socket to communicate with.
-	*/
 	static Responder getResponder(int socket);
 	Responder(int socket, Parser &parsed);
 	void sendData(std::string &data);

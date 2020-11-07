@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 22:54:04 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/07 23:02:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-/**
-* @brief Handles socket operations.
-*/
 class Socket
 {
 
@@ -33,11 +30,11 @@ public:
 	static void initializeSocket(Json &config);
 	static std::map<int, Socket *> &getSockets();
 	static void createListenSockets();
-	
+
 	void acceptConnection();
 	void handleIncoming();
 	void handleOutgoing();
-	
+
 	int getSocket() const;
 	std::string getType();
 	void setType(std::string new_type);
@@ -53,7 +50,7 @@ private:
 	int socket_fd;
 
 	Socket(std::string type, int socket);
-	
+
 	void handleReceiving();
 	void handleEvaluating();
 	void handleProcessing();
