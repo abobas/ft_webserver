@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:20:14 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 16:56:23 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 Log *Socket::log = Log::getInstance();
 Json Socket::config = Json();
 std::map<int, Socket *> Socket::sockets;
+
+Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
+{
+	proxy_pair = 0;
+}
+
+Socket::~Socket()
+{
+}
 
 void Socket::initializeSocket(Json &config)
 {
@@ -25,10 +34,6 @@ void Socket::initializeSocket(Json &config)
 std::map<int, Socket *> &Socket::getSockets()
 {
 	return sockets;
-}
-
-Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
-{
 }
 
 void Socket::createListenSockets()
@@ -130,6 +135,20 @@ void Socket::handleOutgoing()
 	}
 }
 
+void Socket::handleProxyIncoming()
+{
+	resolver->resolveProxyIncoming(socket_fd);
+	deleteSocket();
+}
+
+void Socket::handleProxyOutgoing()
+{
+	evaluator = Evaluator::getInstance(proxy_pair);
+	resolver = Resolver::getInstance(proxy_pair, evaluator);
+	resolver->resolveProxyOutgoing(socket_fd);
+	setType("proxy_read");
+}
+
 bool Socket::isAlive()
 {
 	char buf[1];
@@ -145,6 +164,7 @@ void Socket::deleteSocket()
 {
 	delete sockets[socket_fd];
 	sockets.erase(socket_fd);
+	close(socket_fd);
 	log->logEntry("deleted socket", socket_fd);
 }
 

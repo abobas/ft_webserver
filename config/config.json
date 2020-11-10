@@ -15,7 +15,7 @@
 
                 "/proxy": {
 					"accepted-methods": ["GET", "HEAD", "POST", "PUT"],
-					"proxy_pass": "127.0.0.1"
+					"proxy_pass": "216.58.214.14"
                 }
             }
         },

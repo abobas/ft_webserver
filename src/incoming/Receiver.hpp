@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:19 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:39:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 13:44:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@
 class Receiver
 {
 public:
-	static Receiver *getInstance(int socket) noexcept;
+	static Receiver *getInstance(int socket);
 	static void initializeReceiver(Json &config);
 	static void deleteInstance(int socket);
+	bool receiveSocketRaw(std::string &buffer);
 	void receiveHeaders();
 	bool headersReceived();
 	std::string getHeaders();

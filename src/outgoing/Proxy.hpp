@@ -6,16 +6,17 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:53 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:36:33 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 14:19:48 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "Responder.hpp"
+#include "../Socket.hpp"
 #include "../incoming/Matcher.hpp"
 #include "../incoming/Parser.hpp"
 #include "../logger/Log.hpp"
-#include "../Socket.hpp"
 #include <string>
 #include <map>
 #include <sstream>
@@ -27,14 +28,14 @@
 class Proxy
 {
 public:
-	static Proxy *createInstance(int socket, Matcher &matched, Parser &parsed);
-	static Proxy *getInstance(int socket);
+	static Proxy *getInstance(int socket, Matcher &matched, Parser &parsed);
 	static void deleteInstance(int socket);
 
 	void resolveProxy();
-	void writeProxy();
-	void readProxy();
 	bool isResolved();
+	std::string getProxyRequest();
+	void setError();
+	void setResponse(std::string &buffer);
 
 private:
 	static Log *log;
@@ -42,23 +43,21 @@ private:
 	static std::string CRLF;
 	Matcher &matched;
 	Parser &parsed;
-	Socket *proxy;
+	class Socket *proxy;
 	struct sockaddr_in proxy_addr;
 	int socket_fd;
 	int proxy_socket;
 	std::string proxy_path;
+	std::string status;
+	std::string proxy_response;
 	bool resolved;
 	bool initialized;
-	bool routed;
-	
+
 	Proxy(int socket, Matcher &matched, Parser &parsed);
-	
 	void initializeProxy();
-	
 	void setPath();
 	void clearAddress();
 	void createProxySocket();
 	void setProxyAddress();
 	void connectProxySocket();
-	std::string getProxyRequest();
 };

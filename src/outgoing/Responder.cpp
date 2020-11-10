@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 21:20:42 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 13:13:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,11 @@ void Responder::sendData(std::string &data)
 }
 
 void Responder::sendDataRaw(std::string &data)
+{
+	transmitData(data);
+}
+
+void Responder::sendDataRaw(std::string &&data)
 {
 	transmitData(data);
 }

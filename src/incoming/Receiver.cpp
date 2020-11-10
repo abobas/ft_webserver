@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:08:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 13:44:57 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ Receiver::Receiver(int socket) : socket(socket)
 	content = false;
 }
 
-Receiver *Receiver::getInstance(int socket) noexcept
+Receiver *Receiver::getInstance(int socket)
 {
 	if (!receivers[socket])
 	{
@@ -211,6 +211,28 @@ void Receiver::readSocket(std::string &buffer)
 	{
 		buf[ret] = '\0';
 		buffer = std::move(buf);
+	}
+}
+
+bool Receiver::receiveSocketRaw(std::string &buffer)
+{
+	char buf[IO_SIZE + 1];
+
+	while (true)
+	{
+		int ret = recv(socket, buf, IO_SIZE, 0);
+		if (ret < 0)
+		{
+			log->logError("recv()");
+			return false;
+		}
+		if (ret > 0)
+		{
+			buf[ret] = '\0';
+			buffer += buf;
+		}
+		if (ret < IO_SIZE)
+			return true;
 	}
 }
 

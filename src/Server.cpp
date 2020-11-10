@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/27 17:11:43 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 22:50:47 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 14:31:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,10 @@ void Server::fillSelectSets()
 			FD_SET(socket.second->getSocket(), &read_set);
 		else if (socket.second->getType() == "client_write")
 			FD_SET(socket.second->getSocket(), &write_set);
-
-		// 	else if (socket->getType() == "proxy_read")
-		// 		FD_SET(socket->getSocket(), &read_set);
-		// 	else if (socket->getType() == "proxy_write")
-		// 		FD_SET(socket->getSocket(), &write_set);
-		// 	else if (socket->getType() == "wait_client_write")
-		// 		FD_SET(socket->getSocket(), &write_set);
+		else if (socket.second->getType() == "proxy_read")
+			FD_SET(socket.second->getSocket(), &read_set);
+		else if (socket.second->getType() == "proxy_write")
+			FD_SET(socket.second->getSocket(), &write_set);
 	}
 }
 
@@ -104,13 +101,10 @@ fd_set *Server::getSet(Socket *socket)
 		return &read_set;
 	else if (socket->getType() == "client_write")
 		return &write_set;
-
-	// else if (socket->getType() == "proxy_read")
-	// 	return &read_set;
-	// else if (socket->getType() == "proxy_write")
-	// 	return &write_set;
-	// else if (socket->getType() == "wait_client_write")
-	// 	return &write_set;
+	else if (socket->getType() == "proxy_read")
+		return &read_set;
+	else if (socket->getType() == "proxy_write")
+		return &write_set;
 	else
 		return NULL;
 }
@@ -123,11 +117,8 @@ void Server::executeOperation(Socket *socket)
 		socket->handleIncoming();
 	else if (socket->getType() == "client_write")
 		socket->handleOutgoing();
-
-	// else if (socket->getType() == "proxy_read")
-	// 	readProxy(socket);
-	// else if (socket->getType() == "proxy_write")
-	// 	writeProxy(socket);
-	// else if (socket->getType() == "wait_client_write")
-	// 	writeWaitingClient(socket);
+	else if (socket->getType() == "proxy_read")
+		socket->handleProxyIncoming();
+	else if (socket->getType() == "proxy_write")
+		socket->handleProxyOutgoing();
 }

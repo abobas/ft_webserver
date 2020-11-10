@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/07 12:22:50 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/10 14:08:17 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ SRC = 			main.cpp \
 				processor/Cgi.cpp \
 				outgoing/Responder.cpp \
 				outgoing/Resolver.cpp \
-				outgoing/Directory.cpp
+				outgoing/Directory.cpp \
+				outgoing/Proxy.cpp
 
 SRC_DIR	=		./src/
 

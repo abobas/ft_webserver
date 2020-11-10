@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/07 11:46:41 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:07:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 14:20:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void Resolver::deleteInstance(int socket)
 		resolvers.erase(socket);
 		log->logEntry("deleted resolver", socket);
 		Evaluator::deleteInstance(socket);
+		Proxy::deleteInstance(socket);
 	}
 }
 
@@ -74,8 +75,8 @@ void Resolver::resolveResponse(Matcher &matched, Parser &parsed)
 			resolveUploadRequest(parsed);
 		else if (evaluated->getType() == "cgi")
 			resolveCgiRequest(matched, parsed);
-		// else if (evaluated->getType() == "proxy")
-		// 	resolveProxyRequest(matched, parsed);
+		else if (evaluated->getType() == "proxy")
+			resolveProxyRequest(matched, parsed);
 		else
 		{
 			respond.sendNotImplemented();
@@ -85,6 +86,7 @@ void Resolver::resolveResponse(Matcher &matched, Parser &parsed)
 	catch (const char *e)
 	{
 		log->logError(e);
+		resolved = true;
 		respond.sendInternalError();
 	}
 }
@@ -106,10 +108,37 @@ void Resolver::resolveError(int error, Parser &parsed)
 		respond.sendBadMethod(evaluated->getValidMethods());
 }
 
-// void Resolver::resolveProxyRequest(Matcher &matched, Parser &parsed)
-// {
-// 	return;
-// }
+void Resolver::resolveProxyIncoming(int proxy_socket)
+{
+	Receiver *proxy_receiver;
+	Proxy *proxy;
+	std::string buffer;
+	
+	proxy = Proxy::getInstance(socket, evaluated->getMatched(), evaluated->getParsed());
+	proxy_receiver = Receiver::getInstance(proxy_socket);
+	if (!proxy_receiver->receiveSocketRaw(buffer))
+	{
+		Receiver::deleteInstance(proxy_socket);
+		proxy->setError();
+	}
+	Receiver::deleteInstance(proxy_socket);
+	proxy->setResponse(buffer);
+}
+
+void Resolver::resolveProxyOutgoing(int proxy_socket)
+{
+	Responder::getResponder(proxy_socket).sendDataRaw(proxy->getProxyRequest());
+}
+
+void Resolver::resolveProxyRequest(Matcher &matched, Parser &parsed)
+{
+	log->logEntry("resolving proxy request");
+	proxy = Proxy::getInstance(socket, matched, parsed);
+	if (!proxy->isResolved())
+		proxy->resolveProxy();
+	if (proxy->isResolved())
+		resolved = true;
+}
 
 void Resolver::resolveCgiRequest(Matcher &matched, Parser &parsed)
 {
@@ -145,16 +174,6 @@ void Resolver::resolveFileRequest(Matcher &matched, Responder &respond)
 	respond.sendFile(matched.getPath());
 	resolved = true;
 }
-
-// void Socket::resolveProxyRequest(Matcher &matched, Parser &parsed)
-// {
-// 	log->logEntry("resolving proxy request");
-// 	Proxy proxy = Proxy::resolveProxyRequest(matched, parsed);
-// 	proxy_socket = proxy.getProxySocket();
-// 	proxy_request = proxy.getProxyRequest();
-// 	proxy_set = true;
-// }
-
 
 bool Resolver::isResolved()
 {

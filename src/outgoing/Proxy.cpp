@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/06 18:32:50 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:35:49 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 16:56:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,15 @@ Proxy::Proxy(int socket, Matcher &matched, Parser &parsed) :
 {
 	resolved = false;
 	initialized = false;
-	routed = false;
 }
 
-Proxy *Proxy::createInstance(int socket, Matcher &matched, Parser &parsed)
+Proxy *Proxy::getInstance(int socket, Matcher &matched, Parser &parsed)
 {
 	if (!proxies[socket])
 	{
 		proxies[socket] = new Proxy(socket, matched, parsed);
 		log->logEntry("created proxy", socket);
 	}
-	return proxies[socket];
-}
-
-Proxy *Proxy::getInstance(int socket)
-{
 	return proxies[socket];
 }
 
@@ -53,21 +47,38 @@ void Proxy::resolveProxy()
 {
 	if (!initialized)
 		initializeProxy();
-	if (routed)
-		return ; ///// hier response sturen als proxy klaar is
+	if (status == "wait")
+		return;
+	else if (status == "error")
+		throw "proxy recv()";
+	else if (status == "continue")
+	{
+		Responder respond(socket_fd, parsed);
+		respond.sendDataRaw(proxy_response);
+		resolved = true;
+	}
+}
+
+void Proxy::setResponse(std::string &buffer)
+{
+	proxy_response = std::move(buffer);
+	status = "continue";
+}
+
+void Proxy::setError()
+{
+	status = "error";
 }
 
 void Proxy::initializeProxy()
 {
 	setPath();
-	log->logEntry("path set");
 	createProxySocket();
-	log->logEntry("socket created");
 	setProxyAddress();
-	log->logEntry("address set");
 	connectProxySocket();
-	log->logEntry("proxy connected");
 	initialized = true;
+	status = "wait";
+	log->logEntry("client now waiting on proxy");
 }
 
 void Proxy::setPath()
@@ -75,20 +86,16 @@ void Proxy::setPath()
 	proxy_path = matched.getPath();
 	if (proxy_path.empty())
 		proxy_path = "/";
-	log->logEntry("proxy_path: " + proxy_path);
-	log->logEntry("matched_path : " + matched.getPath());
-	log->logEntry("parsed path: " + parsed.getPath());
 }
 
 void Proxy::createProxySocket()
 {
 	int enable = 1;
-	int new_socket;
 
-	new_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (new_socket == -1)
+	proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (proxy_socket == -1)
 		throw "socket()";
-	if (setsockopt(new_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+	if (setsockopt(proxy_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
 		throw "setsockopt()";
 	proxy = new Socket("proxy_write", proxy_socket);
 	proxy->setPair(socket_fd);
@@ -124,6 +131,7 @@ void Proxy::connectProxySocket()
 		proxy->deleteSocket();
 		throw "connect()";
 	}
+	log->logEntry("connected with proxy", proxy_socket);
 }
 
 std::string Proxy::getProxyRequest()
@@ -139,4 +147,9 @@ std::string Proxy::getProxyRequest()
 	}
 	oss << CRLF;
 	return oss.str();
+}
+
+bool Proxy::isResolved()
+{
+	return resolved;
 }
