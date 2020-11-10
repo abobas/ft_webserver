@@ -1,138 +1,119 @@
-19:59:22 - created socket 4
-19:59:22 - created socket 5
-19:59:26 - accepted client 6
-19:59:26 - created receiver 6
+17:10:05 - created socket 4
+17:10:05 - created socket 5
+17:10:11 - accepted client 6
+17:10:17 - client disconnected 6
+17:10:17 - deleted socket 6
+17:10:17 - accepted client 6
+17:10:17 - created receiver 6
 -------begin-of-message------
-POST /cgi-bin/test.pl HTTP/1.1
+GET / HTTP/1.1
 Host: localhost
-Content-Length: 1050
-User-Agent: Webserv_client 1.1
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
 
 
 --------end-of-message-------
-19:59:26 - created evaluator 6
-19:59:26 - request type is cgi
-19:59:26 - created processor 6
-19:59:26 - created CGI 6
-19:59:26 - processing POST cgi
-19:59:26 - request with content size 1050
-19:59:26 - initialized body receiver socket 6
-19:59:26 - Error: recv(): Resource temporarily unavailable
-19:59:26 - all content received
-19:59:26 - bytes written 1050
-19:59:26 - processed socket 6
-19:59:26 - deleted receiver 6
-19:59:26 - created resolver 6
-19:59:26 - resolving CGI request
+17:10:17 - created evaluator 6
+17:10:17 - request type is dir
+17:10:17 - processed socket 6
+17:10:17 - deleted receiver 6
+17:10:17 - created resolver 6
+17:10:17 - resolving directory request
+17:10:17 - resolved client 6
+17:10:17 - deleted resolver 6
+17:10:17 - deleted evaluator 6
+17:10:19 - created receiver 6
 -------begin-of-message------
-HTTP/1.1 200 OK
-content-type: text/html
-transfer-encoding: chunked
+GET /favicon.ico HTTP/1.1
+Host: localhost
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost/
 
 
 --------end-of-message-------
-19:59:26 - child process exit status 85
+17:10:19 - created evaluator 6
+17:10:19 - processed socket 6
+17:10:19 - deleted receiver 6
+17:10:19 - created resolver 6
+17:10:19 - error response 404
+17:10:19 - Error: send(): Broken pipe
+17:10:19 - resolved client 6
+17:10:19 - deleted resolver 6
+17:10:19 - deleted evaluator 6
+17:10:19 - client disconnected 6
+17:10:19 - deleted socket 6
+17:10:22 - accepted client 6
+17:10:22 - created receiver 6
 -------begin-of-message------
-5d6
-<h1>Environment</h1><hr><b>CONTENT_LENGTH</b>: 1050<br>
-<b>GATEWAY_INTERFACE</b>: CGI/1.1<br>
-<b>HOST</b>: localhost<br>
-<b>PATH_INFO</b>: <br>
-<b>REQUEST_METHOD</b>: POST<br>
-<b>REQUEST_URI</b>: /cgi-bin/test.pl<br>
-<b>SCRIPT_NAME</b>: ./data/cgi-bin/test.pl<br>
-<b>SERVER_NAME</b>: localhost<br>
-<b>SERVER_PROTOCOL</b>: HTTP/1.1<br>
-<b>SERVER_SOFTWARE</b>: Webserv-latest<br>
-<b>USER_AGENT</b>: Webserv_client 1.1<br>
-<h2>STDIN</h2><hr>testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
-testing 1 2 3
- <br>
+GET / HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+
 
 --------end-of-message-------
-19:59:26 - child output completely read
+17:10:22 - created evaluator 6
+17:10:22 - request type is dir
+17:10:22 - processed socket 6
+17:10:22 - deleted receiver 6
+17:10:22 - created resolver 6
+17:10:22 - resolving directory request
+17:10:22 - resolved client 6
+17:10:22 - deleted resolver 6
+17:10:22 - deleted evaluator 6
+17:10:22 - created receiver 6
 -------begin-of-message------
-0
+GET /favicon.ico HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/
 
 
 --------end-of-message-------
-19:59:26 - resolved client 6
-19:59:26 - deleted resolver 6
-19:59:26 - deleted evaluator 6
-19:59:26 - deleted processor 6
-19:59:26 - deleted CGI 6
-19:59:26 - client died 6
-19:59:26 - disconnected socket 6
+17:10:22 - created evaluator 6
+17:10:22 - processed socket 6
+17:10:22 - deleted receiver 6
+17:10:22 - created resolver 6
+17:10:22 - error response 404
+17:10:22 - resolved client 6
+17:10:22 - deleted resolver 6
+17:10:22 - deleted evaluator 6
+17:10:24 - created receiver 6
+-------begin-of-message------
+GET /html HTTP/1.1
+Host: localhost:443
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Referer: http://localhost:443/
+Upgrade-Insecure-Requests: 1
+
+
+--------end-of-message-------
+17:10:24 - created evaluator 6
+17:10:24 - request type is dir
+17:10:24 - processed socket 6
+17:10:24 - deleted receiver 6
+17:10:24 - created resolver 6
+17:10:24 - resolving directory request
+17:10:24 - resolved client 6
+17:10:24 - deleted resolver 6
+17:10:24 - deleted evaluator 6
