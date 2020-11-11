@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 13:13:03 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 18:28:05 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ public:
 	void sendForbidden();
 	void sendBadMethod(std::string allow);
 	void sendPayLoadTooLarge();
+	void sendUriTooLarge();
 	void sendInternalError();
 	void sendNotImplemented();
 	void sendServiceUnavailable();
+	void sendVersionNotSupported();
 
 private:
 	static Log *log;
@@ -62,9 +64,11 @@ private:
 	static int NOT_FOUND;
 	static int METHOD_NOT_ALLOWED;
 	static int PAYLOAD_TOO_LARGE;
+	static int URI_TOO_LARGE;
 	static int INTERNAL_SERVER_ERROR;
 	static int NOT_IMPLEMENTED;
 	static int SERVICE_UNAVAILABLE;
+	static int VERSION_NOT_SUPPORTED;
 	static std::string CONNECTION_TYPE;
 	static std::string ENCODING_TYPE;
 	std::map<std::string, std::string> response_headers;

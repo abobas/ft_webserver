@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 13:13:12 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 14:20:40 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 Log *Responder::log = Log::getInstance();
 std::string Responder::CRLF = "\r\n";
-std::string Responder::CONNECTION_TYPE = "keep-alive";
+std::string Responder::CONNECTION_TYPE = "close";
 int Responder::CONTINUE = 100;
 int Responder::SWITCHING_PROTOCOL = 101;
 int Responder::OK = 200;
@@ -28,9 +28,12 @@ int Responder::FORBIDDEN = 403;
 int Responder::NOT_FOUND = 404;
 int Responder::METHOD_NOT_ALLOWED = 405;
 int Responder::PAYLOAD_TOO_LARGE = 413;
+int Responder::URI_TOO_LARGE = 414;
 int Responder::INTERNAL_SERVER_ERROR = 500;
 int Responder::NOT_IMPLEMENTED = 501;
 int Responder::SERVICE_UNAVAILABLE = 503;
+int Responder::VERSION_NOT_SUPPORTED = 505;
+
 
 Responder Responder::getResponder(int socket)
 {
@@ -202,6 +205,17 @@ void Responder::sendPayLoadTooLarge()
 	transmitData(message);
 }
 
+void Responder::sendUriTooLarge()
+{
+	std::string message("414: URI too large\n");
+
+	addStatusHeader(URI_TOO_LARGE, "URI too large");
+	addGeneralHeaders();
+	addDataHeaders(message);
+	transmitHeaders();
+	transmitData(message);
+}
+
 void Responder::sendInternalError()
 {
 	std::string message("500: internal server error\n");
@@ -229,6 +243,17 @@ void Responder::sendServiceUnavailable()
 	std::string message("503: service unavailable\n");
 
 	addStatusHeader(SERVICE_UNAVAILABLE, "service unavailable");
+	addGeneralHeaders();
+	addDataHeaders(message);
+	transmitHeaders();
+	transmitData(message);
+}
+
+void Responder::sendVersionNotSupported()
+{
+	std::string message("505: version not supported\n");
+
+	addStatusHeader(VERSION_NOT_SUPPORTED, "version not supported");
 	addGeneralHeaders();
 	addDataHeaders(message);
 	transmitHeaders();

@@ -6,24 +6,27 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/07 11:46:41 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 14:20:46 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 15:40:55 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Resolver.hpp"
 
 #define CREATED 201
+#define BAD_REQUEST 400
 #define NOT_FOUND 404
 #define METHOD_NOT_ALLOWED 405
 #define PAYLOAD_TOO_LARGE 413
+#define URI_TOO_LARGE 414
 #define INTERNAL_ERROR 500
 #define NOT_IMPLEMENTED 501
+#define VERSION_NOT_SUPPORTED 505
 
 Log *Resolver::log = Log::getInstance();
 std::map<int, Resolver *> Resolver::resolvers;
 
 Resolver::Resolver(int socket, Evaluator *evaluated)
- : evaluated(evaluated), socket(socket)
+	: evaluated(evaluated), socket(socket)
 {
 	resolved = false;
 }
@@ -52,6 +55,12 @@ void Resolver::deleteInstance(int socket)
 
 void Resolver::resolveRequest()
 {
+	if (!evaluated)
+	{
+		Responder::getResponder(socket).sendBadRequest();
+		resolved = true;
+		return;
+	}
 	if (evaluated->getError())
 	{
 		resolveError(evaluated->getError(), evaluated->getParsed());
@@ -94,18 +103,24 @@ void Resolver::resolveResponse(Matcher &matched, Parser &parsed)
 void Resolver::resolveError(int error, Parser &parsed)
 {
 	Responder respond(socket, parsed);
-	
+
 	log->logEntry("error response", error);
-	if (error == NOT_FOUND)
+	if (error == BAD_REQUEST)
+		respond.sendBadRequest();
+	else if (error == NOT_FOUND)
 		respond.sendNotFound();
+	else if (error == METHOD_NOT_ALLOWED)
+		respond.sendBadMethod(evaluated->getValidMethods());
+	else if (error == PAYLOAD_TOO_LARGE)
+		respond.sendPayLoadTooLarge();
+	else if (error == URI_TOO_LARGE)
+		respond.sendUriTooLarge();
 	else if (error == INTERNAL_ERROR)
 		respond.sendInternalError();
 	else if (error == NOT_IMPLEMENTED)
 		respond.sendNotImplemented();
-	else if (error == PAYLOAD_TOO_LARGE)
-		respond.sendPayLoadTooLarge();
-	else if (error == METHOD_NOT_ALLOWED)
-		respond.sendBadMethod(evaluated->getValidMethods());
+	else if (error == VERSION_NOT_SUPPORTED)
+		respond.sendVersionNotSupported();
 }
 
 void Resolver::resolveProxyIncoming(int proxy_socket)
@@ -113,7 +128,7 @@ void Resolver::resolveProxyIncoming(int proxy_socket)
 	Receiver *proxy_receiver;
 	Proxy *proxy;
 	std::string buffer;
-	
+
 	proxy = Proxy::getInstance(socket, evaluated->getMatched(), evaluated->getParsed());
 	proxy_receiver = Receiver::getInstance(proxy_socket);
 	if (!proxy_receiver->receiveSocketRaw(buffer))

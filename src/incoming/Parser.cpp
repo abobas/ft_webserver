@@ -6,12 +6,13 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:52 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:20:36 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 18:08:12 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
+Log *Parser::log = Log::getInstance();
 std::string Parser::CRLF = "\r\n";
 
 Parser::Parser()
@@ -20,6 +21,7 @@ Parser::Parser()
 
 Parser::Parser(std::string &headers)
 {
+	log->logEntry("parsing request");
 	auto it = headers.begin();
 	auto line = toStringToken(it, headers, CRLF);
 	parseRequestLine(line);

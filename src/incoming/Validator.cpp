@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 02:44:16 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/06 22:53:18 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 15:32:08 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 #define BAD_REQUEST 400
 #define PAYLOAD_TOO_LARGE 413
+#define URI_TOO_LARGE 414
 #define NOT_FOUND 404
 #define METHOD_NOT_ALLOWED 405
+#define VERSION_NOT_SUPPORTED 505
+#define MAX_HEADER_SIZE 2000
 
 Log *Validator::log = Log::getInstance();
 
@@ -36,7 +39,13 @@ Validator::Validator(int socket, Parser &parsed, Matcher &matched)
 		return;
 	if (!checkMethod())
 		return;
-	if (!checkMaxBodyLimit())
+	if (!checkContentLength())
+		return;
+	if (!checkMaxUri())
+		return;
+	if (!checkMaxHeaderSize())
+		return;
+	if (!checkHeaders())
 		return;
 }
 
@@ -57,37 +66,22 @@ Validator &Validator::operator=(const Validator &rhs)
 
 bool Validator::checkEmpty()
 {
-	if (parsed.getMethod().empty() || parsed.getVersion().empty())
-	{
-		valid = false;
-		error = BAD_REQUEST;
-		log->logEntry("request is empty");
-		return false;
-	}
+	if (parsed.getMethod().empty() || parsed.getVersion().empty() || parsed.getPath().empty())
+		return returnError("invalid request syntax", BAD_REQUEST);
 	return true;
 }
 
 bool Validator::checkMatch()
 {
 	if (!matched.isMatched())
-	{
-		valid = false;
-		error = NOT_FOUND;
-		log->logEntry("request's location couldn't be matched");
-		return false;
-	}
+		return returnError("request's location couldn't be matched", NOT_FOUND);
 	return true;
 }
 
 bool Validator::checkProtocol()
 {
 	if (parsed.getVersion() != "HTTP/1.1")
-	{
-		valid = false;
-		error = BAD_REQUEST;
-		log->logEntry("request's HTTP protocol is not supported");
-		return false;
-	}
+		return returnError("request's HTTP protocol is not supported", VERSION_NOT_SUPPORTED);
 	return true;
 }
 
@@ -106,10 +100,7 @@ bool Validator::checkMethod()
 	}
 	if (!methods.empty())
 		methods = methods.substr(0, methods.size() - 2);
-	valid = false;
-	log->logEntry("request's method not accepted");
-	error = METHOD_NOT_ALLOWED;
-	return false;
+	return returnError("request's method not accepted", METHOD_NOT_ALLOWED);
 }
 
 bool Validator::checkCgiExtension()
@@ -152,34 +143,73 @@ bool Validator::checkCgiMethods()
 	return false;
 }
 
-bool Validator::checkMaxBodyLimit()
+bool Validator::checkContentLength()
 {
 	int content_size;
 
 	if (!parsed.hasContent())
 		return true;
+	if (parsed.getHeader("content-length").size() > 10)
+		return returnError("content-length is invalid", BAD_REQUEST);
+	for (auto c : parsed.getHeader("content-length"))
+	{
+		if (!isdigit(c))
+			return returnError("content-length is invalid", BAD_REQUEST);
+	}
 	content_size = std::stoi(parsed.getHeader("content-length"));
+	if (content_size < 0)
+		return returnError("content-length is invalid", BAD_REQUEST);
 	if (matched.getConfig()["http"]["max_body"].number_value() != 0)
 	{
 		if (content_size > matched.getConfig()["http"]["max_body"].number_value())
-		{
-			valid = false;
-			log->logEntry("max body size exceeded");
-			error = PAYLOAD_TOO_LARGE;
-			return false;
-		}
+			return returnError("max body size exceeded", PAYLOAD_TOO_LARGE);
 	}
 	if (matched.getLocation()["max_body"].number_value() != 0)
 	{
 		if (content_size > matched.getLocation()["max_body"].number_value())
+			return returnError("max body size exceeded", PAYLOAD_TOO_LARGE);
+	}
+	return true;
+}
+
+bool Validator::checkMaxUri()
+{
+	if (parsed.getPath().size() > MAX_HEADER_SIZE)
+		return returnError("URI too large", URI_TOO_LARGE);
+	return true;
+}
+
+bool Validator::checkMaxHeaderSize()
+{
+	for (auto header : parsed.getHeaders())
+	{
+		if (header.first.size() > MAX_HEADER_SIZE || header.second.size() > MAX_HEADER_SIZE)
+			return returnError("header size too large", URI_TOO_LARGE);
+	}
+	return true;
+}
+
+bool Validator::checkHeaders()
+{
+	for (auto header : parsed.getHeaders())
+	{
+		if (header.first.empty() || header.second.empty())
+			return returnError("header formatting is invalid", BAD_REQUEST);
+		for (auto c : header.first)
 		{
-			valid = false;
-			log->logEntry("max body size exceeded");
-			error = PAYLOAD_TOO_LARGE;
-			return false;
+			if (isspace(c))
+				return returnError("header formatting is invalid", BAD_REQUEST);
 		}
 	}
 	return true;
+}
+
+bool Validator::returnError(const char *message, int err)
+{
+	valid = false;
+	log->logEntry(message);
+	error = err;
+	return false;
 }
 
 int Validator::getError()

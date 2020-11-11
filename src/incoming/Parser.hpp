@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/02 23:11:54 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 23:18:15 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/10 18:03:27 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Utils.hpp"
+#include "../logger/Log.hpp"
 #include <string>
 #include <map>
 
@@ -34,6 +35,7 @@ public:
 	bool hasContent();
 
 private:
+	static Log *log;
 	static std::string CRLF;
 	std::map<std::string, std::string> headers;
 	std::string method;

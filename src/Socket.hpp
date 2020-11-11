@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/21 16:57:38 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 14:27:31 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 15:41:28 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ class Socket
 {
 public:
 	Socket(std::string type, int socket);
-	~Socket();
 	static void initializeSocket(Json &config);
 	static std::map<int, Socket *> &getSockets();
 	static void createListenSockets();
@@ -54,7 +53,7 @@ private:
 	int socket_fd;
 	int proxy_pair;
 
-	void handleReceiving();
+	bool handleReceiving();
 	void handleEvaluating();
 	void handleProcessing();
 	bool isAlive();

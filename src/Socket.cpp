@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 16:56:23 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 15:40:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@ std::map<int, Socket *> Socket::sockets;
 Socket::Socket(std::string type, int socket) : type(type), socket_fd(socket)
 {
 	proxy_pair = 0;
-}
-
-Socket::~Socket()
-{
+	receiver = NULL;
+	evaluator = NULL;
+	resolver = NULL;
 }
 
 void Socket::initializeSocket(Json &config)
@@ -87,7 +86,8 @@ void Socket::handleIncoming()
 		deleteSocket();
 		return;;
 	}
-	handleReceiving();
+	if (!handleReceiving())
+		return;
 	if (receiver->headersReceived())
 	{
 		handleEvaluating();
@@ -96,11 +96,19 @@ void Socket::handleIncoming()
 	}
 }
 
-void Socket::handleReceiving()
+bool Socket::handleReceiving()
 {
 	receiver = Receiver::getInstance(socket_fd);
 	if (!receiver->headersReceived())
-		receiver->receiveHeaders();
+	{
+		if (!receiver->receiveHeaders())
+		{
+			Receiver::deleteInstance(socket_fd);
+			setType("client_write");
+			return false;
+		}
+	}
+	return true;
 }
 
 void Socket::handleEvaluating()
@@ -131,7 +139,7 @@ void Socket::handleOutgoing()
 	{
 		log->logEntry("resolved client", socket_fd);
 		Resolver::deleteInstance(socket_fd);
-		setType("client_read");
+		deleteSocket();
 	}
 }
 
@@ -164,7 +172,8 @@ void Socket::deleteSocket()
 {
 	delete sockets[socket_fd];
 	sockets.erase(socket_fd);
-	close(socket_fd);
+	if (close(socket_fd) < 0)
+		log->logError("close()");
 	log->logEntry("deleted socket", socket_fd);
 }
 

@@ -6,13 +6,14 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/01 23:35:17 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 13:44:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 15:42:52 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Receiver.hpp"
 
 #define IO_SIZE 4096
+#define MAX_HEADERS_SIZE 10000
 
 std::map<int, Receiver *> Receiver::receivers;
 Log *Receiver::log = Log::getInstance();
@@ -54,18 +55,24 @@ void Receiver::deleteInstance(int socket)
 	}
 }
 
-void Receiver::receiveHeaders()
+bool Receiver::receiveHeaders()
 {
 	std::string buffer;
 
 	readSocket(buffer);
 	message.append(buffer);
+	if (message.size() > MAX_HEADERS_SIZE)
+	{
+		log->logEntry("size of headers exceeded maximum");
+		return false;
+	}
 	if (checkHeadersReceived())
 	{
 		headers_received = true;
 		splitMessage();
 		log->logBlock(headers_part);
 	}
+	return true;
 }
 
 void Receiver::receiveBody()
