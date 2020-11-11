@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:28:58 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 21:51:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 17:52:11 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ private:
 	int get_fd;
 	int socket;
 	int error;
+	int exit_status;
 	bool initialized;
 	bool processed;
 	bool resolved;

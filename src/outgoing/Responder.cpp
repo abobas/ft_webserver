@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 12:04:40 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/11 14:20:40 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 19:58:18 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int Responder::NOT_IMPLEMENTED = 501;
 int Responder::SERVICE_UNAVAILABLE = 503;
 int Responder::VERSION_NOT_SUPPORTED = 505;
 
-
 Responder Responder::getResponder(int socket)
 {
 	return Responder(socket);
@@ -59,7 +58,7 @@ void Responder::sendData(std::string &&data)
 	transmitData(data);
 }
 
-void Responder::sendData(std::string &data)
+void Responder::sendData(std::string &data) // addHeader("content-type", "text/html"); // CGI zelf laten schrijven?
 {
 	addStatusHeader(OK, "OK");
 	addGeneralHeaders();
@@ -78,25 +77,17 @@ void Responder::sendDataRaw(std::string &&data)
 	transmitData(data);
 }
 
-void Responder::sendChunkHeader()
+void Responder::sendDataRaw(const char *buffer, int size)
 {
-	addStatusHeader(OK, "OK");
-	addHeader("content-type", "text/html"); // CGI zelf laten schrijven?
-	addTransferEncodingHeader("chunked");
-	transmitHeaders();
+	transmitData(buffer, size);
 }
 
-void Responder::sendChunk(const char *buffer, int size)
+void Responder::sendCgiHeader()
 {
-	std::stringstream stream;
+	std::string data("HTTP/1.1 200 OK" + CRLF);
 
-	stream << std::hex << size;
-	transmitData(stream.str() + CRLF + buffer + CRLF);
-}
-
-void Responder::sendChunkEnd()
-{
-	transmitData("0" + CRLF + CRLF);
+	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
+		log->logError("send()");
 }
 
 void Responder::sendFile(const std::string &path)
@@ -260,6 +251,13 @@ void Responder::sendVersionNotSupported()
 	transmitData(message);
 }
 
+void Responder::transmitData(const char *buffer, int size)
+{
+	if (send(socket, buffer, size, MSG_NOSIGNAL) < 0)
+		log->logError("send()");
+	//log->logBlock(buffer);
+}
+
 void Responder::transmitData(std::string &data)
 {
 	if (parsed != NULL)
@@ -297,7 +295,7 @@ void Responder::transmitHeaders()
 	data = oss.str();
 	if (send(socket, data.c_str(), data.size(), MSG_NOSIGNAL) < 0)
 		log->logError("send()");
-	//log->logBlock(data);
+	log->logBlock(data);
 }
 
 int Responder::readFile(const std::string &path, std::string &buffer)

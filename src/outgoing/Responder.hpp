@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 11:51:03 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/10 18:28:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 19:57:04 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,8 @@ public:
 	void sendData(std::string &&data);
 	void sendDataRaw(std::string &data);
 	void sendDataRaw(std::string &&data);
-	void sendChunkHeader();
-	void sendChunk(const char *buffer, int size);
-	void sendChunkEnd();
+	void sendDataRaw(const char *buffer, int size);
+	void sendCgiHeader();
 	void sendFile(const std::string &path);
 	void sendCreated(const std::string &path, std::string uri);
 	void sendModified(const std::string &path, std::string uri);
@@ -80,6 +79,7 @@ private:
 	Responder(int socket);
 	void transmitData(std::string &data);
 	void transmitData(std::string &&data);
+	void transmitData(const char *buffer, int size);
 	void transmitHeaders();
 	int readFile(const std::string &path, std::string &buffer);
 	void addHeader(std::string name, std::string value);

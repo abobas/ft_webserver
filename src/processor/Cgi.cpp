@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:08:29 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 20:02:43 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define NOT_FOUND 404
 #define INTERNAL_ERROR 500
-#define IO_SIZE 4096
+#define IO_SIZE 16384
 
 Log *Cgi::log = Log::getInstance();
 std::map<int, Cgi *> Cgi::cgis;
@@ -32,6 +32,7 @@ Cgi::Cgi(int socket, Parser &parsed, Matcher &matched)
 	error = 0;
 	tmp_fd = 0;
 	get_fd = 0;
+	exit_status = 0;
 }
 
 Cgi *Cgi::getInstance(int socket, Parser &parsed, Matcher &matched)
@@ -57,26 +58,26 @@ void Cgi::deleteInstance(int socket)
 void Cgi::resolveCgiRequest()
 {
 	char buf[IO_SIZE + 1];
-	Responder respond(socket, parsed);
 	int bytes_read;
 
 	if (!headers_sent)
 	{
-		respond.sendChunkHeader();
+		Responder::getResponder(socket).sendCgiHeader();
 		headers_sent = true;
 	}
 	if (!child_ready)
 		child_ready = checkWait();
 	readPipe(buf, bytes_read);
-	respond.sendChunk(buf, bytes_read);
-	if (child_ready && bytes_read < IO_SIZE)
+	if (bytes_read == 0)
 	{
 		log->logEntry("child output completely read");
+		if (chunked)
+			deleteTmp();
 		closePipe(1);
 		resolved = true;
-		respond.sendChunkEnd();
 		return;
 	}
+	Responder::getResponder(socket).sendDataRaw(buf, bytes_read);
 }
 
 void Cgi::readPipe(char *buf, int &bytes_read)
@@ -98,12 +99,18 @@ bool Cgi::checkWait()
 	waitpid(pid, &status, WNOHANG);
 	if (WIFEXITED(status))
 	{
-		log->logEntry("child process exit status", WEXITSTATUS(status));
+		exit_status = WEXITSTATUS(status);
+		log->logEntry("child process exit status", exit_status);
+		if (close(child_output[1]) < 0)
+			log->logError("close(child_output[1]");
 		return true;
 	}
 	if (WIFSIGNALED(status))
 	{
-		log->logEntry("child process signalled status", WTERMSIG(status));
+		exit_status = WTERMSIG(status);
+		log->logEntry("child process signalled status", exit_status);
+		if (close(child_output[1]) < 0)
+			log->logError("close(child_output[1]");
 		return true;
 	}
 	return false;
@@ -128,7 +135,6 @@ void Cgi::processCgi()
 {
 	if (!post)
 	{
-		log->logEntry("processing GET cgi request");
 		if (!openFile(get_fd, matched.getPath()))
 		{
 			processed = true;
@@ -139,7 +145,6 @@ void Cgi::processCgi()
 	}
 	else if (post)
 	{
-		log->logEntry("processing POST cgi request");
 		receiver = Receiver::getInstance(socket);
 		if (!receiver->bodyInitialized())
 		{
@@ -187,18 +192,15 @@ void Cgi::processChunked()
 		processed = true;
 		if (stat(tmp_path.c_str(), &tmp_file) < 0)
 		{
-			log->logError("stat()");
+			log->logError("stat(tmp_path)");
 			return;
 		}
+		if (close(tmp_fd) < 0)
+			log->logError("close(tmp_fd)");
 		setEnvironment();
 		if (!forkProcess())
 			return;
-		if (close(tmp_fd) < 0)
-			log->logError("close()");
-		if (!openFile(tmp_fd, tmp_path))
-			return;
-		writePipeFromFile(tmp_fd);
-		deleteTmp();
+		usleep(50000);
 	}
 }
 
@@ -218,6 +220,7 @@ bool Cgi::initializeCgi()
 	else
 	{
 		setTmp();
+		closePipe(5);
 		if (!openFile(tmp_fd, tmp_path))
 			return false;
 	}
@@ -242,17 +245,24 @@ bool Cgi::forkProcess()
 void Cgi::childProcess()
 {
 	std::vector<char *> argv;
+	int ret_in;
+	int ret_out;
 
-	int ret_in = dup2(parent_output[0], STDIN_FILENO);
-	int ret_out = dup2(child_output[1], STDOUT_FILENO);
-	closePipe(3);
-	if (ret_in < 0 || ret_out < 0)
+	if (!chunked)
+		ret_in = dup2(parent_output[0], STDIN_FILENO);
+	else
 	{
-		closePipe(4);
-		exit(1);
+		if (!openFile(tmp_fd, tmp_path))
+			exit(1);
+		ret_in = dup2(tmp_fd, STDIN_FILENO);
+		close(tmp_fd);
 	}
+	ret_out = dup2(child_output[1], STDOUT_FILENO);
+	if (ret_in < 0 || ret_out < 0)
+		exit(1);
 	argv.push_back(const_cast<char *>(cgi_path.c_str()));
 	argv.push_back(NULL);
+	log->logEntry("entering execve");
 	if (execve(cgi_path.c_str(), argv.data(), const_cast<char **>(env.data())) < 0)
 		exit(1);
 }
@@ -265,19 +275,20 @@ void Cgi::writePipeFromFile(int fd)
 	while (true)
 	{
 		if (!readFile(fd, buf, bytes_read))
-			return;
+			break;
 		if (!writeFile(parent_output[1], buf, bytes_read))
 		{
 			close(fd);
-			return;
+			break;
 		}
 		if (bytes_read < IO_SIZE)
 		{
 			close(fd);
 			closePipe(0);
-			return;
+			break;
 		}
 	}
+	log->logEntry("done writing parent output");
 }
 
 bool Cgi::writeFile(int fd, const char *buf, int bytes_read)
@@ -296,7 +307,7 @@ bool Cgi::writeFile(int fd, const char *buf, int bytes_read)
 		error = INTERNAL_ERROR;
 		return false;
 	}
-	log->logEntry("bytes written", ret);
+	//log->logEntry("bytes written", ret);
 	return true;
 }
 
@@ -314,7 +325,7 @@ bool Cgi::readFile(int fd, char *buf, int &bytes_read)
 		return false;
 	}
 	buf[bytes_read] = '\0';
-	log->logEntry("bytes read", bytes_read);
+	//log->logEntry("bytes read", bytes_read);
 	return true;
 }
 
@@ -335,12 +346,12 @@ bool Cgi::openFile(int &fd, std::string path)
 
 void Cgi::closePipe(int mode)
 {
-	if (mode == 0 || mode == 2 || mode == 4)
+	if (mode == 0 || mode == 2 || mode == 4 || mode == 5)
 	{
 		if (close(parent_output[0]) < 0)
 			log->logError("close(parent_output[0])");
 	}
-	if (mode == 0 || mode == 2 || mode == 3)
+	if (mode == 0 || mode == 2 || mode == 3 || mode == 5)
 	{
 		if (close(parent_output[1]) < 0)
 			log->logError("close(parent_output[1])");
@@ -360,7 +371,7 @@ void Cgi::closePipe(int mode)
 void Cgi::setTmp()
 {
 	srand(time(0));
-	tmp_path = "./tmp/" + std::to_string(rand());
+	tmp_path = "/tmp/" + std::to_string(rand());
 }
 
 void Cgi::deleteTmp()
@@ -540,6 +551,7 @@ void Cgi::setScriptNameEnv()
 void Cgi::setPathInfoEnv()
 {
 	std::string path_info("PATH_INFO=");
+	path_info += parsed.getPath();
 	memory.push_back(std::move(path_info));
 	env.push_back(memory.back().c_str());
 }

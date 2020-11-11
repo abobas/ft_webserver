@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/07 11:46:41 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/11 15:40:55 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/11 20:00:51 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ void Resolver::resolveProxyRequest(Matcher &matched, Parser &parsed)
 
 void Resolver::resolveCgiRequest(Matcher &matched, Parser &parsed)
 {
-	log->logEntry("resolving CGI request");
+	//log->logEntry("resolving CGI request");
 	cgi = Cgi::getInstance(socket, parsed, matched);
 	if (!cgi->isResolved())
 		cgi->resolveCgiRequest();
