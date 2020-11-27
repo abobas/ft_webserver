@@ -22,6 +22,7 @@
 				"/post_body": {
 					"root": "./test_data/YoupiBanane",
 					"index": "",
+					"max_body": 100,
 					"accepted-methods": ["POST"],
 					"autoindex": false
 				},

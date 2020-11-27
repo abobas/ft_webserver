@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:12 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/07 12:19:57 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/27 22:53:49 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <string>
 #include <map>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 class Upload
@@ -57,4 +58,5 @@ private:
 	bool deleteFile();
 	bool createFile();
 	void setPath();
+	void checkUploadSize();
 };

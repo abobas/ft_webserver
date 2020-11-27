@@ -1,7 +1,8 @@
 
 
 ###### TESTER #######
---- X-secret header niet naar CGI sturen
+--- timeouts (signal status 124) bij multithreaded CGI tests
+--- sometimes times out (?) with CGI test (non multithreaded)
 
 ##### CGI #####
 --- pipes / FDs nalopen / opschonen / lsof -p pid

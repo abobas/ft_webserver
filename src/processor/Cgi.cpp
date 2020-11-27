@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/17 19:27:46 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/11 20:02:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/27 19:02:46 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,7 +370,6 @@ void Cgi::closePipe(int mode)
 
 void Cgi::setTmp()
 {
-	srand(time(0));
 	tmp_path = "/tmp/" + std::to_string(rand());
 }
 
@@ -471,12 +470,16 @@ void Cgi::setHeadersEnv()
 	for (auto header : parsed.getHeaders())
 	{
 		std::string insert;
-		std::string copy(header.first);
-		size_t pos = copy.find("-");
-		if (pos != std::string::npos)
-			copy[pos] = '_';
+		std::string copy("HTTP_");
+		copy.append(header.first);
+		
 		for (auto &c : copy)
 			c = toupper(c);
+		while (copy.find("-") != std::string::npos)
+		{
+			size_t pos = copy.find("-");
+			copy[pos] = '_';
+		}
 		insert.append(copy + "=");
 		insert.append(header.second);
 		memory.push_back(std::move(insert));

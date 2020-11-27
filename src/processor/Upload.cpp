@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/06 14:09:14 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/08 00:09:05 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/27 22:58:07 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #define MODIFIED 200
 #define CREATED 201
+#define PAYLOAD_TOO_LARGE 413
 #define INTERNAL_ERROR 500
 
 Log *Upload::log = Log::getInstance();
@@ -80,9 +81,13 @@ bool Upload::initializeUpload()
 
 void Upload::setPath()
 {
+	struct stat file;
+
 	upload_path = matched.getPath();
-	if (upload_path[upload_path.size() - 1] == '/')
-		upload_path += "upload";
+	if (stat(upload_path.c_str(), &file) < 0)
+		return;
+	if (S_ISDIR(file.st_mode))
+		upload_path += "/upload-" + std::to_string(rand());
 }
 
 bool Upload::isExistingFile()
@@ -147,6 +152,35 @@ void Upload::processUpload()
 		processed = true;
 		close(file);
 		log->logEntry("processed upload request", socket);
+		if (parsed.isChunked())
+			checkUploadSize();
+	}
+}
+
+void Upload::checkUploadSize()
+{
+	struct stat file;
+	
+	if (stat(upload_path.c_str(), &file) < 0)
+	{
+		error = INTERNAL_ERROR;
+		return;
+	}
+	if (matched.getConfig()["http"]["max_body"].number_value() != 0)
+	{
+		if (file.st_size > matched.getConfig()["http"]["max_body"].number_value())
+		{
+			error = PAYLOAD_TOO_LARGE;
+			return;
+		}
+	}
+	if (matched.getLocation()["max_body"].number_value() != 0)
+	{
+		if (file.st_size > matched.getLocation()["max_body"].number_value())
+		{
+			error = PAYLOAD_TOO_LARGE;
+			return;
+		}
 	}
 }
 

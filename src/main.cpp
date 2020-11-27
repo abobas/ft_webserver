@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/05 17:10:59 by abobas        ########   odam.nl         */
+/*   Updated: 2020/11/27 19:03:20 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "config/Json.hpp"
 #include <iostream>
 #include <fcntl.h>
+#include <time.h>
 
 void validateInput(int ac, char **av)
 {
@@ -42,6 +43,7 @@ int main(int ac, char **av)
 {
 	try
 	{
+		srand(time(0));		
 		validateInput(ac, av);
 		Server server(getConfig(av[2]));
 	}
