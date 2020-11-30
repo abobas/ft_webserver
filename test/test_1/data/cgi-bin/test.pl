@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-
+print("Content Type: text/html\n\n");
 
 print "<h1>Environment</h1><hr>";
 foreach (sort keys %ENV)

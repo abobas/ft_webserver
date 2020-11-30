@@ -6,7 +6,7 @@
 #    By: abobas <abobas@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/07/04 14:02:54 by abobas        #+#    #+#                  #
-#    Updated: 2020/11/10 14:08:17 by abobas        ########   odam.nl          #
+#    Updated: 2020/11/30 17:35:12 by abobas        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,11 +43,11 @@ all: 			$(NAME)
 $(NAME):		$(SRC)
 				$(CXX) $(FLAGS) $(SRC) -o $(NAME)
 
-run:
-				sudo ./webserv --config config/config.json
+test_1:
+				sudo ./webserv --config test/test_1/config/config.json
 
-tester:
-				sudo ./webserv --config test_bin/test.json
+test_2:
+				sudo ./webserv --config test/test_2/config/test.json
 
 clean:
 				rm -rf $(NAME)
