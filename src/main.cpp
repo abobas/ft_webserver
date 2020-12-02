@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/04 14:09:30 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/27 19:03:20 by abobas        ########   odam.nl         */
+/*   Updated: 2020/12/02 12:32:14 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int ac, char **av)
 {
 	try
 	{
-		srand(time(0));		
+		srand(time(0));
 		validateInput(ac, av);
 		Server server(getConfig(av[2]));
 	}

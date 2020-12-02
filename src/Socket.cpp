@@ -6,7 +6,7 @@
 /*   By: abobas <abobas@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/08/26 19:00:35 by abobas        #+#    #+#                 */
-/*   Updated: 2020/11/11 15:40:43 by abobas        ########   odam.nl         */
+/*   Updated: 2020/12/02 12:33:50 by abobas        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void Socket::createListenSockets()
 		new_address.sin_addr.s_addr = INADDR_ANY;
 		new_address.sin_port = htons(port);
 		if (bind(new_socket, reinterpret_cast<sockaddr *>(&new_address), sizeof(new_address)) < 0)
-		throw "bind()";
+			throw "bind()";
 		if (listen(new_socket, SOMAXCONN) < 0)
-		throw "listen()";
+			throw "listen()";
 		sockets.emplace(new_socket, new Socket("listen", new_socket));
 		log->logEntry("created socket", new_socket);
 	}
@@ -84,7 +84,7 @@ void Socket::handleIncoming()
 	{
 		log->logEntry("client disconnected", socket_fd);
 		deleteSocket();
-		return;;
+		return;
 	}
 	if (!handleReceiving())
 		return;
